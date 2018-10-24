@@ -36,7 +36,7 @@
 namespace metaxxa
 {
 	template <typename... Arguments>
-	class Tuple : public Root<Tuple<Arguments...>>, public implementation::TupleTag
+	class Tuple : public implementation::TupleTag
 	{
 	public:
 		using StdTuple = std::tuple<Arguments...>;
@@ -372,7 +372,7 @@ namespace metaxxa
 			return ::metaxxa::call_function(std_tuple, callable);
 		}
 
-		virtual std::string to_string() const override
+		std::string to_string() const
 		{
 			return ::metaxxa::to_string(std_tuple);
 		}
@@ -392,7 +392,7 @@ namespace metaxxa
 	};
 
 	template<>
-	class Tuple<> : public Root<Tuple<>>
+	class Tuple<> : public implementation::TupleTag
 	{
 	public:
 		using StdTuple = std::tuple<>;
@@ -538,7 +538,7 @@ namespace metaxxa
 			return callable();
 		}
 
-		virtual std::string to_string() const override
+		std::string to_string() const
 		{
 			return ::metaxxa::to_string(std::tuple<>());
 		}

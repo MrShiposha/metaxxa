@@ -10,7 +10,7 @@
 #include <typeinfo>
 #include <typeindex>
 #include <type_traits>
-#include <external/boost/type_index.hpp>
+#include <boost/type_index.hpp>
 #include "implementation/Function.h"
 #include "implementation/OperatorTesters.h"
 #include "implementation/TypeHasOperatorMethodMacros.h"

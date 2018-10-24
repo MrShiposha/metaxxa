@@ -4,8 +4,8 @@
 // 
 
 
-#ifndef METAXXA_FINDOFSTDTUPLE_H
-#define METAXXA_FINDOFSTDTUPLE_H
+#ifndef METAXXA_FILTEROFSTDTUPLE_H
+#define METAXXA_FILTEROFSTDTUPLE_H
 
 #include <tuple>
 #include <type_traits>
@@ -97,4 +97,4 @@ namespace metaxxa
 
 }
 
-#endif // METAXXA_FINDOFSTDTUPLE_H
+#endif // METAXXA_FILTEROFSTDTUPLE_H

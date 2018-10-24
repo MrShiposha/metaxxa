@@ -15,6 +15,7 @@
 #include "implementation/TypeHasOperatorMethodMacros.h"
 #include "implementation/HasMethodToString.h"
 #include "implementation/TupleTag.h"
+#include "implementation/Demangle.h"
 
 namespace metaxxa
 {
@@ -99,8 +100,7 @@ namespace metaxxa
 
 		static std::string get_name_with_modifiers()
 		{
-			// TODO: pretty name
-			return typeid(SomeType).name();
+			return implementation::demangle<SomeType>();
 		}
 
 		static std::string name_with_modifiers()

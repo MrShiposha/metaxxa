@@ -9,7 +9,6 @@
 #define METAXXA_FUNCTION_H
 
 #include <functional>
-#include <boost/type_index.hpp>
 
 #include "Tuple.h"
 #include "Type.h"

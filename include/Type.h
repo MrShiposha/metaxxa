@@ -10,7 +10,6 @@
 #include <typeinfo>
 #include <typeindex>
 #include <type_traits>
-#include <boost/type_index.hpp>
 #include "implementation/Function.h"
 #include "implementation/OperatorTesters.h"
 #include "implementation/TypeHasOperatorMethodMacros.h"
@@ -100,7 +99,8 @@ namespace metaxxa
 
 		static std::string get_name_with_modifiers()
 		{
-			return boost::typeindex::type_id_with_cvr<SomeType>().pretty_name();
+			// TODO: pretty name
+			return typeid(SomeType).name();
 		}
 
 		static std::string name_with_modifiers()

@@ -73,7 +73,6 @@ TEST(TestTuple, TestSum)
 TEST(TestTuple, JustObjects)
 {
     std::tuple<const int, const char, const double> t;
-    decltype(metaxxa::just_objects_types<decltype(t)>()) t2;
     
     testing::StaticAssertTypeEq<decltype(metaxxa::just_objects_types<decltype(t)>()), std::tuple<int, char, double>>();
 }

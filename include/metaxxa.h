@@ -6,6 +6,8 @@
 #ifndef METAXXA_H
 #define METAXXA_H
 
-// TODO: Include all
+#include "Tuple.h"
+#include "Type.h"
+#include "Function.h"
 
 #endif // METAXXA_H

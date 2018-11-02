@@ -1,4 +1,4 @@
 SET(METAXXA_TESTS_INCLUDE_DIRECTORIES
-    ${CMAKE_CURRENT_LIST_DIR}/../include
+    ${CMAKE_CURRENT_LIST_DIR}/../include/metaxxa
     ${CMAKE_CURRENT_LIST_DIR}/../lib/include
 )

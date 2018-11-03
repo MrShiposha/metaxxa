@@ -10,11 +10,14 @@
 #include <typeinfo>
 #include <typeindex>
 #include <type_traits>
+#include "implementation/WrapToTemplateIfNotWrapped.h"
 #include "implementation/Function.h"
 #include "implementation/OperatorTesters.h"
 #include "implementation/TypeHasOperatorMethodMacros.h"
 #include "implementation/HasMethodToString.h"
-#include "implementation/TupleTag.h"
+#include "implementation/IsExplicitlyConstructible.h"
+#include "implementation/IsImplicitlyConstructible.h"
+#include "implementation/IsInstantiationOf.h"
 #include "implementation/Demangle.h"
 
 namespace metaxxa
@@ -23,6 +26,9 @@ namespace metaxxa
 	class Type
 	{
 	public:
+		template <template <typename...> typename TemplateType>
+		using WrapToTemplateIfNotWrapped = typename implementation::template WrapToTemplateIfNotWrapped<TemplateType, SomeType>::Result;
+
 		static std::string get_name()
 		{
 			return typeid(SomeType).name();
@@ -182,9 +188,22 @@ namespace metaxxa
 			return std::is_rvalue_reference_v<SomeType>;
 		}
 
-		static constexpr bool is_tuple()
+		template <typename Argument>
+		static constexpr bool is_implicitly_constructible_from()
 		{
-			return std::is_base_of_v<implementation::TupleTag, SomeType>;
+			return implementation::IS_IMPLICITLY_CONSTRUCTIBLE<SomeType, Argument>;
+		}
+
+		template <typename Argument>
+		static constexpr bool is_explicitly_constructible_from()
+		{
+			return implementation::IS_EXPLICITLY_CONSTRUCTIBLE<SomeType, Argument>;
+		}
+
+		template <template <typename...> typename TemplateType>
+		static constexpr bool is_instantiation_of()
+		{
+			return implementation::IS_INSTANTIATION_OF<TemplateType, SomeType>;
 		}
 
 		// ASSIGNMENT 

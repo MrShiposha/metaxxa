@@ -22,10 +22,10 @@ namespace metaxxa
 			>
 		{
 		};
-	}
 
-	template <typename Type, typename Argument>
-	constexpr bool IS_EXPLICITLY_CONSTRUCTIBLE = implementation::IsExplicitlyConstructible<Type, Argument>::value;
+		template <typename Type, typename Argument>
+		constexpr bool IS_EXPLICITLY_CONSTRUCTIBLE = IsExplicitlyConstructible<Type, Argument>::value;
+	}
 }
 
 #endif // METAXXA_ISEXPLICITLYCONSTRUCTIBLE_H

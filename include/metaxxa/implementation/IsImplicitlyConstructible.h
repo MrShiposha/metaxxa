@@ -21,11 +21,11 @@ namespace metaxxa
 				std::is_constructible<Type, Argument>::value && std::is_convertible<Argument, Type>::value
 			>
 		{
-			};
-	}
+		};
 
-	template <typename Type, typename Argument>
-	constexpr bool IS_IMPLICITLY_CONSTRUCTIBLE = implementation::IsImplicitlyConstructible<Type, Argument>::value;
+		template <typename Type, typename Argument>
+		constexpr bool IS_IMPLICITLY_CONSTRUCTIBLE = IsImplicitlyConstructible<Type, Argument>::value;
+	}
 }
 
 #endif // METAXXA_ISIMPLICITLYCONSTRUCTIBLE_H

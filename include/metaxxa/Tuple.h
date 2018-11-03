@@ -31,12 +31,10 @@
 #include "RemoveTupleCV.h"
 #include "FilterOfStdTuple.h"
 
-#include "implementation/TupleTag.h"
-
 namespace metaxxa
 {
 	template <typename... Arguments>
-	class Tuple : public implementation::TupleTag
+	class Tuple
 	{
 	public:
 		using StdTuple = std::tuple<Arguments...>;
@@ -392,7 +390,7 @@ namespace metaxxa
 	};
 
 	template<>
-	class Tuple<> : public implementation::TupleTag
+	class Tuple<>
 	{
 	public:
 		using StdTuple = std::tuple<>;

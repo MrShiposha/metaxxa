@@ -29,6 +29,7 @@
 #include "CallFunctionOfStdTuple.h"
 #include "RemoveTupleCV.h"
 #include "FilterOfStdTuple.h"
+#include "WrapAllOfStdTuple.h"
 
 namespace metaxxa
 {
@@ -43,6 +44,9 @@ namespace metaxxa
 
 		template <template <typename...> typename TemplateType>
 		using MoveUniqueTypesTo = MoveStdTupleUniqueTypes<TemplateType, StdTuple>;
+
+		template<template <typename> typename TemplateType>
+		using WrapAll = WrapAllOfStdTuple<StdTuple, TemplateType>;
 
 		template <size_t INDEX>
 		using Parameter = typename std::tuple_element<INDEX, StdTuple>::type;
@@ -388,6 +392,9 @@ namespace metaxxa
 
 		template <template <typename...> typename TemplateType>
 		using MoveUniqueTypesTo = TemplateType<>;
+
+		template<template <typename> typename TemplateType>
+		using WrapAll = std::tuple<>;
 
 		Tuple() = default;
 

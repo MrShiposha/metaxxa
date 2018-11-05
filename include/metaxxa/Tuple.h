@@ -554,7 +554,7 @@ namespace metaxxa
 	template <typename... Arguments>
 	auto tuple(Arguments... arguments)
 	{
-		typename Tuple<Arguments...> result(std::forward<Arguments>(arguments)...);
+		Tuple<Arguments...> result(std::forward<Arguments>(arguments)...);
 
 		return result;
 	}

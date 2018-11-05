@@ -1,8 +1,8 @@
 #ifndef METAXXA_IMPLEMENTATION_OPERATORTESTERS_H
 #define METAXXA_IMPLEMENTATION_OPERATORTESTERS_H
 
-#include "implementation/Function.h"
-#include "CallableToMethod.h"
+#include "Function.h"
+#include "../CallableToMethod.h"
 
 #define ___METAXXA___DECLARE_OPERATOR_TESTER(TESTER_NAME, OPERATOR) \
 	template <typename Type, typename Method> \

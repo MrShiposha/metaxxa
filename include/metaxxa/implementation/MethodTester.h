@@ -1,7 +1,7 @@
 #ifndef METAXXA_IMPLEMENTATION_METHODTESTER_H
 #define METAXXA_IMPLEMENTATION_METHODTESTER_H
 
-#include "CallableToMethod.h"
+#include "../CallableToMethod.h"
 
 #define ___METAXXA___DECLARE_HAS_METHOD(METHOD) \
 	template <typename Type, typename Method> \

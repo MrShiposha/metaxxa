@@ -17,6 +17,8 @@
 
 struct TestMetaxxa
 {
+    virtual ~TestMetaxxa() {}
+
     virtual bool test() = 0;
 };
 

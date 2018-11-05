@@ -12,7 +12,6 @@
 
 #include "MoveStdTupleTypes.h"
 #include "MoveStdTupleUniqueTypes.h"
-#include "JustObjectsOfStdTuple.h"
 #include "SkipFirstOfStdTuple.h"
 #include "ForEachOfStdTuple.h"
 #include "EveryOfStdTuple.h"
@@ -44,10 +43,6 @@ namespace metaxxa
 
 		template <template <typename...> typename TemplateType>
 		using MoveUniqueTypesTo = MoveStdTupleUniqueTypes<TemplateType, StdTuple>;
-
-		// using Optionals = Tuple<std::optional<Arguments>...>;
-
-		// using RemoveCV = MoveStdTupleTypes<::metaxxa::Tuple, RemoveTupleCV<StdTuple>>;
 
 		template <size_t INDEX>
 		using Parameter = typename std::tuple_element<INDEX, StdTuple>::type;
@@ -398,13 +393,6 @@ namespace metaxxa
 
 		template <template <typename...> typename TemplateType>
 		using MoveUniqueTypesTo = TemplateType<>;
-
-		// using Optionals = Tuple<>;
-
-		// using JustObjects = Tuple<>;
-		
-		// using RemoveCV = Tuple<>;
-
 
 		Tuple() = default;
 

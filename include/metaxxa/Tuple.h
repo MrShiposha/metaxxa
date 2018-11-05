@@ -172,11 +172,6 @@ namespace metaxxa
 			return concat(tuple);
 		}
 
-		constexpr auto just_objects() const
-		{
-			return ::metaxxa::just_objects(std_tuple);
-		}
-
 		template <size_t COUNT>
 		constexpr auto skip_first() const
 		{
@@ -459,11 +454,6 @@ namespace metaxxa
 		static constexpr bool is_empty()
 		{
 			return true;
-		}
-
-		constexpr auto just_objects() const
-		{
-			return std_tuple;
 		}
 
 		template <typename Callable>

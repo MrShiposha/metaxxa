@@ -45,11 +45,9 @@ namespace metaxxa
 		template <template <typename...> typename TemplateType>
 		using MoveUniqueTypesTo = MoveStdTupleUniqueTypes<TemplateType, StdTuple>;
 
-		using JustObjects = MoveStdTupleTypes<::metaxxa::Tuple, decltype(just_objects_types<StdTuple>())>;
+		// using Optionals = Tuple<std::optional<Arguments>...>;
 
-		using Optionals = Tuple<std::optional<Arguments>...>;
-
-		using RemoveCV = MoveStdTupleTypes<::metaxxa::Tuple, RemoveTupleCV<StdTuple>>;
+		// using RemoveCV = MoveStdTupleTypes<::metaxxa::Tuple, RemoveTupleCV<StdTuple>>;
 
 		template <size_t INDEX>
 		using Parameter = typename std::tuple_element<INDEX, StdTuple>::type;
@@ -401,11 +399,11 @@ namespace metaxxa
 		template <template <typename...> typename TemplateType>
 		using MoveUniqueTypesTo = TemplateType<>;
 
-		using Optionals = Tuple<>;
+		// using Optionals = Tuple<>;
 
-		using JustObjects = Tuple<>;
+		// using JustObjects = Tuple<>;
 		
-		using RemoveCV = Tuple<>;
+		// using RemoveCV = Tuple<>;
 
 
 		Tuple() = default;
@@ -548,15 +546,15 @@ namespace metaxxa
 	};		
 
 	template <typename... Arguments>
-	auto tuple(Arguments&&... arguments)
+	auto tuple_ref(Arguments&&... arguments)
 	{
 		return Tuple<Arguments...>(std::forward<Arguments>(arguments)...);
 	}
 
 	template <typename... Arguments>
-	auto tuple_copy(const Arguments&... arguments)
+	auto tuple(Arguments... arguments)
 	{
-		typename Tuple<Arguments...>::JustObjects result(arguments...);
+		typename Tuple<Arguments...> result(std::forward<Arguments>(arguments)...);
 
 		return result;
 	}

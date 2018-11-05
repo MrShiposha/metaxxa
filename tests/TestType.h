@@ -1,192 +1,197 @@
-#include <Type.h>
-#include <CallableToMethod.h>
+#include <metaxxa/Type.h>
+#include <metaxxa/Function.h>
+#include <metaxxa/CallableToMethod.h>
 
 #include <type_traits>
 
-struct StructUnary
+#include "TestMetaxxa.h"
+
+struct TestType : TestMetaxxa
 {
-	void operator+() {}
+	struct StructUnary
+	{
+		void operator+() {}
 
-	int operator*() { return 0; }
+		int operator*() { return 0; }
 
-	int operator&() { return 0; }
+		int operator&() { return 0; }
+	};
+
+	struct StructBinary
+	{
+		void operator+(int) {}
+
+		int operator*(int) { return 0; }
+
+		int operator&(int) { return 0; }
+	};
+
+	struct StructUnaryBinary
+	{
+		void operator+() {}
+
+		int operator*() { return 0; }
+
+		int operator&() { return 0; }
+
+		void operator+(int) {}
+
+		int operator*(int) { return 0; }
+
+		int operator&(int) { return 0; }
+	};
+
+	struct Ambiguous
+	{
+		void operator+() {}
+
+		void operator+(int) {}
+	};
+
+	struct TestImpl
+	{
+		TestImpl(int) {}
+
+		TestImpl(void *) {}
+
+		explicit TestImpl(const char *) {}
+	};
+
+	struct TestExpl
+	{
+		TestExpl(int) {}
+
+		TestExpl(void *) {}
+
+		explicit TestExpl(const char *) {}
+	};
+
+	template <typename T>
+	class TemplateClass
+	{};
+
+	virtual bool test() override
+	{
+		bool result = true;
+		result = result && test_has_method_with_arguments();
+		result = result && test_has_method_without_arguments();
+		result = result && test_is_implicitly_constructible();
+		result = result && test_is_explicitly_constructible();
+		result = result && test_is_instantiation_of();
+		result = result && test_wrap_if_not_wrapped();
+		return result;
+	}
+
+	bool test_has_method_without_arguments()
+	{
+		using metaxxa::Type;
+
+		static_assert(Type<StructUnary>::has_single_operator_unary_plus(),           "class Type: has method without arguments test failed");
+		static_assert(!Type<StructUnary>::has_single_operator_binary_plus(),         "class Type: has method without arguments test failed");
+		static_assert(Type<StructUnary>::has_single_operator_asterisk_dereference(), "class Type: has method without arguments test failed");
+		static_assert(!Type<StructUnary>::has_single_operator_asterisk_multiply(),   "class Type: has method without arguments test failed");
+		static_assert(Type<StructUnary>::has_single_operator_ampersand_address(),    "class Type: has method without arguments test failed");
+		static_assert(!Type<StructUnary>::has_single_operator_ampersand_bit_and(),   "class Type: has method without arguments test failed");
+
+		static_assert(Type<StructBinary>::has_single_operator_binary_plus(),           "class Type: has method without arguments test failed");
+		static_assert(!Type<StructBinary>::has_single_operator_unary_plus(),           "class Type: has method without arguments test failed");
+		static_assert(Type<StructBinary>::has_single_operator_asterisk_multiply(),     "class Type: has method without arguments test failed");
+		static_assert(!Type<StructBinary>::has_single_operator_asterisk_dereference(), "class Type: has method without arguments test failed");
+		static_assert(Type<StructBinary>::has_single_operator_ampersand_bit_and(),     "class Type: has method without arguments test failed");
+		static_assert(!Type<StructBinary>::has_single_operator_ampersand_address(),    "class Type: has method without arguments test failed");
+
+		static_assert(!Type<StructUnaryBinary>::has_single_operator_unary_plus(),           "class Type: has method without arguments test failed");
+		static_assert(!Type<StructUnaryBinary>::has_single_operator_binary_plus(),          "class Type: has method without arguments test failed");
+		static_assert(!Type<StructUnaryBinary>::has_single_operator_asterisk_dereference(), "class Type: has method without arguments test failed");
+		static_assert(!Type<StructUnaryBinary>::has_single_operator_asterisk_multiply(),    "class Type: has method without arguments test failed");
+		static_assert(!Type<StructUnaryBinary>::has_single_operator_ampersand_address(),    "class Type: has method without arguments test failed");
+		static_assert(!Type<StructUnaryBinary>::has_single_operator_ampersand_bit_and(),    "class Type: has method without arguments test failed");
+
+		return true;
+	}
+
+	bool test_has_method_with_arguments()
+	{
+		using metaxxa::Type;
+		using metaxxa::Function;
+		using metaxxa::CallableToMethod;
+
+		static_assert(Type<StructUnary>::has_operator_plus<void()>());
+		static_assert(!Type<StructUnary>::has_operator_plus<void(int)>());
+		static_assert(Type<StructUnary>::has_operator_dereference<int()>());
+		static_assert(!Type<StructUnary>::has_operator_multiply<int(int)>());
+		static_assert(Type<StructUnary>::has_operator_address<int()>());
+		static_assert(!Type<StructUnary>::has_operator_bit_and<int(int)>());
+
+		static_assert(Type<StructBinary>::has_operator_plus<void(int)>());
+		static_assert(!Type<StructBinary>::has_operator_plus<void()>());
+		static_assert(Type<StructBinary>::has_operator_multiply<int(int)>());
+		static_assert(!Type<StructBinary>::has_operator_dereference<int()>());
+		static_assert(Type<StructBinary>::has_operator_bit_and<int(int)>());
+		static_assert(!Type<StructBinary>::has_operator_address<int()>());
+
+		static_assert(Type<StructUnaryBinary>::has_operator_plus<void(int)>());
+		static_assert(Type<StructUnaryBinary>::has_operator_plus<void()>());
+		static_assert(Type<StructUnaryBinary>::has_operator_multiply<int(int)>());
+		static_assert(Type<StructUnaryBinary>::has_operator_dereference<int()>());
+		static_assert(Type<StructUnaryBinary>::has_operator_bit_and<int(int)>());
+		static_assert(Type<StructUnaryBinary>::has_operator_address<int()>());
+
+		static_assert(Type<Ambiguous>::has_operator_plus<void(int)>());
+		static_assert(Type<Ambiguous>::has_operator_plus<void()>());
+
+		return true;
+	}
+
+	bool test_is_implicitly_constructible()
+	{
+		using namespace std;
+		using namespace metaxxa;
+		
+		static_assert(Type<std::string>::is_implicitly_constructible_from<const char *>(), "class Type: implicitly constructible test failed");
+		static_assert(Type<int>::is_implicitly_constructible_from<char>(),                 "class Type: implicitly constructible test failed");
+		static_assert(Type<TestImpl>::is_implicitly_constructible_from<int>(),             "class Type: implicitly constructible test failed");
+		static_assert(Type<TestImpl>::is_implicitly_constructible_from<void*>(),           "class Type: implicitly constructible test failed");
+		static_assert(!Type<int *>::is_implicitly_constructible_from<char *>(),            "class Type: implicitly constructible test failed");
+		static_assert(!Type<TestImpl>::is_implicitly_constructible_from<const char*>(),    "class Type: implicitly constructible test failed");
+
+		return true;
+	}
+
+	bool test_is_explicitly_constructible()
+	{
+		using namespace std;
+		using namespace metaxxa;
+
+		static_assert(Type<TestExpl>::is_explicitly_constructible_from<const char*>(),      "class Type: explicitly constructible test failed");
+		static_assert(!Type<std::string>::is_explicitly_constructible_from<const char *>(), "class Type: explicitly constructible test failed");
+		static_assert(!Type<int>::is_explicitly_constructible_from<char>(),                 "class Type: explicitly constructible test failed");
+		static_assert(!Type<TestExpl>::is_explicitly_constructible_from<int>(),             "class Type: explicitly constructible test failed");
+		static_assert(!Type<TestExpl>::is_explicitly_constructible_from<void*>(),           "class Type: explicitly constructible test failed");
+
+		return true;
+	}
+
+	bool test_is_instantiation_of()
+	{
+		using namespace metaxxa;
+
+		static_assert(Type<TemplateClass<int>>::is_instantiation_of<TemplateClass>(),  "class Type: is_instantiation_of failed");
+		static_assert(!Type<TemplateClass<int>>::is_instantiation_of<std::optional>(), "class Type: is_instantiation_of failed");
+
+		static_assert(Type<Tuple<int, char>>::is_instantiation_of<Tuple>(),         "class Type: is_instantiation_of failed");
+		static_assert(!Type<std::variant<int, char>>::is_instantiation_of<Tuple>(), "class Type: is_instantiation_of failed");
+
+		return true;
+	}
+
+	bool test_wrap_if_not_wrapped()
+	{
+		using namespace metaxxa;
+
+		static_assert(std::is_same_v<Type<Tuple<int, char>>::template WrapToTemplateIfNotWrapped<Tuple>, Tuple<int, char>>, "class Type: WrapToTemplateIfNotWrapped failed");
+		static_assert(std::is_same_v<Type<int>::template WrapToTemplateIfNotWrapped<Tuple>, Tuple<int>>,                    "class Type: WrapToTemplateIfNotWrapped failed");
+
+		return true;
+	}
 };
-
-struct StructBinary
-{
-	void operator+(int) {}
-
-	int operator*(int) { return 0; }
-
-	int operator&(int) { return 0; }
-};
-
-struct StructUnaryBinary
-{
-	void operator+() {}
-
-	int operator*() { return 0; }
-
-	int operator&() { return 0; }
-
-	void operator+(int) {}
-
-	int operator*(int) { return 0; }
-
-	int operator&(int) { return 0; }
-};
-
-struct Ambiguous
-{
-	void operator+() {}
-
-	void operator+(int) {}
-};
-
-TEST(TestType, TestHasMethodNoArguments)
-{
-	using metaxxa::Type;
-
-	EXPECT_TRUE(Type<StructUnary>::has_single_operator_unary_plus());
-	EXPECT_FALSE(Type<StructUnary>::has_single_operator_binary_plus());
-	EXPECT_TRUE(Type<StructUnary>::has_single_operator_asterisk_dereference());
-	EXPECT_FALSE(Type<StructUnary>::has_single_operator_asterisk_multiply());
-	EXPECT_TRUE(Type<StructUnary>::has_single_operator_ampersand_address());
-	EXPECT_FALSE(Type<StructUnary>::has_single_operator_ampersand_bit_and());
-
-	EXPECT_TRUE(Type<StructBinary>::has_single_operator_binary_plus());
-	EXPECT_FALSE(Type<StructBinary>::has_single_operator_unary_plus());
-	EXPECT_TRUE(Type<StructBinary>::has_single_operator_asterisk_multiply());
-	EXPECT_FALSE(Type<StructBinary>::has_single_operator_asterisk_dereference());
-	EXPECT_TRUE(Type<StructBinary>::has_single_operator_ampersand_bit_and());
-	EXPECT_FALSE(Type<StructBinary>::has_single_operator_ampersand_address());
-
-	EXPECT_FALSE(Type<StructUnaryBinary>::has_single_operator_unary_plus());
-	EXPECT_FALSE(Type<StructUnaryBinary>::has_single_operator_binary_plus());
-	EXPECT_FALSE(Type<StructUnaryBinary>::has_single_operator_asterisk_dereference());
-	EXPECT_FALSE(Type<StructUnaryBinary>::has_single_operator_asterisk_multiply());
-	EXPECT_FALSE(Type<StructUnaryBinary>::has_single_operator_ampersand_address());
-	EXPECT_FALSE(Type<StructUnaryBinary>::has_single_operator_ampersand_bit_and());
-}
-
-TEST(TestType, TestHasMethodWithArguments)
-{
-	using metaxxa::Type;
-	using metaxxa::Function;
-	using metaxxa::CallableToMethod;
-
-	EXPECT_TRUE(Type<StructUnary>::has_operator_plus<void()>());
-	EXPECT_FALSE(Type<StructUnary>::has_operator_plus<void(int)>());
-	EXPECT_TRUE(Type<StructUnary>::has_operator_dereference<int()>());
-	EXPECT_FALSE(Type<StructUnary>::has_operator_multiply<int(int)>());
-	EXPECT_TRUE(Type<StructUnary>::has_operator_address<int()>());
-	EXPECT_FALSE(Type<StructUnary>::has_operator_bit_and<int(int)>());
-
-	EXPECT_TRUE(Type<StructBinary>::has_operator_plus<void(int)>());
-	EXPECT_FALSE(Type<StructBinary>::has_operator_plus<void()>());
-	EXPECT_TRUE(Type<StructBinary>::has_operator_multiply<int(int)>());
-	EXPECT_FALSE(Type<StructBinary>::has_operator_dereference<int()>());
-	EXPECT_TRUE(Type<StructBinary>::has_operator_bit_and<int(int)>());
-	EXPECT_FALSE(Type<StructBinary>::has_operator_address<int()>());
-
-	EXPECT_TRUE(Type<StructUnaryBinary>::has_operator_plus<void(int)>());
-	EXPECT_TRUE(Type<StructUnaryBinary>::has_operator_plus<void()>());
-	EXPECT_TRUE(Type<StructUnaryBinary>::has_operator_multiply<int(int)>());
-	EXPECT_TRUE(Type<StructUnaryBinary>::has_operator_dereference<int()>());
-	EXPECT_TRUE(Type<StructUnaryBinary>::has_operator_bit_and<int(int)>());
-	EXPECT_TRUE(Type<StructUnaryBinary>::has_operator_address<int()>());
-
-	EXPECT_TRUE(Type<Ambiguous>::has_operator_plus<void(int)>());
-	EXPECT_TRUE(Type<Ambiguous>::has_operator_plus<void()>());
-
-}
-
-struct TestImpl
-{
-	TestImpl(int) {}
-
-	TestImpl(void *) {}
-
-	explicit TestImpl(const char *) {}
-};
-
-TEST(TestType, TestIsImplicitlyConstructible)
-{
-	using namespace std;
-	using namespace metaxxa;
-	bool result;
-	
-	result = Type<std::string>::is_implicitly_constructible_from<const char *>();
-	EXPECT_TRUE(result);
-
-	result = Type<int>::is_implicitly_constructible_from<char>();
-	EXPECT_TRUE(result);
-
-	result = Type<TestImpl>::is_implicitly_constructible_from<int>();
-	EXPECT_TRUE(result);
-
-	result = Type<TestImpl>::is_implicitly_constructible_from<void*>();
-	EXPECT_TRUE(result);
-
-	result = Type<int *>::is_implicitly_constructible_from<char *>();
-	EXPECT_FALSE(result);
-
-	result = Type<TestImpl>::is_implicitly_constructible_from<const char*>();
-	EXPECT_FALSE(result);
-}
-
-struct TestExpl
-{
-	TestExpl(int) {}
-
-	TestExpl(void *) {}
-
-	explicit TestExpl(const char *) {}
-};
-
-
-TEST(TestType, TestIsExplicitlyConstructible)
-{
-	using namespace std;
-	using namespace metaxxa;
-	bool result;
-
-	result = Type<TestExpl>::is_explicitly_constructible_from<const char*>();
-	EXPECT_TRUE(result);
-
-	result = Type<std::string>::is_explicitly_constructible_from<const char *>();
-	EXPECT_FALSE(result);
-
-	result = Type<int>::is_explicitly_constructible_from<char>();
-	EXPECT_FALSE(result);
-
-	result = Type<TestExpl>::is_explicitly_constructible_from<int>();
-	EXPECT_FALSE(result);
-
-	result = Type<TestExpl>::is_explicitly_constructible_from<void*>();
-	EXPECT_FALSE(result);
-}
-
-
-template <typename T>
-class TemplateClass
-{};
-
-TEST(TestType, TestIsInstantiationOf)
-{
-	using namespace metaxxa;
-
-	static_assert(Type<TemplateClass<int>>::is_instantiation_of<TemplateClass>(), "class Type<T>: is_instantiation_of failed");
-	static_assert(!Type<TemplateClass<int>>::is_instantiation_of<std::optional>(), "class Type<T>: is_instantiation_of failed");
-
-	static_assert(Type<Tuple<int, char>>::is_instantiation_of<Tuple>(), "class Type<T>: is_instantiation_of failed");
-	static_assert(!Type<std::variant<int, char>>::is_instantiation_of<Tuple>(), "class Type<T>: is_instantiation_of failed");
-}
-
-TEST(TestType, TestWrapIfNotWrapped)
-{
-	using namespace metaxxa;
-
-	static_assert(std::is_same_v<Type<Tuple<int, char>>::template WrapToTemplateIfNotWrapped<Tuple>, Tuple<int, char>>, "class Type<T>: WrapToTemplateIfNotWrapped failed");
-	static_assert(std::is_same_v<Type<int>::template WrapToTemplateIfNotWrapped<Tuple>, Tuple<int>>, "class Type<T>: WrapToTemplateIfNotWrapped failed");
-}

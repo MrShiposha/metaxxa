@@ -517,10 +517,7 @@ namespace metaxxa
 			return ::metaxxa::contains_types<StdTuple, Types...>();
 		}
 
-		static constexpr auto distinct_types()
-		{
-			return std::declval<Tuple>();
-		}
+		static constexpr auto distinct_types() -> Tuple;
 
 		template <typename Type>
 		static constexpr bool is_converts_to_types()

@@ -36,7 +36,11 @@ namespace metaxxa
 		{
 			using FunctorInstance = Functor<typename std::tuple_element<INDEX, Tuple>::type>;
 
-			// TODO: check for non-void return of FunctorInstance::operator()
+			static_assert
+			(
+				Type<typename Function<decltype(&FunctorInstance::operator())>::Result>() != Type<void>(), 
+				"metaxxa static error: functor for map must return value"
+			);
 
 			auto mapped_tuple = std::make_tuple(FunctorInstance(std::forward<FunctorArguments>(arguments)...)());
 

@@ -6,19 +6,6 @@
 
 #include "TestMetaxxa.h"
 
-// template <typename Tuple, template <typename> typename TemplateClass, size_t INDEX>
-// constexpr auto wrap_all_of_std_tuple_types()
-// {
-// 	if constexpr (INDEX == std::tuple_size_v<Tuple>)
-// 		return std::tuple<>();
-// 	else
-// 		return std::tuple_cat
-// 		(
-// 			std::tuple<TemplateClass<std::tuple_element_t<INDEX, Tuple>>>(std::declval<TemplateClass<std::tuple_element_t<INDEX, Tuple>>>()),
-// 			wrap_all_of_std_tuple_types<Tuple, TemplateClass, INDEX + 1>()
-// 		);
-// }
-
 struct TestTuple : TestMetaxxa
 {
 	template <typename Type>

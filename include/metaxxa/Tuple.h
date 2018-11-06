@@ -512,7 +512,7 @@ namespace metaxxa
 		template <template <typename> typename TemplateType>
 		static constexpr auto wrap_all_types()
 		{
-			return *this;
+			return std::tuple<>();
 		}
 
 		template <typename... RHSArguments>

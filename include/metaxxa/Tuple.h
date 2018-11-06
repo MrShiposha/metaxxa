@@ -29,6 +29,8 @@
 #include "CallFunctionOfStdTuple.h"
 #include "FilterOfStdTuple.h"
 #include "WrapOfStdTuple.h"
+#include "DistinctOfStdTuple.h"
+#include "detail/MoveTemplateTypes.h"
 
 namespace metaxxa
 {
@@ -346,6 +348,11 @@ namespace metaxxa
 			return ::metaxxa::contains_types<StdTuple, Types...>();
 		}
 
+		static constexpr auto distinct_types()
+		{
+			return std::declval<detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(::metaxxa::distinct_types<StdTuple>())>>();
+		}
+
 		template <typename Type>
 		static constexpr bool is_converts_to_types()
 		{
@@ -508,6 +515,11 @@ namespace metaxxa
 		static constexpr bool contains_types()
 		{
 			return ::metaxxa::contains_types<StdTuple, Types...>();
+		}
+
+		static constexpr auto distinct_types()
+		{
+			return std::declval<Tuple>();
 		}
 
 		template <typename Type>

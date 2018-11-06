@@ -57,6 +57,7 @@ struct TestTuple : TestMetaxxa
 		result = result && test_wrap();
 		result = result && test_wrap_types();
 		result = result && test_contains();
+		result = result && test_distinct_types();
 
 		return result;
 	}
@@ -251,6 +252,29 @@ struct TestTuple : TestMetaxxa
 
 		static_assert(Tuple::contains_types<std::string, char>(), "class Tuple: contains types test failed");
 		static_assert(!Tuple::contains_types<float>(),            "class Tuple: contains types test failed");
+
+		return true;
+	}
+
+	bool test_distinct_types()
+	{
+		{
+			using Tuple = metaxxa::Tuple<int, double, std::string, int, char>;
+
+			static_assert(std::is_same_v<decltype(Tuple::distinct_types()), metaxxa::Tuple<int, double, std::string, char>>, "class Tuple: distinct types test failed");
+		}
+
+		{
+			using Tuple = metaxxa::Tuple<int, double, char>;
+
+			static_assert(std::is_same_v<decltype(Tuple::distinct_types()), metaxxa::Tuple<int, double, char>>, "class Tuple: distinct types test failed");
+		}
+
+		{
+			using Tuple = metaxxa::Tuple<>;
+
+			static_assert(std::is_same_v<decltype(Tuple::distinct_types()), metaxxa::Tuple<>>, "class Tuple: distinct types test failed");
+		}
 
 		return true;
 	}

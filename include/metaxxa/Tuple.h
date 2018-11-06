@@ -29,7 +29,7 @@
 #include "CallFunctionOfStdTuple.h"
 #include "RemoveTupleCV.h"
 #include "FilterOfStdTuple.h"
-#include "WrapAllOfStdTuple.h"
+#include "WrapOfStdTuple.h"
 
 namespace metaxxa
 {
@@ -348,9 +348,17 @@ namespace metaxxa
 		}
 
 		template <template <typename> typename TemplateType>
+		constexpr auto wrap()
+		{
+			auto tuple = wrap_of_std_tuple<StdTuple, TemplateType>(std_tuple);
+
+			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
+		}
+
+		template <template <typename> typename TemplateType>
 		static constexpr auto wrap_types()
 		{
-			return std::declval<MoveStdTupleTypes<::metaxxa::Tuple, decltype(wrap_all_of_std_tuple_types<StdTuple, TemplateType>())>>();
+			return std::declval<MoveStdTupleTypes<::metaxxa::Tuple, decltype(wrap_of_std_tuple_types<StdTuple, TemplateType>())>>();
 		}
 
 		template <typename... RHSArguments>

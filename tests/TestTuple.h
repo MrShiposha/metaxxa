@@ -67,7 +67,8 @@ struct TestTuple : TestMetaxxa
 		result = result && test_find_types();
 		result = result && test_filter();
 		result = result && test_filter_types();
-		result = result && test_wrap_all();
+		result = result && test_wrap();
+		result = result && test_wrap_types();
 
 		return result;
 	}
@@ -216,7 +217,20 @@ struct TestTuple : TestMetaxxa
 		return true;
 	}
 
-	bool test_wrap_all()
+	bool test_wrap()
+	{
+		metaxxa::Tuple<int, double, std::string> t(42, 3.14, "Hello");
+		
+
+		auto wrapped = t.wrap<std::optional>();
+		TEST(wrapped.get<0>() && (wrapped.get<0>().value() == 42),      "class Tuple: wrap test failed");
+		TEST(wrapped.get<1>() && (wrapped.get<1>().value() == 3.14),    "class Tuple: wrap test failed");
+		TEST(wrapped.get<2>() && (wrapped.get<2>().value() == "Hello"), "class Tuple: wrap test failed");
+
+		return true;
+	}
+
+	bool test_wrap_types()
 	{
 		using Tuple = metaxxa::Tuple<int, double, std::string>;
 

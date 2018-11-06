@@ -488,12 +488,6 @@ namespace metaxxa
 		static constexpr void for_each_types(FunctorArguments&&... arguments)
 		{}
 
-		template <typename Type>
-		static constexpr bool contains_type()
-		{
-			return ::metaxxa::contains_type<StdTuple, Type>();
-		}
-
 		template <typename Callable>
 		constexpr bool every(Callable callable) const
 		{

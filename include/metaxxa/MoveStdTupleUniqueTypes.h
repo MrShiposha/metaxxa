@@ -20,7 +20,7 @@ namespace metaxxa
 				return true;
 
 			else
-				return !::metaxxa::contains_type
+				return !::metaxxa::contains_types
 					<
 						UniqueTuple,
 						Type

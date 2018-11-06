@@ -322,11 +322,17 @@ struct TestFunction : TestMetaxxa
 		
 		TEST(Function<decltype(l1)>::signature() == "void (int) const"s,                        "class Function: signature test failed");
 		TEST(Function<decltype(&F1Struct::operator())>::signature() == "void (double)"s,      "class Function: signature test failed");
-		TEST(Function<decltype(&F1ConstStruct::operator())>::signature() == "void (void (*)(int)) const"s, "class Function: signature test failed");
-		TEST(Function<decltype(functor_1)>::signature() == "void (double)"s,                  "class Function: signature test failed");
-		TEST(Function<decltype(const_functor_1)>::signature() == "void (void (*)(int)) const"s,            "class Function: signature test failed");
-		TEST(Function<decltype(const_functor_2)>::signature() == "void (int&&, char) const"s,            "class Function: signature test failed");
 		
+		TEST(Function<decltype(&F1ConstStruct::operator())>::signature().find("void (void (") != std::string::npos, "class Function: signature test failed");
+		TEST(Function<decltype(&F1ConstStruct::operator())>::signature().find("*)(int)) const") != std::string::npos, "class Function: signature test failed");
+		
+		TEST(Function<decltype(functor_1)>::signature() == "void (double)"s,                  "class Function: signature test failed");
+		
+		TEST(Function<decltype(const_functor_1)>::signature().find("void (void (") != std::string::npos, "class Function: signature test failed");
+		TEST(Function<decltype(const_functor_1)>::signature().find("*)(int)) const") != std::string::npos, "class Function: signature test failed");
+		
+		TEST(Function<decltype(const_functor_2)>::signature().find("void (int &&") != std::string::npos, "class Function: signature test failed");
+		TEST(Function<decltype(const_functor_2)>::signature().find(", char) const") != std::string::npos, "class Function: signature test failed");		
 		
 		return true;
 	}

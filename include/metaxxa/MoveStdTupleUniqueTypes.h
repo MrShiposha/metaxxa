@@ -7,7 +7,7 @@
 #ifndef METAXXA_MOVESTDTUPLEUNIQUETYPES_H
 #define METAXXA_MOVESTDTUPLEUNIQUETYPES_H
 
-#include "ContainsTypesOfStdTuple.h"
+#include "ContainsOfStdTuple.h"
 
 namespace metaxxa
 {

@@ -56,6 +56,7 @@ struct TestTuple : TestMetaxxa
 		result = result && test_filter_types();
 		result = result && test_wrap();
 		result = result && test_wrap_types();
+		result = result && test_contains();
 
 		return result;
 	}
@@ -230,6 +231,27 @@ struct TestTuple : TestMetaxxa
 			>, 
 			"class Tuple: wrap all test failed"
 		);
+		return true;
+	}
+
+	bool test_contains()
+	{
+		metaxxa::Tuple<int, double, int, char> tuple(42, 3.14, 500, 11);
+
+		TEST(tuple.contains(500), "class Tuple: contains test failed");
+		TEST(!tuple.contains(-1), "class Tuple: contains test failed");
+
+
+		return true;
+	}
+
+	bool test_contains_types()
+	{
+		using Tuple = metaxxa::Tuple<int, double, std::string, int, char>;
+
+		static_assert(Tuple::contains_types<std::string, char>(), "class Tuple: contains types test failed");
+		static_assert(!Tuple::contains_types<float>(),            "class Tuple: contains types test failed");
+
 		return true;
 	}
 };

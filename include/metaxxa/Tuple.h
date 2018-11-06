@@ -21,7 +21,7 @@
 #include "LastOfStdTuple.h"
 #include "MapOfStdTuple.h"
 #include "SumOfStdTuple.h"
-#include "ContainsTypesOfStdTuple.h"
+#include "ContainsOfStdTuple.h"
 #include "IsConvertsToTypesOfStdTuple.h"
 #include "FindOfStdTuple.h"
 #include "ToStringOfStdTuple.h"
@@ -161,7 +161,7 @@ namespace metaxxa
 			(
 				std_tuple,
 				tuple.std_tuple
-				);
+			);
 			
 			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(result)>(result);
 		}
@@ -329,9 +329,15 @@ namespace metaxxa
 		} 
 
 		template <typename Type>
-		static constexpr bool contains_type()
+		constexpr auto contains(Type &value)
 		{
-			return ::metaxxa::contains_type<StdTuple, Type>();
+			return ::metaxxa::contains(std_tuple, value);
+		}
+
+		template <typename Type>
+		constexpr auto contains(Type &&value)
+		{
+			return ::metaxxa::contains(std_tuple, std::forward<Type>(value));
 		}
 
 		template <typename... Types>

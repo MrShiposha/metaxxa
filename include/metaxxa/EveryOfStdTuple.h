@@ -38,7 +38,7 @@ namespace metaxxa
 			static_assert
 			(
 				Type<FunctorInstance>::template has_operator_call<bool()>(),
-				"metaxxa STATIC ERROR:  Functor has no non-const 'bool operator()()'"
+				"metaxxa static error:  Functor has no non-const 'bool operator()()'"
 			);
 
 

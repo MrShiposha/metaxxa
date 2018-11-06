@@ -37,7 +37,7 @@ namespace metaxxa
 			static_assert
 			(
 				Type<FunctorInstance>::template has_operator_call<void()>(),
-				"metaxxa STATIC ERROR:  Functor has no 'void operator()()'"
+				"metaxxa static error:  Functor has no 'void operator()()'"
 			);
 
 			FunctorInstance instance(arguments...);

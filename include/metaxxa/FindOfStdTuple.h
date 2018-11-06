@@ -77,7 +77,7 @@ namespace metaxxa
 			static_assert
 			(
 				Type<FunctorInstance>::template has_operator_call<bool()>(),
-				"metaxxa STATIC ERROR:  Functor has no 'bool operator()()'"
+				"metaxxa static error:  Functor has no 'bool operator()()'"
 			);
 
 			FunctorInstance functor(std::forward<FunctorArguments>(arguments)...);

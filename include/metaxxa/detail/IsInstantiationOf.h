@@ -6,7 +6,7 @@
 
 namespace metaxxa
 {
-    namespace implementation
+    namespace detail
     {
         template <template <typename...> typename TemplateType>
         struct IsInstantiationOf

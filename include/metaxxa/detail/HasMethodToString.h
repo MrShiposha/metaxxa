@@ -5,7 +5,7 @@
 
 #include "MethodTester.h"
 
-namespace metaxxa::implementation
+namespace metaxxa::detail
 {
 	___METAXXA___DECLARE_HAS_METHOD(to_string);		
 }

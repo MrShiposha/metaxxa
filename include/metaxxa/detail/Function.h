@@ -1,11 +1,11 @@
-#ifndef METAXXA_IMPLEMENTATION_FUNCTION_H
-#define METAXXA_IMPLEMENTATION_FUNCTION_H
+#ifndef METAXXA_detail_FUNCTION_H
+#define METAXXA_detail_FUNCTION_H
 
 #include <functional>
 #include <type_traits>
 #include <tuple>
 
-namespace metaxxa::implementation
+namespace metaxxa::detail
 {
 	template<typename T>
 	struct Function : Function<decltype(&T::operator())>
@@ -147,4 +147,4 @@ namespace metaxxa::implementation
 	}
 }
 
-#endif // METAXXA_IMPLEMENTATION_FUNCTION_H
+#endif // METAXXA_detail_FUNCTION_H

@@ -1,5 +1,5 @@
-#ifndef METAXXA_IMPLEMENTATION_METHODTESTER_H
-#define METAXXA_IMPLEMENTATION_METHODTESTER_H
+#ifndef METAXXA_detail_METHODTESTER_H
+#define METAXXA_detail_METHODTESTER_H
 
 #include "../CallableToMethod.h"
 
@@ -51,4 +51,4 @@
 		return ___METAXXA___METHOD_TESTER_##METHOD<SomeType, void>::has(); \
 	} 
 
-#endif // METAXXA_IMPLEMENTATION_METHODTESTER_H
+#endif // METAXXA_detail_METHODTESTER_H

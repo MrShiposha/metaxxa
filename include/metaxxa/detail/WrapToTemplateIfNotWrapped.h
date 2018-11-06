@@ -6,7 +6,7 @@
 
 namespace metaxxa
 {
-    namespace implementation
+    namespace detail
     {
         template <template <typename...> typename Template, typename TypeToWrap, bool IS_WRAPPED = IS_INSTANTIATION_OF<Template, TypeToWrap>>
         struct WrapToTemplateIfNotWrapped

@@ -11,7 +11,7 @@
 
 namespace metaxxa
 {
-	namespace implementation
+	namespace detail
 	{
 		template <typename Type, typename Argument>
 		struct IsExplicitlyConstructible

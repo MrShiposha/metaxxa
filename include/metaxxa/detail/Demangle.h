@@ -1,5 +1,5 @@
-#ifndef METAXXA_IMPLEMENTATION_DEMANGLE_H
-#define METAXXA_IMPLEMENTATION_DEMANGLE_H
+#ifndef METAXXA_detail_DEMANGLE_H
+#define METAXXA_detail_DEMANGLE_H
 
 #include <string>
 
@@ -9,7 +9,7 @@
 #include <memory>
 #endif // __has_include(<cxxabi.h>)
 
-namespace metaxxa::implementation
+namespace metaxxa::detail
 {
     template <typename T>
     class CVRSaver
@@ -18,7 +18,7 @@ namespace metaxxa::implementation
     template <typename T>
     std::string demangle()
     {
-        static const char cvr_saver_name[] = "metaxxa::implementation::CVRSaver<";
+        static const char cvr_saver_name[] = "metaxxa::detail::CVRSaver<";
         static constexpr std::string::size_type cvr_saver_name_length = sizeof(cvr_saver_name) - 1;
 
     const char *begin = nullptr;
@@ -73,4 +73,4 @@ namespace metaxxa::implementation
     }
 }
 
-#endif // METAXXA_IMPLEMENTATION_DEMANGLE_H
+#endif // METAXXA_detail_DEMANGLE_H

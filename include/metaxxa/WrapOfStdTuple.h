@@ -5,7 +5,7 @@
 
 namespace metaxxa
 {
-    namespace implementation
+    namespace detail
     {
         template <typename Tuple, template <typename> typename TemplateClass, size_t INDEX>
         constexpr auto wrap_of_std_tuple(Tuple &tuple)
@@ -37,13 +37,13 @@ namespace metaxxa
     template <typename Tuple, template <typename> typename TemplateType>
     constexpr auto wrap_of_std_tuple(Tuple &tuple)
     {
-        return implementation::wrap_of_std_tuple<Tuple, TemplateType, 0>(tuple);
+        return detail::wrap_of_std_tuple<Tuple, TemplateType, 0>(tuple);
     }
 
     template <typename Tuple, template <typename> typename TemplateType>
     constexpr auto wrap_of_std_tuple_types()
     {
-        return implementation::wrap_of_std_tuple_types<Tuple, TemplateType, 0>();
+        return detail::wrap_of_std_tuple_types<Tuple, TemplateType, 0>();
     }
 }
 

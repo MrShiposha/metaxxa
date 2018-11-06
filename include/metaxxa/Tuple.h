@@ -46,7 +46,7 @@ namespace metaxxa
 		using MoveUniqueTypesTo = MoveStdTupleUniqueTypes<TemplateType, StdTuple>;
 
 		template<template <typename> typename TemplateType>
-		using WrapAll = WrapAllOfStdTuple<StdTuple, TemplateType>;
+		using WrapAll = MoveStdTupleTypes<::metaxxa::Tuple, WrapAllOfStdTuple<StdTuple, TemplateType>>;
 
 		template <size_t INDEX>
 		using Parameter = typename std::tuple_element<INDEX, StdTuple>::type;

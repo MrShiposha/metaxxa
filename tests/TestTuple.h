@@ -6,6 +6,19 @@
 
 #include "TestMetaxxa.h"
 
+// template <typename Tuple, template <typename> typename TemplateClass, size_t INDEX>
+// constexpr auto wrap_all_of_std_tuple_types()
+// {
+// 	if constexpr (INDEX == std::tuple_size_v<Tuple>)
+// 		return std::tuple<>();
+// 	else
+// 		return std::tuple_cat
+// 		(
+// 			std::tuple<TemplateClass<std::tuple_element_t<INDEX, Tuple>>>(std::declval<TemplateClass<std::tuple_element_t<INDEX, Tuple>>>()),
+// 			wrap_all_of_std_tuple_types<Tuple, TemplateClass, INDEX + 1>()
+// 		);
+// }
+
 struct TestTuple : TestMetaxxa
 {
 	template <typename Type>
@@ -54,6 +67,7 @@ struct TestTuple : TestMetaxxa
 		result = result && test_find_types();
 		result = result && test_filter();
 		result = result && test_filter_types();
+		result = result && test_wrap_all();
 
 		return result;
 	}
@@ -195,18 +209,28 @@ struct TestTuple : TestMetaxxa
 
 	bool test_filter_types()
 	{
-		using Test = metaxxa::Tuple<int, double, char, std::string, bool>;
+		using Tuple = metaxxa::Tuple<int, double, char, std::string, bool>;
 
-		using FilteredTuple = decltype(Test::filter_types<IsCharOrString>());
+		using FilteredTuple = decltype(Tuple::filter_types<IsCharOrString>());
 		static_assert(std::is_same_v<FilteredTuple, metaxxa::Tuple<char, std::string>>, "class Tuple: filter types test failed");
 		return true;
 	}
-};
 
-// TEST(TestTuple, TestOptionals)
-// {
-// 	using Test = typename metaxxa::Tuple<int, double, std::string>::Optionals;
-// 	static_assert(std::is_same_v<Test, metaxxa::Tuple<std::optional<int>, std::optional<double>, std::optional<std::string>>>();
-// }
+	bool test_wrap_all()
+	{
+		using Tuple = metaxxa::Tuple<int, double, std::string>;
+
+		static_assert
+		(
+			std::is_same_v
+			<
+				typename Tuple::template WrapAll<std::optional>,
+				metaxxa::Tuple<std::optional<int>, std::optional<double>, std::optional<std::string>>
+			>, 
+			"class Tuple: wrap all test failed"
+		);
+		return true;
+	}
+};
 
 #endif // METAXXA_TESTTUPLE_H

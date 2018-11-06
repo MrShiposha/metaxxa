@@ -24,13 +24,13 @@ namespace metaxxa
 		}
 
 		template
-			<
+		<
 			typename Tuple,
 			template <typename ValueType> typename Functor,
 			size_t INDEX,
 			typename... FunctorArguments
-			>
-			constexpr void for_each_types(FunctorArguments&&... arguments)
+		>
+		constexpr void for_each_types(FunctorArguments&&... arguments)
 		{
 			using FunctorInstance = Functor<typename std::tuple_element<INDEX, Tuple>::type>;
 

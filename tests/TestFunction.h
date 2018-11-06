@@ -331,7 +331,9 @@ struct TestFunction : TestMetaxxa
 		TEST(Function<decltype(const_functor_1)>::signature().find("void (void (") != std::string::npos, "class Function: signature test failed");
 		TEST(Function<decltype(const_functor_1)>::signature().find("*)(int)) const") != std::string::npos, "class Function: signature test failed");
 		
-		TEST(Function<decltype(const_functor_2)>::signature().find("void (int &&") != std::string::npos, "class Function: signature test failed");
+
+		TEST(Function<decltype(const_functor_2)>::signature().find("void (int") != std::string::npos, "class Function: signature test failed");
+		TEST(Function<decltype(const_functor_2)>::signature().find("&&") != std::string::npos, "class Function: signature test failed");
 		TEST(Function<decltype(const_functor_2)>::signature().find(", char) const") != std::string::npos, "class Function: signature test failed");		
 		
 		return true;

@@ -125,6 +125,7 @@ struct TestFunction : TestMetaxxa
 		result = result && test_arguments_types();
 		result = result && test_arguments_tuple();
 		result = result && test_is_const();
+		result = result && test_signature();
 		return result;
 	}
 
@@ -289,6 +290,44 @@ struct TestFunction : TestMetaxxa
 		static_assert(!Function<decltype(functor_3)>::is_const(), "class Function: \"is const\" test failed");
 		static_assert(Function<decltype(const_functor_3)>::is_const(), "class Function: \"is const\" test failed");
 
+		return true;
+	}
+
+	bool test_signature()
+	{
+		using namespace metaxxa;
+		using namespace std::string_literals;
+
+		TEST(Function<decltype(f1)>::signature() == "void (int)"s,                        "class Function: signature test failed");
+		TEST(Function<TestFunction::P1>::signature() == "void (double)"s,                    "class Function: signature test failed");
+		
+		TEST
+		(
+			Function<TestFunction::F1>::signature().find("void ") == 0, 
+			"class Function: signature test failed"
+		);
+
+		TEST
+		(
+			Function<TestFunction::F1>::signature().find("std::") != std::string::npos, 
+			"class Function: signature test failed"
+		);
+
+		TEST
+		(
+			Function<TestFunction::F1>::signature().find("vector") != std::string::npos, 
+			"class Function: signature test failed"
+		);
+		
+		
+		TEST(Function<decltype(l1)>::signature() == "void (int) const"s,                        "class Function: signature test failed");
+		TEST(Function<decltype(&F1Struct::operator())>::signature() == "void (double)"s,      "class Function: signature test failed");
+		TEST(Function<decltype(&F1ConstStruct::operator())>::signature() == "void (void (*)(int)) const"s, "class Function: signature test failed");
+		TEST(Function<decltype(functor_1)>::signature() == "void (double)"s,                  "class Function: signature test failed");
+		TEST(Function<decltype(const_functor_1)>::signature() == "void (void (*)(int)) const"s,            "class Function: signature test failed");
+		TEST(Function<decltype(const_functor_2)>::signature() == "void (int&&, char) const"s,            "class Function: signature test failed");
+		
+		
 		return true;
 	}
 

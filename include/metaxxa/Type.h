@@ -10,6 +10,7 @@
 #include <typeinfo>
 #include <typeindex>
 #include <type_traits>
+#include "detail/MoveTemplateTypes.h"
 #include "detail/WrapToTemplateIfNotWrapped.h"
 #include "detail/Function.h"
 #include "detail/OperatorTesters.h"
@@ -26,6 +27,9 @@ namespace metaxxa
 	class Type
 	{
 	public:
+		template <template <typename...> typename TemplateType>
+		using MoveTemplateTypes = detail::MoveTemplateTypes<TemplateType, SomeType>;
+
 		template <template <typename...> typename TemplateType>
 		using WrapToTemplateIfNotWrapped = typename detail::template WrapToTemplateIfNotWrapped<TemplateType, SomeType>::Result;
 

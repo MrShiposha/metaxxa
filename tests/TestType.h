@@ -1,8 +1,9 @@
+#include <type_traits>
+#include <variant>
+
 #include <metaxxa/Type.h>
 #include <metaxxa/Function.h>
 #include <metaxxa/CallableToMethod.h>
-
-#include <type_traits>
 
 #include "TestMetaxxa.h"
 
@@ -79,6 +80,7 @@ struct TestType : TestMetaxxa
 		result = result && test_is_explicitly_constructible();
 		result = result && test_is_instantiation_of();
 		result = result && test_wrap_if_not_wrapped();
+		result = result && test_move_template_types();
 		return result;
 	}
 
@@ -191,6 +193,15 @@ struct TestType : TestMetaxxa
 
 		static_assert(std::is_same_v<Type<Tuple<int, char>>::template WrapToTemplateIfNotWrapped<Tuple>, Tuple<int, char>>, "class Type: WrapToTemplateIfNotWrapped failed");
 		static_assert(std::is_same_v<Type<int>::template WrapToTemplateIfNotWrapped<Tuple>, Tuple<int>>,                    "class Type: WrapToTemplateIfNotWrapped failed");
+
+		return true;
+	}
+
+	bool test_move_template_types()
+	{
+		using namespace metaxxa;
+
+		static_assert(std::is_same_v<typename Type<Tuple<char, double, int>>::template MoveTemplateTypes<std::variant>, std::variant<char, double, int>>, "class Type: MoveTemplateType test failed");
 
 		return true;
 	}

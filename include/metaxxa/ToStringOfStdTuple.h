@@ -24,7 +24,7 @@ namespace metaxxa
 		{
 			if(!result.empty())
 				result += ", ";
-			result += metaxxa::to_string(element); 
+			result += std::to_string(element); 
 		});
 
 		return "<" + result + ">";
@@ -39,7 +39,7 @@ namespace metaxxa
 		{
 			if(!result.empty())
 				result += ", ";
-			result += metaxxa::to_string(element);
+			result += std::to_string(element);
 		});
 
 		return "<" + result + ">";

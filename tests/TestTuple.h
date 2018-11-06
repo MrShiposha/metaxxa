@@ -224,7 +224,7 @@ struct TestTuple : TestMetaxxa
 		(
 			std::is_same_v
 			<
-				typename Tuple::template WrapAll<std::optional>,
+				decltype(Tuple::wrap_types<std::optional>()),
 				metaxxa::Tuple<std::optional<int>, std::optional<double>, std::optional<std::string>>
 			>, 
 			"class Tuple: wrap all test failed"

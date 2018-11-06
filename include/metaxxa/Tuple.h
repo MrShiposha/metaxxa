@@ -45,9 +45,6 @@ namespace metaxxa
 		template <template <typename...> typename TemplateType>
 		using MoveUniqueTypesTo = MoveStdTupleUniqueTypes<TemplateType, StdTuple>;
 
-		template<template <typename> typename TemplateType>
-		using WrapAll = MoveStdTupleTypes<::metaxxa::Tuple, WrapAllOfStdTuple<StdTuple, TemplateType>>;
-
 		template <size_t INDEX>
 		using Parameter = typename std::tuple_element<INDEX, StdTuple>::type;
 
@@ -350,6 +347,12 @@ namespace metaxxa
 			return ::metaxxa::is_converts_to_types<StdTuple, Type>();
 		}
 
+		template <template <typename> typename TemplateType>
+		static constexpr auto wrap_types()
+		{
+			return std::declval<MoveStdTupleTypes<::metaxxa::Tuple, decltype(wrap_all_of_std_tuple_types<StdTuple, TemplateType>())>>();
+		}
+
 		template <typename... RHSArguments>
 		void execute_functions(RHSArguments&&... arguments) const
 		{
@@ -392,9 +395,6 @@ namespace metaxxa
 
 		template <template <typename...> typename TemplateType>
 		using MoveUniqueTypesTo = TemplateType<>;
-
-		template<template <typename> typename TemplateType>
-		using WrapAll = std::tuple<>;
 
 		Tuple() = default;
 
@@ -507,6 +507,12 @@ namespace metaxxa
 		static constexpr bool is_converts_to_types()
 		{
 			return false;
+		}
+
+		template <template <typename> typename TemplateType>
+		static constexpr auto wrap_all_types()
+		{
+			return *this;
 		}
 
 		template <typename... RHSArguments>

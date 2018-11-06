@@ -22,7 +22,10 @@ namespace metaxxa
     }
 
     template <typename Tuple, template <typename> typename TemplateType>
-    using WrapAllOfStdTuple = decltype(implementation::wrap_all_of_std_tuple_types<Tuple, TemplateType, 0>());
+    constexpr auto wrap_all_of_std_tuple_types()
+    {
+        return implementation::wrap_all_of_std_tuple_types<Tuple, TemplateType, 0>();
+    }
 }
 
 #endif // METAXXA_WRAPALLOFSTDTUPLE_H

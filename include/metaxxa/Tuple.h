@@ -10,8 +10,6 @@
 #include <tuple>
 #include <optional>
 
-#include "MoveStdTupleTypes.h"
-#include "MoveStdTupleUniqueTypes.h"
 #include "SkipFirstOfStdTuple.h"
 #include "ForEachOfStdTuple.h"
 #include "EveryOfStdTuple.h"
@@ -39,12 +37,6 @@ namespace metaxxa
 	{
 	public:
 		using StdTuple = std::tuple<Arguments...>;
-
-		template <template <typename...> typename TemplateType>
-		using MoveTypesTo = MoveStdTupleTypes<TemplateType, StdTuple>;
-
-		template <template <typename...> typename TemplateType>
-		using MoveUniqueTypesTo = MoveStdTupleUniqueTypes<TemplateType, StdTuple>;
 
 		template <size_t INDEX>
 		using Parameter = typename std::tuple_element<INDEX, StdTuple>::type;
@@ -147,7 +139,7 @@ namespace metaxxa
 				tuple.std_tuple
 			);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(result)>(result);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(result)>(result);
 		}
 
 		template <typename Tuple>
@@ -165,7 +157,7 @@ namespace metaxxa
 				tuple.std_tuple
 			);
 			
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(result)>(result);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(result)>(result);
 		}
 		
 		template <typename Tuple>
@@ -179,12 +171,12 @@ namespace metaxxa
 		{
 			auto tuple = ::metaxxa::skip_first<COUNT>(std_tuple);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
 		}
 
 		template <size_t COUNT>
 		static constexpr auto skip_first_types() ->
-			MoveStdTupleTypes
+			detail::MoveTemplateTypes
 			<
 				::metaxxa::Tuple,
 				decltype(::metaxxa::skip_first_types<COUNT, StdTuple>())
@@ -267,7 +259,7 @@ namespace metaxxa
 		{
 			auto tuple = ::metaxxa::map(std_tuple, callable);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
 		}
 
 		template 
@@ -279,7 +271,7 @@ namespace metaxxa
 		{
 			auto tuple = ::metaxxa::map_types<StdTuple, Functor, FunctorArguments...>(std::forward<FunctorArguments>(arguments)...);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
 		}
 
 		constexpr auto sum() const
@@ -311,7 +303,7 @@ namespace metaxxa
 		{
 			auto tuple = ::metaxxa::filter(std_tuple, callable);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
 		}
 
 		template
@@ -326,7 +318,7 @@ namespace metaxxa
 				std::forward<FunctorArguments>(arguments)...
 			);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
 
 		} 
 
@@ -364,13 +356,13 @@ namespace metaxxa
 		{
 			auto tuple = wrap_of_std_tuple<StdTuple, TemplateType>(std_tuple);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
 		}
 
 		template <template <typename> typename TemplateType>
 		static constexpr auto wrap_types()
 		{
-			return std::declval<MoveStdTupleTypes<::metaxxa::Tuple, decltype(wrap_of_std_tuple_types<StdTuple, TemplateType>())>>();
+			return std::declval<detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(wrap_of_std_tuple_types<StdTuple, TemplateType>())>>();
 		}
 
 		template <typename... RHSArguments>
@@ -410,12 +402,6 @@ namespace metaxxa
 	public:
 		using StdTuple = std::tuple<>;
 
-		template <template <typename...> typename TemplateType>
-		using MoveTypesTo = TemplateType<>;
-
-		template <template <typename...> typename TemplateType>
-		using MoveUniqueTypesTo = TemplateType<>;
-
 		Tuple() = default;
 
 		Tuple(const std::tuple<> &) {}
@@ -441,7 +427,7 @@ namespace metaxxa
 				tuple.std_tuple
 			);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(result)>(result);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(result)>(result);
 		}
 
 		template <typename Tuple>
@@ -459,7 +445,7 @@ namespace metaxxa
 				tuple.std_tuple
 			);
 
-			return MoveStdTupleTypes<::metaxxa::Tuple, decltype(result)>(result);
+			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(result)>(result);
 		}
 
 		template <typename Tuple>

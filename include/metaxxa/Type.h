@@ -11,6 +11,7 @@
 #include <typeindex>
 #include <type_traits>
 #include "detail/MoveTemplateTypes.h"
+#include "detail/MoveTemplateTypesUnique.h"
 #include "detail/WrapToTemplateIfNotWrapped.h"
 #include "detail/Function.h"
 #include "detail/OperatorTesters.h"
@@ -20,6 +21,7 @@
 #include "detail/IsImplicitlyConstructible.h"
 #include "detail/IsInstantiationOf.h"
 #include "detail/Demangle.h"
+#include "detail/IsTemplate.h"
 
 namespace metaxxa
 {
@@ -29,6 +31,9 @@ namespace metaxxa
 	public:
 		template <template <typename...> typename TemplateType>
 		using MoveTemplateTypes = detail::MoveTemplateTypes<TemplateType, SomeType>;
+
+		template <template <typename...> typename TemplateType>
+		using MoveTemplateTypesUnique = detail::MoveTemplateTypesUnique<TemplateType, SomeType>;
 
 		template <template <typename...> typename TemplateType>
 		using WrapToTemplateIfNotWrapped = typename detail::template WrapToTemplateIfNotWrapped<TemplateType, SomeType>::Result;
@@ -208,6 +213,11 @@ namespace metaxxa
 		static constexpr bool is_instantiation_of()
 		{
 			return detail::IS_INSTANTIATION_OF<TemplateType, SomeType>;
+		}
+
+		static constexpr bool is_template()
+		{
+			return detail::is_template<SomeType>();
 		}
 
 		// ASSIGNMENT 

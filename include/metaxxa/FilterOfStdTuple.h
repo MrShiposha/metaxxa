@@ -10,8 +10,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include "StdTupleOfOptionals.h"
-#include "MoveStdTupleTypes.h"
+#include "WrapOfStdTuple.h"
 
 namespace metaxxa
 {
@@ -78,7 +77,7 @@ namespace metaxxa
     template <typename Tuple, typename Callable>
     constexpr auto filter(Tuple &tuple, Callable &callable)
     {
-        using TupleOfOptionals = MoveStdTupleTypes<StdTupleOfOptionals, Tuple>;
+        using TupleOfOptionals = decltype(wrap_of_std_tuple_types<Tuple, std::optional>());
         TupleOfOptionals tuple_of_optionals;
 
         return detail::filter<TupleOfOptionals, Tuple, Callable, 0>(tuple_of_optionals, tuple, callable);

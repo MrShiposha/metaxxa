@@ -22,10 +22,7 @@ struct TestMoveFunctionArgumentTypes : TestMetaxxa
 	virtual bool test() override
 	{	
 		static_assert(std::is_same_v<metaxxa::MoveFunctionArgumentTypes<std::vector, F1>, Vector>, "class TestMoveFunctionArgumentTypes: test failed");
-
-		#ifndef _MSC_VER
-			static_assert(std::is_same_v<metaxxa::MoveFunctionArgumentTypes<std::pair, F2>,   Pair>,   "class TestMoveFunctionArgumentTypes: test failed");
-		#endif // _MSC_VER
+		static_assert(std::is_same_v<metaxxa::MoveFunctionArgumentTypes<std::pair, F2>,   Pair>,   "class TestMoveFunctionArgumentTypes: test failed");
 		static_assert(std::is_same_v<metaxxa::MoveFunctionArgumentTypes<std::tuple, F3>,  Tuple>,  "class TestMoveFunctionArgumentTypes: test failed");
 
 		return true;

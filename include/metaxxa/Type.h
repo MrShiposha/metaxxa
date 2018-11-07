@@ -217,7 +217,7 @@ namespace metaxxa
 
 		static constexpr bool is_template()
 		{
-			return detail::is_template<SomeType>();
+			return detail::IS_TEMPLATE<SomeType>;
 		}
 
 		// ASSIGNMENT 

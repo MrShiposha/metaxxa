@@ -21,10 +21,7 @@ namespace metaxxa::detail
     };
 
     template <typename Type>
-    constexpr bool is_template()
-    {
-        return IsTemplate<Type>::RESULT;
-    }
+    constexpr bool IS_TEMPLATE = IsTemplate<Type>::RESULT; 
 }
 
 #endif // METAXXA_ISCLASSTEMPLATE_H

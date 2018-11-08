@@ -14,7 +14,7 @@
     #ifndef METAXXA_TEMPLATE
         #error You are using an unknown compiler. Please specify the METAXXA_TEMPLATE macro
     #endif // METAXXA_TEMPLATE
-#endif // __windows__
+#endif // _MSC_VER
 
 #include "Tuple.h"
 #include "Type.h"

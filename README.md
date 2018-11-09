@@ -33,3 +33,9 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
 
 ## Run tests
 `{metaxxa_directory}/build/tests/Debug/metaxxa-tests`
+
+OR `{metaxxa_directory}/build/tests/Release/metaxxa-tests`
+
+OR `{metaxxa_directory}/build/tests/metaxxa-tests`
+
+Actual path depends on CMake generator and CMAKE_BUILD_TYPE value

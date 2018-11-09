@@ -11,7 +11,7 @@ def main():
         os.makedirs('release')
 
     main_header_path = file_prefix + '/metaxxa.h'
-    header_text = ''
+    header_text = get_license_comment() + '\n\n'
     with open(main_header_path) as main_header:
         header_lines = process_header(main_header, file_prefix, exluded_files, header_guard_regex)
 
@@ -31,6 +31,17 @@ def is_local_include(line: str):
 
 def is_include(line: str):
     return is_system_include(line) or is_local_include(line)
+
+def get_license_comment():
+    license_text = ''
+    license_lines = []
+    with open('LICENSE') as license:
+        license_text = license.read()
+    license_lines = license_text.split('\n')
+    for i in range(len(license_lines)):
+        license_lines[i] = "// " + license_lines[i]
+    license_text = '\n'.join(license_lines)
+    return license_text
 
 def distinct_rest_headers(lines: list):
     i = 0

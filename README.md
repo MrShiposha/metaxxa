@@ -1,6 +1,9 @@
 # metaxxa
 C++ header-only library for meta programming
 
+## Getting library header
+See [releases](https://github.com/MrShiposha/metaxxa/releases)
+
 ## How to build tests
 **CMake minimum version 3.12 is required**
 

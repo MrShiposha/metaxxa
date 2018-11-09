@@ -1,5 +1,5 @@
 # metaxxa
-C++ library for meta programming
+C++ header-only library for meta programming
 
 ## How to build tests
 **CMake minimum version 3.12 is required**

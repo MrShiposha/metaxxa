@@ -1,8 +1,6 @@
 #ifndef METAXXA_TESTTUPLE_H
 #define METAXXA_TESTTUPLE_H
 
-#include <optional>
-
 #include "TestMetaxxa.h"
 
 struct TestTuple : TestMetaxxa
@@ -210,7 +208,7 @@ struct TestTuple : TestMetaxxa
 		metaxxa::Tuple<int, double, std::string> t(42, 3.14, "Hello");
 		
 
-		auto wrapped = t.wrap<std::optional>();
+		auto wrapped = t.wrap<___METAXXA___OPTIONAL>();
 		TEST(wrapped.get<0>() && (wrapped.get<0>().value() == 42),      "class Tuple: wrap test failed");
 		TEST(wrapped.get<1>() && (wrapped.get<1>().value() == 3.14),    "class Tuple: wrap test failed");
 		TEST(wrapped.get<2>() && (wrapped.get<2>().value() == "Hello"), "class Tuple: wrap test failed");
@@ -226,8 +224,8 @@ struct TestTuple : TestMetaxxa
 		(
 			std::is_same_v
 			<
-				decltype(Tuple::wrap_types<std::optional>()),
-				metaxxa::Tuple<std::optional<int>, std::optional<double>, std::optional<std::string>>
+				decltype(Tuple::wrap_types<___METAXXA___OPTIONAL>()),
+				metaxxa::Tuple<___METAXXA___OPTIONAL<int>, ___METAXXA___OPTIONAL<double>, ___METAXXA___OPTIONAL<std::string>>
 			>, 
 			"class Tuple: wrap all test failed"
 		);

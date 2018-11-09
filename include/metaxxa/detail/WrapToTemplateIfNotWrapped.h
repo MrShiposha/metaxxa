@@ -1,7 +1,6 @@
 #ifndef METAXXA_WRAPTOTEMPLATEIFNOTWRAPPED_H
 #define METAXXA_WRAPTOTEMPLATEIFNOTWRAPPED_H
 
-#include <optional>
 #include "IsInstantiationOf.h"
 
 namespace metaxxa

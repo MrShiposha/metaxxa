@@ -2,8 +2,8 @@
 #define METAXXA_FINDOFSTDTUPLE_H
 
 #include <tuple>
-#include <optional>
-#include <variant>
+#include "detail/_Optional.h"
+#include "detail/_Variant.h"
 
 #include "ContainsOfStdTuple.h"
 #include "WrapOfStdTuple.h"
@@ -15,24 +15,24 @@ namespace metaxxa
 	{
 		template <typename Tuple, typename Callable, size_t INDEX>
 		auto find(Tuple &tuple, Callable &callable)
-			-> std::optional
+			-> ___METAXXA___OPTIONAL
 			<
-				MoveTemplateTypesUnique<std::variant, decltype(::metaxxa::wrap_of_std_tuple_types<Tuple, std::remove_cv_t>())>
+				MoveTemplateTypesUnique<___METAXXA___VARIANT, decltype(::metaxxa::wrap_of_std_tuple_types<Tuple, std::remove_cv_t>())>
 			>
 		{
 			if (callable(std::get<INDEX>(tuple)))
-				return std::optional
+				return ___METAXXA___OPTIONAL
 				<
-					MoveTemplateTypesUnique<std::variant, decltype(::metaxxa::wrap_of_std_tuple_types<Tuple, std::remove_cv_t>())>
+					MoveTemplateTypesUnique<___METAXXA___VARIANT, decltype(::metaxxa::wrap_of_std_tuple_types<Tuple, std::remove_cv_t>())>
 				>(std::get<INDEX>(tuple));
 
 			else if (INDEX + 1 < std::tuple_size<Tuple>::value)
 				return find<Tuple, Callable, INDEX + 1>(tuple, callable);
 
 			else
-				return std::optional
+				return ___METAXXA___OPTIONAL
 				<
-					MoveTemplateTypesUnique<std::variant, decltype(::metaxxa::wrap_of_std_tuple_types<Tuple, std::remove_cv_t>())>
+					MoveTemplateTypesUnique<___METAXXA___VARIANT, decltype(::metaxxa::wrap_of_std_tuple_types<Tuple, std::remove_cv_t>())>
 				>();
 		}
 

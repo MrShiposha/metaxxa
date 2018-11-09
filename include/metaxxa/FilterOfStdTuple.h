@@ -71,7 +71,7 @@ namespace metaxxa
     template <typename Tuple, typename Callable>
     constexpr auto filter(Tuple &tuple, Callable &callable)
     {
-        using TupleOfOptionals = decltype(wrap_of_std_tuple_types<Tuple, std::optional>());
+        using TupleOfOptionals = decltype(wrap_of_std_tuple_types<Tuple, ___METAXXA___OPTIONAL>());
         TupleOfOptionals tuple_of_optionals;
 
         return detail::filter<TupleOfOptionals, Tuple, Callable, 0>(tuple_of_optionals, tuple, callable);

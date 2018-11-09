@@ -1,8 +1,3 @@
-
-//
-// Created by Daniel Shiposha on 12 August 2018
-// 
-
 #ifndef METAXXA_H
 #define METAXXA_H
 
@@ -20,5 +15,6 @@
 #include "Type.h"
 #include "Function.h"
 #include "CallableToMethod.h"
+#include "MoveFunctionArgumentTypes.h"
 
 #endif // METAXXA_H

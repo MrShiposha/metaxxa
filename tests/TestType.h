@@ -1,10 +1,6 @@
 #include <type_traits>
 #include <variant>
 
-#include <metaxxa/Type.h>
-#include <metaxxa/Function.h>
-#include <metaxxa/CallableToMethod.h>
-
 #include "TestMetaxxa.h"
 
 struct TestType : TestMetaxxa

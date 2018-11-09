@@ -1,9 +1,3 @@
-
-//
-// Created by Daniel Shiposha on 12 August 2018
-// 
-
-
 #ifndef METAXXA_LASTOFSTDTUPLE_H
 #define METAXXA_LASTOFSTDTUPLE_H
 

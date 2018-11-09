@@ -24,3 +24,17 @@ MACRO(REQUIRE_CXX_17)
 
     SET(CMAKE_CXX_STANDARD 17)
 ENDMACRO()
+
+MACRO(MAKE_HEADER_ONLY)
+    FIND_PACKAGE(Python3 COMPONENTS Interpreter)
+    IF(${Python3_Interpreter_FOUND})
+        ADD_CUSTOM_TARGET(
+            make_header_only
+            COMMAND ${Python3_EXECUTABLE} "buildheaderonly.py"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+            COMMENT "Creating release header"
+        )
+    ELSE()
+        MESSAGE(FATAL_ERROR "python3 is not found")
+    ENDIF()
+ENDMACRO()

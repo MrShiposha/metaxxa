@@ -6,8 +6,6 @@
 #include <vector>
 #include <functional>
 
-#include <metaxxa/MoveFunctionArgumentTypes.h>
-
 #include "TestMetaxxa.h"
 
 struct TestMoveFunctionArgumentTypes : TestMetaxxa

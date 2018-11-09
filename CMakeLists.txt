@@ -1,4 +1,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.9)
 PROJECT(metaxxa)
 
+INCLUDE(${CMAKE_CURRENT_LIST_DIR}/cmakemodules/include_directories.cmake)
+INCLUDE(${CMAKE_CURRENT_LIST_DIR}/cmakemodules/sources.cmake)
+INCLUDE(${CMAKE_CURRENT_LIST_DIR}/cmakemodules/util.cmake)
+
+REQUIRE_CXX_17()
+MAKE_HEADER_ONLY()
+
 ADD_SUBDIRECTORY(tests)

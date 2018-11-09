@@ -1,8 +1,6 @@
 #ifndef METAXXA_TESTFUNCTION_H
 #define METAXXA_TESTFUNCTION_H
 
-#include <metaxxa/Function.h>
-
 #include "TestMetaxxa.h"
 
 inline void void_return_function() {}

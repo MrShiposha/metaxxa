@@ -2,7 +2,6 @@
 #define METAXXA_TESTTUPLE_H
 
 #include <optional>
-#include <metaxxa/Tuple.h>
 
 #include "TestMetaxxa.h"
 

@@ -1,9 +1,3 @@
-
-//
-// Created by Daniel Shiposha on 12 August 2018
-// 
-
-
 #ifndef METAXXA_FILTEROFSTDTUPLE_H
 #define METAXXA_FILTEROFSTDTUPLE_H
 

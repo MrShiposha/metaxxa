@@ -1,5 +1,5 @@
 # metaxxa
-C++ header-only library for meta programming
+C++17 header-only library for meta programming
 
 ## Getting library header
 See [releases](https://github.com/MrShiposha/metaxxa/releases)

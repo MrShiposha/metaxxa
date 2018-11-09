@@ -12,12 +12,15 @@ C++ library for meta programming
 
 `cd build`
 
-### Windows
+----
+### Platform dependent
+#### Windows
 `cmake .. -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 15 2017 Win64"`
 
-### macOS
+#### macOS
 `cmake .. -DCMAKE_BUILD_TYPE=Debug -GXcode`
 
+----
 `cmake --build .`
 
 ## Run tests

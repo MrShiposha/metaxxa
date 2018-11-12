@@ -174,10 +174,10 @@ struct TestType : TestMetaxxa
 		using namespace metaxxa;
 
 		static_assert(Type<TemplateClass<int>>::is_instantiation_of<TemplateClass>(),  "class Type: is_instantiation_of failed");
-		static_assert(!Type<TemplateClass<int>>::is_instantiation_of<___METAXXA___OPTIONAL>(), "class Type: is_instantiation_of failed");
+		static_assert(!Type<TemplateClass<int>>::is_instantiation_of<METAXXA_OPTIONAL>(), "class Type: is_instantiation_of failed");
 
 		static_assert(Type<Tuple<int, char>>::is_instantiation_of<Tuple>(),         "class Type: is_instantiation_of failed");
-		static_assert(!Type<___METAXXA___VARIANT<int, char>>::is_instantiation_of<Tuple>(), "class Type: is_instantiation_of failed");
+		static_assert(!Type<METAXXA_VARIANT<int, char>>::is_instantiation_of<Tuple>(), "class Type: is_instantiation_of failed");
 
 		return true;
 	}
@@ -207,7 +207,7 @@ struct TestType : TestMetaxxa
 	{
 		using namespace metaxxa;
 
-		static_assert(std::is_same_v<typename Type<Tuple<char, double, int>>::template MoveTemplateTypes<___METAXXA___VARIANT>, ___METAXXA___VARIANT<char, double, int>>, "class Type: MoveTemplateType test failed");
+		static_assert(std::is_same_v<typename Type<Tuple<char, double, int>>::template MoveTemplateTypes<METAXXA_VARIANT>, METAXXA_VARIANT<char, double, int>>, "class Type: MoveTemplateType test failed");
 
 		return true;
 	}
@@ -216,8 +216,8 @@ struct TestType : TestMetaxxa
 	{
 		using namespace metaxxa;
 
-		static_assert(std::is_same_v<typename Type<Tuple<char, double, int, double, char>>::template MoveTemplateTypesUnique<___METAXXA___VARIANT>, ___METAXXA___VARIANT<char, double, int>>, "class Type: MoveTemplateTypeUnique test failed");
-		static_assert(std::is_same_v<typename Type<Tuple<char, double>>::template MoveTemplateTypesUnique<___METAXXA___VARIANT>, ___METAXXA___VARIANT<char, double>>, 			  			  "class Type: MoveTemplateTypeUnique test failed");
+		static_assert(std::is_same_v<typename Type<Tuple<char, double, int, double, char>>::template MoveTemplateTypesUnique<METAXXA_VARIANT>, METAXXA_VARIANT<char, double, int>>, "class Type: MoveTemplateTypeUnique test failed");
+		static_assert(std::is_same_v<typename Type<Tuple<char, double>>::template MoveTemplateTypesUnique<METAXXA_VARIANT>, METAXXA_VARIANT<char, double>>, 			  			  "class Type: MoveTemplateTypeUnique test failed");
 
 		return true;
 	}

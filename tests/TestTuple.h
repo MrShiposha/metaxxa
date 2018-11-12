@@ -208,7 +208,7 @@ struct TestTuple : TestMetaxxa
 		metaxxa::Tuple<int, double, std::string> t(42, 3.14, "Hello");
 		
 
-		auto wrapped = t.wrap<___METAXXA___OPTIONAL>();
+		auto wrapped = t.wrap<METAXXA_OPTIONAL>();
 		TEST(wrapped.get<0>() && (wrapped.get<0>().value() == 42),      "class Tuple: wrap test failed");
 		TEST(wrapped.get<1>() && (wrapped.get<1>().value() == 3.14),    "class Tuple: wrap test failed");
 		TEST(wrapped.get<2>() && (wrapped.get<2>().value() == "Hello"), "class Tuple: wrap test failed");
@@ -224,8 +224,8 @@ struct TestTuple : TestMetaxxa
 		(
 			std::is_same_v
 			<
-				decltype(Tuple::wrap_types<___METAXXA___OPTIONAL>()),
-				metaxxa::Tuple<___METAXXA___OPTIONAL<int>, ___METAXXA___OPTIONAL<double>, ___METAXXA___OPTIONAL<std::string>>
+				decltype(Tuple::wrap_types<METAXXA_OPTIONAL>()),
+				metaxxa::Tuple<METAXXA_OPTIONAL<int>, METAXXA_OPTIONAL<double>, METAXXA_OPTIONAL<std::string>>
 			>, 
 			"class Tuple: wrap all test failed"
 		);

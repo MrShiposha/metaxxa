@@ -3,6 +3,6 @@
 
 #define ___METAXXA___EXPAND_DEEP(...) __VA_ARGS__
 
-#define ___METAXXA___EXPAND(...) ___METAXXA___EXPAND_DEEP(__VA_ARGS__)
+#define METAXXA_EXPAND_MACRO(...) ___METAXXA___EXPAND_DEEP(__VA_ARGS__)
 
 #endif // METAXXA_detail_MACRO_H

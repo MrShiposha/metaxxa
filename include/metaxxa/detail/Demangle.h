@@ -2,6 +2,7 @@
 #define METAXXA_detail_DEMANGLE_H
 
 #include <string>
+#include <cstring>
 
 #if __has_include(<cxxabi.h>)
 #define ___METAXXA___HAS_CXX_ABI
@@ -38,7 +39,7 @@ namespace metaxxa::detail
         begin = real_name.get();
 
     #else
-        begin = typeid(T).name().c_str();
+       begin = typeid(CVRSaver<T>).name();
     #endif
 
         const std::string::size_type length = std::strlen(begin);

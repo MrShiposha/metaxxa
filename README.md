@@ -31,12 +31,9 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
 
 ### Linux
 * Install **clang** and make it visible for CMake
-#### Ubuntu
-  `sudo update-alternatives --install /usr/bin/c c /usr/bin/clang 200`
-  
-  `sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 200`
-  
-  `sudo update-alternatives --install /usr/bin/ld ld /usr/bin/lld 200`
+  `export CC=/usr/bin/clang`
+
+  `export CXX=/usr/bin/clang++`
 
   `cmake .. -DCMAKE_BUILD_TYPE=Debug`
 

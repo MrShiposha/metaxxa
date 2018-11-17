@@ -31,6 +31,7 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
 
 ### Linux
 * Install **clang** and make it visible for CMake
+
   `export CC=/usr/bin/clang`
 
   `export CXX=/usr/bin/clang++`

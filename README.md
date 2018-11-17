@@ -7,7 +7,9 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
 ## Tested compilers
  * **Visual Studio 2017** -- works ✔️
  * **Apple LLVM version 10.0.0 (clang-1000.11.54.4)** -- works ✔️
+ * **clang 6.0 with libc++ on Linux** -- works ✔️
  * **MinGW** -- unsupported ❌ 
+ * **GCC** -- TBD 
 
 ## How to build tests
 **CMake minimum version 3.12 is required**
@@ -27,6 +29,9 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
 
 #### macOS
 `cmake .. -DCMAKE_BUILD_TYPE=Debug -GXcode`
+
+### Linux
+`cmake .. -DCMAKE_BUILD_TYPE=Debug`
 
 ----
 `cmake --build .`

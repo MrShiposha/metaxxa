@@ -8,8 +8,9 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
  * **Visual Studio 2017** -- works ✔️
  * **Apple LLVM version 10.0.0 (clang-1000.11.54.4)** -- works ✔️
  * **clang 6.0 with libc++ on Linux** -- works ✔️
- * **MinGW** -- unsupported ❌ 
- * **GCC** -- TBD 
+ * **MinGW** -- unsupported ❌
+ * **Cygwin** -- TBD ???
+ * **GCC** -- unsupported ❌
 
 ## How to build tests
 **CMake minimum version 3.12 is required**

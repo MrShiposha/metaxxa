@@ -75,6 +75,7 @@ struct TestType : TestMetaxxa
 		result = result && test_wrap_if_not_wrapped();
 		result = result && test_move_template_types();
 		result = result && test_move_template_types_unique();
+		result = result && test_has_arguments_nested_type();
 		
 		return result;
 	}
@@ -218,6 +219,22 @@ struct TestType : TestMetaxxa
 
 		static_assert(std::is_same_v<typename Type<Tuple<char, double, int, double, char>>::template MoveTemplateTypesUnique<METAXXA_VARIANT>, METAXXA_VARIANT<char, double, int>>, "class Type: MoveTemplateTypeUnique test failed");
 		static_assert(std::is_same_v<typename Type<Tuple<char, double>>::template MoveTemplateTypesUnique<METAXXA_VARIANT>, METAXXA_VARIANT<char, double>>, 			  			  "class Type: MoveTemplateTypeUnique test failed");
+
+		return true;
+	}
+
+	bool test_has_arguments_nested_type()
+	{
+		using namespace metaxxa;
+
+		auto usual_lambda = [&](int, char) { return true; };
+		auto g_lambda = [&](auto, auto) { return false; };
+
+		using Test1 = Function<decltype(usual_lambda)>;
+		using Test2 = Function<decltype(g_lambda)>;
+
+		static_assert(Type<Test1>::is_usual_callable(), "class Type: has_arguments_nested_type failed");
+		static_assert(!Type<Test2>::is_usual_callable(), "class Type: has_arguments_nested_type failed");
 
 		return true;
 	}

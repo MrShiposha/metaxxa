@@ -5,6 +5,7 @@
 
 #include "Tuple.h"
 #include "Type.h"
+#include "detail/FunctionTag.h"
 
 namespace metaxxa
 {
@@ -27,16 +28,35 @@ namespace metaxxa
 		private:
 			std::string &result;
 		};
+
+		struct NonFunction
+		{};
+
+		template <typename T, template <typename> typename Function, bool HAS_CALL_OPERATOR = Type<T>::has_single_operator_call()>
+		struct ResolveFunctionBase
+		{};
+
+		template <typename T, template <typename> typename Function>
+		struct ResolveFunctionBase<T, Function, true>
+		{
+			using Base = Function<decltype(&T::operator())>;
+		};
+
+		template <typename T, template <typename> typename Function>
+		struct ResolveFunctionBase<T, Function, false>
+		{
+			using Base = NonFunction;
+		};
 	}
 
 	template<typename T>
-	struct Function : Function<decltype(&T::operator())>
+	struct Function : detail::ResolveFunctionBase<T, Function>::Base
 	{
 	};
 
 
 	template<typename ResultType, typename... FunctionArguments>
-	struct Function<ResultType(FunctionArguments...)>
+	struct Function<ResultType(FunctionArguments...)> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<FunctionArguments...>;
@@ -62,7 +82,7 @@ namespace metaxxa
 
 
 	template<typename ResultType, typename... FunctionArguments>
-	struct Function<ResultType(*)(FunctionArguments...)>
+	struct Function<ResultType(*)(FunctionArguments...)> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<FunctionArguments...>;
@@ -89,7 +109,7 @@ namespace metaxxa
 
 
 	template<typename ResultType, typename... FunctionArguments>
-	struct Function<std::function<ResultType(FunctionArguments...)>>
+	struct Function<std::function<ResultType(FunctionArguments...)>> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<FunctionArguments...>;
@@ -115,7 +135,7 @@ namespace metaxxa
 
 
 	template<typename SomeType, typename ResultType, typename... FunctionArguments>
-	struct Function<ResultType(SomeType::*)(FunctionArguments...)>
+	struct Function<ResultType(SomeType::*)(FunctionArguments...)> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<FunctionArguments...>;
@@ -142,7 +162,7 @@ namespace metaxxa
 	};
 
 	template<typename SomeType, typename ResultType, typename... FunctionArguments>
-	struct Function<ResultType(SomeType::*)(FunctionArguments...) const>
+	struct Function<ResultType(SomeType::*)(FunctionArguments...) const> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<FunctionArguments...>;
@@ -173,7 +193,7 @@ namespace metaxxa
 	// {
 
 	template<typename ResultType>
-	struct Function<ResultType()>
+	struct Function<ResultType()> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<>;
@@ -195,7 +215,7 @@ namespace metaxxa
 
 
 	template<typename ResultType>
-	struct Function<ResultType(*)()>
+	struct Function<ResultType(*)()> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<>;
@@ -218,7 +238,7 @@ namespace metaxxa
 
 
 	template<typename ResultType>
-	struct Function<std::function<ResultType()>>
+	struct Function<std::function<ResultType()>> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<>;
@@ -240,7 +260,7 @@ namespace metaxxa
 
 
 	template<typename SomeType, typename ResultType>
-	struct Function<ResultType(SomeType::*)()>
+	struct Function<ResultType(SomeType::*)()> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<>;
@@ -263,7 +283,7 @@ namespace metaxxa
 	};
 
 	template<typename SomeType, typename ResultType>
-	struct Function<ResultType(SomeType::*)() const>
+	struct Function<ResultType(SomeType::*)() const> : detail::FunctionTag
 	{
 		using Result = ResultType;
 		using Arguments = Tuple<>;

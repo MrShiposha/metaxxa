@@ -16,6 +16,7 @@
 #include "detail/IsInstantiationOf.h"
 #include "detail/Demangle.h"
 #include "detail/IsTemplate.h"
+#include "detail/FunctionTag.h"
 
 namespace metaxxa
 {
@@ -212,6 +213,11 @@ namespace metaxxa
 		static constexpr bool is_template()
 		{
 			return detail::IS_TEMPLATE<SomeType>;
+		}
+
+		static constexpr bool is_usual_callable()
+		{
+			return is_derived_from<detail::FunctionTag>();
 		}
 
 		// ASSIGNMENT 

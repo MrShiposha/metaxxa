@@ -75,7 +75,7 @@ struct TestType : TestMetaxxa
 		result = result && test_wrap_if_not_wrapped();
 		result = result && test_move_template_types();
 		result = result && test_move_template_types_unique();
-		result = result && test_has_arguments_nested_type();
+		result = result && test_is_usual_callable();
 		
 		return result;
 	}
@@ -223,7 +223,7 @@ struct TestType : TestMetaxxa
 		return true;
 	}
 
-	bool test_has_arguments_nested_type()
+	bool test_is_usual_callable()
 	{
 		using namespace metaxxa;
 
@@ -233,8 +233,8 @@ struct TestType : TestMetaxxa
 		using Test1 = Function<decltype(usual_lambda)>;
 		using Test2 = Function<decltype(g_lambda)>;
 
-		static_assert(Type<Test1>::is_usual_callable(), "class Type: has_arguments_nested_type failed");
-		static_assert(!Type<Test2>::is_usual_callable(), "class Type: has_arguments_nested_type failed");
+		static_assert(Type<Test1>::is_usual_callable(), "class Type: is_usual_callable failed");
+		static_assert(!Type<Test2>::is_usual_callable(), "class Type: is_usual_callable failed");
 
 		return true;
 	}

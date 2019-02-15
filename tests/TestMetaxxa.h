@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "../release/metaxxa.hpp"
+#include "../include/metaxxa/metaxxa.h"
 
 #define TEST(condition, message) \
     do { if(!(condition)) { std::cout << __FILE__ << ":" << __LINE__ << ' ' << message << std::endl; return false; } } while(0)

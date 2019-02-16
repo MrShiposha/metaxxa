@@ -8,6 +8,9 @@
 
 #include "TestMetaxxa.h"
 
+void my_fn(int a, double b, const char *m)
+{}
+
 struct TestMoveFunctionArgumentTypes : TestMetaxxa
 {
 	using Vector = std::vector<int>;
@@ -22,6 +25,11 @@ struct TestMoveFunctionArgumentTypes : TestMetaxxa
 		static_assert(std::is_same_v<metaxxa::MoveFunctionArgumentTypes<std::vector, F1>, Vector>, "class TestMoveFunctionArgumentTypes: test failed");
 		static_assert(std::is_same_v<metaxxa::MoveFunctionArgumentTypes<std::pair, F2>,   Pair>,   "class TestMoveFunctionArgumentTypes: test failed");
 		static_assert(std::is_same_v<metaxxa::MoveFunctionArgumentTypes<std::tuple, F3>,  Tuple>,  "class TestMoveFunctionArgumentTypes: test failed");
+
+
+		using namespace metaxxa;
+
+		using T = MoveFunctionArgumentTypes<std::tuple, decltype(my_fn)>;
 
 		return true;
 	}

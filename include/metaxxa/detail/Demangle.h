@@ -22,7 +22,7 @@ namespace metaxxa::detail
         static const char cvr_saver_name[] = "metaxxa::detail::CVRSaver<";
         static constexpr std::string::size_type cvr_saver_name_length = sizeof(cvr_saver_name) - 1;
 
-    const char *begin = nullptr;
+        const char *begin = nullptr;
     #ifdef _MSC_VER
         // Nothing to do, already demangled
         begin = typeid(CVRSaver<T>).name();
@@ -71,6 +71,33 @@ namespace metaxxa::detail
         }
 
         return std::string(begin, end);
+    }
+
+    template <typename T>
+    std::string demangle_no_cvr()
+    {
+        
+        const char *name = nullptr;
+    #ifdef _MSC_VER
+        // Nothing to do, already demangled
+        name = typeid(T).name();
+    #elif defined(___METAXXA___HAS_CXX_ABI)
+        int status;
+
+        auto deleter = [](char *p) { free(p); };
+        std::unique_ptr<char, decltype(deleter)> real_name
+        (
+            abi::__cxa_demangle(typeid(T).name(), 0, 0, &status),
+            deleter
+        );
+
+        name = real_name.get();
+
+    #else
+        name = typeid(T).name();
+    #endif
+
+        return name;
     }
 }
 

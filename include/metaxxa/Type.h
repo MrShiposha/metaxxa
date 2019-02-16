@@ -35,7 +35,7 @@ namespace metaxxa
 
 		static std::string get_name()
 		{
-			return typeid(SomeType).name();
+			return detail::demangle_no_cvr<SomeType>();
 		}
 
 		static std::string name()

@@ -22,6 +22,8 @@ namespace metaxxa::detail
 		template <size_t INDEX>
 		using Argument = typename std::tuple_element_t<INDEX, StdTupleOfArguments>;
 
+		static constexpr bool IS_METHOD = false;
+
 		static constexpr size_t ARGUMENT_COUNT = std::tuple_size_v<StdTupleOfArguments>;
 	};
 
@@ -34,6 +36,8 @@ namespace metaxxa::detail
 
 		template <size_t INDEX>
 		using Argument = typename std::tuple_element_t<INDEX, StdTupleOfArguments>;
+
+		static constexpr bool IS_METHOD = false;
 
 		static constexpr size_t ARGUMENT_COUNT = std::tuple_size_v<StdTupleOfArguments>;
 	};
@@ -48,6 +52,8 @@ namespace metaxxa::detail
 		template <size_t INDEX>
 		using Argument = typename std::tuple_element_t<INDEX, StdTupleOfArguments>;
 
+		static constexpr bool IS_METHOD = false;
+
 		static constexpr size_t ARGUMENT_COUNT = std::tuple_size_v<StdTupleOfArguments>;
 	};
 
@@ -61,6 +67,10 @@ namespace metaxxa::detail
 		template <size_t INDEX>
 		using Argument = typename std::tuple_element_t<INDEX, StdTupleOfArguments>;
 
+		static constexpr bool IS_METHOD = true;
+
+		static constexpr bool IS_CONST = false;
+
 		static constexpr size_t ARGUMENT_COUNT = std::tuple_size_v<StdTupleOfArguments>;
 	};
 
@@ -72,6 +82,10 @@ namespace metaxxa::detail
 
 		template <size_t INDEX>
 		using Argument = typename std::tuple_element_t<INDEX, StdTupleOfArguments>;
+
+		static constexpr bool IS_METHOD = true;
+
+		static constexpr bool IS_CONST = false;
 
 		static constexpr size_t ARGUMENT_COUNT = std::tuple_size_v<StdTupleOfArguments>;
 	};
@@ -86,6 +100,8 @@ namespace metaxxa::detail
 		using Result = ResultType;
 		using StdTupleOfArguments = typename std::tuple<>;
 
+		static constexpr bool IS_METHOD = false;
+
 		static constexpr size_t ARGUMENT_COUNT = 0;
 	};
 
@@ -95,6 +111,8 @@ namespace metaxxa::detail
 	{
 		using Result = ResultType;
 		using StdTupleOfArguments = typename std::tuple<>;
+
+		static constexpr bool IS_METHOD = false;
 
 		static constexpr size_t ARGUMENT_COUNT = 0;
 	};
@@ -106,6 +124,8 @@ namespace metaxxa::detail
 		using Result = ResultType;
 		using StdTupleOfArguments = typename std::tuple<>;
 
+		static constexpr bool IS_METHOD = false;
+
 		static constexpr size_t ARGUMENT_COUNT = 0;
 	};
 
@@ -116,6 +136,10 @@ namespace metaxxa::detail
 		using Result = ResultType;
 		using StdTupleOfArguments = typename std::tuple<>;
 
+		static constexpr bool IS_METHOD = true;
+
+		static constexpr bool IS_CONST = false;
+
 		static constexpr size_t ARGUMENT_COUNT = 0;
 	};
 
@@ -125,23 +149,44 @@ namespace metaxxa::detail
 		using Result = ResultType;
 		using StdTupleOfArguments = typename std::tuple<>;
 
+		static constexpr bool IS_METHOD = true;
+
+		static constexpr bool IS_CONST = true;
+
 		static constexpr size_t ARGUMENT_COUNT = 0;
 	};
 
 	// }
 
 	template <typename FirstCallable, typename SecondCallable>
-	constexpr auto operator==(Function<FirstCallable> &&, Function<SecondCallable> &&)
+	constexpr bool is_same_signature()
 	{
 		return std::is_same_v
-			<
+		<
 			Function<FirstCallable>::StdTupleOfArguments,
 			Function<SecondCallable>::StdTupleOfArguments
-			> && std::is_same_v<Function<FirstCallable>::Result, Function<SecondCallable>::Result>;
+		> && std::is_same_v<Function<FirstCallable>::Result, Function<SecondCallable>::Result>;
 	}
 
 	template <typename FirstCallable, typename SecondCallable>
-	constexpr auto operator!=(Function<FirstCallable> &&first, Function<SecondCallable> &&second)
+	constexpr bool is_same_signature(Function<FirstCallable>, Function<SecondCallable>)
+	{
+		return is_same_signature<FirstCallable, SecondCallable>();
+	}
+
+	template <typename FirstCallable, typename SecondCallable>
+	constexpr auto operator==(Function<FirstCallable>, Function<SecondCallable>)
+	{
+		constexpr bool IS_SAME_SIGNSATURE = is_same_signature<FirstCallable, SecondCallable>();
+
+		if constexpr(Function<FirstCallable>::IS_METHOD && Function<SecondCallable>::IS_METHOD)
+			return IS_SAME_SIGNSATURE && (Function<FirstCallable>::IS_CONST == Function<SecondCallable>::IS_CONST);
+		else
+			return IS_SAME_SIGNSATURE;
+	}
+
+	template <typename FirstCallable, typename SecondCallable>
+	constexpr auto operator!=(Function<FirstCallable> first, Function<SecondCallable> second)
 	{
 		return !(first == second);
 	}

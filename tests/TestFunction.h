@@ -25,6 +25,26 @@ auto l2 = [](std::string, std::vector<bool>) {};
 auto l3 = [](char, char, char) {};
 
 
+inline void feq_1(int, char) {}
+inline void feq_1s(int, char) {}
+inline void feq_2(int) {}
+
+struct EqTest
+{
+	void feq_1c(int, char) const {}
+	void feq_1cs(int, char) const {}
+
+	void feq_1(int, char) {}
+	void feq_1s(int, char) {}
+
+	void feq_2c(int) const {}
+	void feq_2cs(int) const {}
+
+	void feq_2(int) {}
+	void feq_2s(int) {}
+};
+
+
 struct TestFunction : TestMetaxxa
 {
 	struct VoidFunctorClass
@@ -124,6 +144,8 @@ struct TestFunction : TestMetaxxa
 		result = result && test_arguments_tuple();
 		result = result && test_is_const();
 		result = result && test_signature();
+		result = result && test_equality();
+
 		return result;
 	}
 
@@ -318,22 +340,108 @@ struct TestFunction : TestMetaxxa
 		);
 		
 		
-		TEST(Function<decltype(l1)>::signature() == "void (int) const"s,                        "class Function: signature test failed");
-		TEST(Function<decltype(&F1Struct::operator())>::signature() == "void (double)"s,      "class Function: signature test failed");
+		TEST(Function<decltype(l1)>::signature().find("void ") != std::string::npos,        "class Function: signature test failed");
+		TEST(Function<decltype(l1)>::signature().find(" (int) const") != std::string::npos, "class Function: signature test failed");
+
+		TEST(Function<decltype(&F1Struct::operator())>::signature() == "void (struct TestFunction::F1Struct::*) (double)"s,      "class Function: signature test failed");
 		
-		TEST(Function<decltype(&F1ConstStruct::operator())>::signature().find("void (void (") != std::string::npos, "class Function: signature test failed");
+		TEST(Function<decltype(&F1ConstStruct::operator())>::signature().find("void (struct TestFunction::F1ConstStruct::*) (void (") != std::string::npos, "class Function: signature test failed");
 		TEST(Function<decltype(&F1ConstStruct::operator())>::signature().find("*)(int)) const") != std::string::npos, "class Function: signature test failed");
 		
-		TEST(Function<decltype(functor_1)>::signature() == "void (double)"s,                  "class Function: signature test failed");
+		TEST(Function<decltype(functor_1)>::signature() == "void (struct TestFunction::F1Struct::*) (double)"s,                  "class Function: signature test failed");
 		
-		TEST(Function<decltype(const_functor_1)>::signature().find("void (void (") != std::string::npos, "class Function: signature test failed");
+		TEST(Function<decltype(const_functor_1)>::signature().find("void (struct TestFunction::F1ConstStruct::*) (void (") != std::string::npos, "class Function: signature test failed");
 		TEST(Function<decltype(const_functor_1)>::signature().find("*)(int)) const") != std::string::npos, "class Function: signature test failed");
 		
-
-		TEST(Function<decltype(const_functor_2)>::signature().find("void (int") != std::string::npos, "class Function: signature test failed");
+		TEST(Function<decltype(const_functor_2)>::signature().find("void (struct TestFunction::F2ConstStruct::*) (int") != std::string::npos, "class Function: signature test failed");
 		TEST(Function<decltype(const_functor_2)>::signature().find("&&") != std::string::npos, "class Function: signature test failed");
 		TEST(Function<decltype(const_functor_2)>::signature().find(", char) const") != std::string::npos, "class Function: signature test failed");		
 		
+		return true;
+	}
+
+	bool test_equality()
+	{
+		using namespace metaxxa;
+
+		bool same_sig = is_same_signature<decltype(feq_1), decltype(feq_1s)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(feq_1)>() == Function<decltype(feq_1s)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(feq_1), decltype(feq_2)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(feq_1)>() != Function<decltype(feq_2)>(), "class Function: equality test failed");
+		
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1c), decltype(feq_1)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1c)>() == Function<decltype(feq_1)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1), decltype(feq_1)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1)>() == Function<decltype(feq_1)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_2c), decltype(feq_1)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_2c)>() != Function<decltype(feq_1)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_2), decltype(feq_1)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_2)>() != Function<decltype(feq_1)>(), "class Function: equality test failed");
+
+
+		same_sig = is_same_signature<decltype(feq_1), decltype(&EqTest::feq_1c)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(feq_1)>() == Function<decltype(&EqTest::feq_1c)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(feq_1), decltype(&EqTest::feq_1)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(feq_1)>() == Function<decltype(&EqTest::feq_1)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(feq_1), decltype(&EqTest::feq_2c)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(feq_1)>() != Function<decltype(&EqTest::feq_2c)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(feq_1), decltype(&EqTest::feq_2)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(feq_1)>() != Function<decltype(&EqTest::feq_2)>(), "class Function: equality test failed");
+
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1c), decltype(&EqTest::feq_1cs)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1c)>() == Function<decltype(&EqTest::feq_1cs)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1), decltype(&EqTest::feq_1s)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1)>() == Function<decltype(&EqTest::feq_1s)>(), "class Function: equality test failed");
+
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1c), decltype(&EqTest::feq_1)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1c)>() != Function<decltype(&EqTest::feq_1)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1), decltype(&EqTest::feq_1c)>();
+		TEST(same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1)>() != Function<decltype(&EqTest::feq_1c)>(), "class Function: equality test failed");
+
+		
+		same_sig = is_same_signature<decltype(&EqTest::feq_1c), decltype(&EqTest::feq_2c)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1c)>() != Function<decltype(&EqTest::feq_2c)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1), decltype(&EqTest::feq_2)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1)>() != Function<decltype(&EqTest::feq_2)>(), "class Function: equality test failed");
+
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1c), decltype(&EqTest::feq_2)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1c)>() != Function<decltype(&EqTest::feq_2)>(), "class Function: equality test failed");
+
+		same_sig = is_same_signature<decltype(&EqTest::feq_1), decltype(&EqTest::feq_2c)>();
+		TEST(!same_sig, "class Function: equality test failed");
+		TEST(Function<decltype(&EqTest::feq_1)>() != Function<decltype(&EqTest::feq_2c)>(), "class Function: equality test failed");
+
 		return true;
 	}
 

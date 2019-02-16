@@ -66,6 +66,8 @@ namespace metaxxa
 
 		static constexpr size_t argument_count() { return Arguments::size(); }
 
+		static constexpr bool is_method() { return false; }
+
 		static std::string get_signature()
 		{
 			std::string arguments;
@@ -91,6 +93,8 @@ namespace metaxxa
 		using Argument = std::tuple_element_t<INDEX, typename Arguments::StdTuple>;
 
 		static constexpr size_t argument_count() { return Arguments::size(); }
+
+		static constexpr bool is_method() { return false; }
 
 		static std::string get_signature()
 		{
@@ -119,6 +123,8 @@ namespace metaxxa
 
 		static constexpr size_t argument_count() { return Arguments::size(); }
 
+		static constexpr bool is_method() { return false; }
+
 		static std::string get_signature()
 		{
 			std::string arguments;
@@ -145,6 +151,8 @@ namespace metaxxa
 
 		static constexpr size_t argument_count() { return Arguments::size(); }
 
+		static constexpr bool is_method() { return true; }
+
 		static constexpr bool is_const() { return false; }
 
 		static std::string get_signature()
@@ -152,7 +160,7 @@ namespace metaxxa
 			std::string arguments;
 			Arguments::template for_each_types<detail::ArgumentsSignatureBuilder>(arguments);
 
-			return Type<Result>::name_with_modifiers() + " (" + arguments + ")";
+			return Type<Result>::name_with_modifiers() + " (" + Type<SomeType>::name() + "::*)" + " (" + arguments + ")";
 		}
 
 		static std::string signature()
@@ -172,6 +180,8 @@ namespace metaxxa
 
 		static constexpr size_t argument_count() { return Arguments::size(); }
 
+		static constexpr bool is_method() { return true; }
+
 		static constexpr bool is_const() { return true; }
 
 		static std::string get_signature()
@@ -179,7 +189,7 @@ namespace metaxxa
 			std::string arguments;
 			Arguments::template for_each_types<detail::ArgumentsSignatureBuilder>(arguments);
 
-			return Type<Result>::name_with_modifiers() + " (" + arguments + ") const";
+			return Type<Result>::name_with_modifiers() + " (" + Type<SomeType>::name() + "::*)" + " (" + arguments + ") const";
 		}
 
 		static std::string signature()
@@ -199,6 +209,8 @@ namespace metaxxa
 		using Arguments = Tuple<>;
 
 		static constexpr size_t argument_count() { return 0; }
+
+		static constexpr bool is_method() { return false; }
 
 		static std::string get_signature()
 		{
@@ -221,6 +233,8 @@ namespace metaxxa
 		using Arguments = Tuple<>;
 
 		static constexpr size_t argument_count() { return 0; }
+
+		static constexpr bool is_method() { return false; }
 
 		static std::string get_signature()
 		{
@@ -245,6 +259,8 @@ namespace metaxxa
 
 		static constexpr size_t argument_count() { return 0; }
 
+		static constexpr bool is_method() { return false; }
+
 		static std::string get_signature()
 		{
 			std::string result = Type<Result>::name_with_modifiers() + " ()";
@@ -267,11 +283,13 @@ namespace metaxxa
 
 		static constexpr size_t argument_count() { return 0; }
 
+		static constexpr bool is_method() { return true; }
+
 		static constexpr bool is_const() { return false; }
 
 		static std::string get_signature()
 		{
-			std::string result = Type<Result>::name_with_modifiers() + " ()";
+			std::string result = Type<Result>::name_with_modifiers() + " (" + Type<SomeType>::name() + "::*)" + " ()";
 
 			return result;
 		}
@@ -290,11 +308,13 @@ namespace metaxxa
 
 		static constexpr size_t argument_count() { return 0; }
 
+		static constexpr bool is_method() { return true; }
+
 		static constexpr bool is_const() { return true; }
 
 		static std::string get_signature()
 		{
-			std::string result = Type<Result>::name_with_modifiers() + " () const";
+			std::string result = Type<Result>::name_with_modifiers() + " (" + Type<SomeType>::name() + "::*)" + " () const";
 
 			return result;
 		}
@@ -308,14 +328,31 @@ namespace metaxxa
 	// }
 
 	template <typename FirstCallable, typename SecondCallable>
-	constexpr auto operator==(Function<FirstCallable> &&, Function<SecondCallable> &&)
+	constexpr bool is_same_signature()
 	{
 		return Type<typename Function<FirstCallable>::Arguments>() == Type<typename Function<SecondCallable>::Arguments>()
 			&& Type<typename Function<FirstCallable>::Result>() == Type<typename Function<SecondCallable>::Result>();
 	}
 
 	template <typename FirstCallable, typename SecondCallable>
-	constexpr auto operator!=(Function<FirstCallable> &&first, Function<SecondCallable> &&second)
+	constexpr bool is_same_signature(Function<FirstCallable>, Function<SecondCallable>)
+	{
+		return is_same_signature<FirstCallable, SecondCallable>();
+	}
+
+	template <typename FirstCallable, typename SecondCallable>
+	constexpr auto operator==(Function<FirstCallable>, Function<SecondCallable>)
+	{
+		constexpr bool IS_SAME_SIGNSATURE =  is_same_signature<FirstCallable, SecondCallable>();
+
+		if constexpr(Function<FirstCallable>::is_method() && Function<SecondCallable>::is_method())
+			return IS_SAME_SIGNSATURE && (Function<FirstCallable>::is_const() == Function<SecondCallable>::is_const());
+		else
+			return IS_SAME_SIGNSATURE;
+	}
+
+	template <typename FirstCallable, typename SecondCallable>
+	constexpr auto operator!=(Function<FirstCallable> first, Function<SecondCallable> second)
 	{
 		return !(first == second);
 	}

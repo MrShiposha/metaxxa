@@ -36,7 +36,7 @@ namespace metaxxa
         >
         constexpr auto filter_types(FunctorArguments&&... arguments)
         {
-            if constexpr (INDEX + 1 == std::tuple_size_v<Tuple>)
+            if constexpr (INDEX == std::tuple_size_v<Tuple>)
                 return std::tuple<>();
             else
             {

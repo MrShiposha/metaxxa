@@ -7,7 +7,6 @@
 #include "detail/MoveTemplateTypes.h"
 #include "detail/MoveTemplateTypesUnique.h"
 #include "detail/WrapToTemplateIfNotWrapped.h"
-#include "detail/Function.h"
 #include "detail/OperatorTesters.h"
 #include "detail/TypeHasOperatorMethodMacros.h"
 #include "detail/HasMethodToString.h"

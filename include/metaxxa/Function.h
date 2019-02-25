@@ -47,6 +47,8 @@
 	template<typename SomeType, typename ResultType, typename... FunctionArguments>		\
 	struct Function<Signature> : FunctionTag											\
 	{																					\
+		using OuterType = SomeType;														\
+																						\
 		template <size_t INDEX>															\
 		using Argument = std::tuple_element_t<INDEX, std::tuple<FunctionArguments...>>; \
 																						\
@@ -76,6 +78,8 @@
 	template<typename SomeType, typename ResultType> \
 	struct Function<Signature> : FunctionTag 		 \
 	{												 \
+		using OuterType = SomeType;					 \
+												     \
 		using Result = ResultType;					 \
 		using Arguments = Tuple<>;					 \
 													 \

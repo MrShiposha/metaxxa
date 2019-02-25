@@ -1,16 +1,30 @@
 #ifndef METAXXA_detail_FUNCTIONBASERESOLVER_H
 #define METAXXA_detail_FUNCTIONBASERESOLVER_H
 
-#include "OperatorTesters.h"
 #include "../NonFunctionTag.h"
 
 namespace metaxxa::detail
 {
+    template <typename T>
+    struct CallOperatorTester
+    {
+        template <typename U>
+        struct helper {};
+
+        template <typename U>
+        static constexpr uint8_t check(helper<decltype(&U::operator())> *);
+
+        template <typename U>
+        static constexpr uint16_t check(...);
+
+        static constexpr bool HAS = (sizeof(check<T>(0)) == sizeof(uint8_t));
+    };
+
     template 
     <
         typename T, 
         template <typename> typename Function, 
-        bool HAS_CALL_OPERATOR = ___METAXXA___OPERATOR_TESTER_call<T, void>::has()
+        bool HAS_CALL_OPERATOR = CallOperatorTester<T>::HAS
     >
     struct FunctionBaseResolver
     {};

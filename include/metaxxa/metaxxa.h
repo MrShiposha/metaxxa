@@ -16,6 +16,7 @@
 #include "Tuple.h"
 #include "Type.h"
 #include "Function.h"
+#include "Function.inc"
 #include "CallableToMethod.h"
 #include "MoveFunctionArgumentTypes.h"
 

@@ -3,47 +3,38 @@
 
 #include "Function.h"
 
+#include "detail/MethodToMethod.h"
+
 namespace metaxxa
 {
 	namespace detail
 	{
-		template <typename SomeType, typename Callable, bool IS_CALLABLE_METHOD, typename... Arguments>
-		struct MethodResolver
+		template <typename SomeType, typename Callable, bool IS_METHOD, typename... Arguments>
+		struct CallableOrMethodResolver
 		{};
-
-		template <typename SomeType, typename Callable, bool IS_CONST_METHOD, typename... Arguments>
-		struct ConstMethodResolver
-		{};
-
+		
 		template <typename SomeType, typename Callable, typename... Arguments>
-		struct ConstMethodResolver<SomeType, Callable, true, Arguments...>
+		struct CallableOrMethodResolver<SomeType, Callable, true, Arguments...>
 		{
-			using MethodResult = typename Function<Callable>::Result;
-
-			using Method = MethodResult(SomeType::*)(Arguments...) const;
+			using Type = typename MethodToMethod
+			<
+				SomeType, 
+				Callable, 
+				Function<Callable>::is_const(),
+				Function<Callable>::is_volatile(),
+				Function<Callable>::is_lvalue(),
+				Function<Callable>::is_rvalue(),
+				Function<Callable>::is_noexcept(),
+				Arguments...
+			>::Method;
 		};
 
 		template <typename SomeType, typename Callable, typename... Arguments>
-		struct ConstMethodResolver<SomeType, Callable, false, Arguments...>
+		struct CallableOrMethodResolver<SomeType, Callable, false, Arguments...>
 		{
 			using MethodResult = typename Function<Callable>::Result;
 
-			using Method = MethodResult(SomeType::*)(Arguments...);
-		};
-
-
-		template <typename SomeType, typename Callable, typename... Arguments>
-		struct MethodResolver<SomeType, Callable, true, Arguments...>
-		{
-			using Method = typename ConstMethodResolver<SomeType, Callable, Function<Callable>::is_const(), Arguments...>::Method;
-		};
-
-		template <typename SomeType, typename Callable, typename... Arguments>
-		struct MethodResolver<SomeType, Callable, false, Arguments...>
-		{
-			using MethodResult = typename Function<Callable>::Result;
-
-			using Method = MethodResult(SomeType::*)(Arguments...);
+			using Type = MethodResult(SomeType::*)(Arguments...);
 		};
 
 		template <typename SomeType, typename Callable, bool IS_ENOUGH, typename... Arguments>
@@ -61,13 +52,13 @@ namespace metaxxa
 		template <typename SomeType, typename Callable, typename... Arguments>
 		struct CallableToMethod<SomeType, Callable, true, Arguments...>
 		{
-			using Method = typename MethodResolver
+			using Method = typename CallableOrMethodResolver
 			<
 				SomeType, 
 				Callable, 
 				Function<Callable>::is_method(), 
 				Arguments...
-			>::Method;
+			>::Type;
 		};
 	}
 

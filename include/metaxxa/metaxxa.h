@@ -16,6 +16,5 @@
 #include "Tuple.inc"
 #include "Type.inc"
 #include "Function.inc"
-#include "MoveFunctionArgumentTypes.h"
 
 #endif // METAXXA_H

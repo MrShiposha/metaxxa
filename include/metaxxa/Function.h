@@ -23,6 +23,9 @@
 																															\
 		template <typename SomeType>																						\
 		using ToWrappedMethod = Function<ToMethod<SomeType>>;																\
+																															\
+		template <template <typename...> typename TemplateType>																\
+		using MoveArgumentsTo = detail::MoveTemplateTypes<TemplateType, Arguments>;											\
 																						                   					\
 		static constexpr size_t argument_count();										                   					\
 																						                   					\
@@ -45,6 +48,9 @@
 																															\
 		template <typename SomeType>																						\
 		using ToWrappedMethod = Function<ToMethod<SomeType>>;																\
+																															\
+		template <template <typename...> typename TemplateType>																\
+		using MoveArgumentsTo = detail::MoveTemplateTypes<TemplateType, Arguments>;											\
 												     																		\
 		static constexpr size_t argument_count();	 																		\
 													 																		\
@@ -72,6 +78,9 @@
 																															\
 		template <typename RHSType>																						    \
 		using ToWrappedMethod = Function<ToMethod<RHSType>>;																\
+																															\
+		template <template <typename...> typename TemplateType>																\
+		using MoveArgumentsTo = detail::MoveTemplateTypes<TemplateType, Arguments>;											\
 																															\
 		static constexpr size_t argument_count();																			\
 																															\
@@ -106,6 +115,9 @@
 																															\
 		template <typename RHSType>																						    \
 		using ToWrappedMethod = Function<ToMethod<RHSType>>;																\
+																															\
+		template <template <typename...> typename TemplateType>																\
+		using MoveArgumentsTo = detail::MoveTemplateTypes<TemplateType, Arguments>;											\
 													 																		\
 		static constexpr size_t argument_count();	 																		\
 													 																		\

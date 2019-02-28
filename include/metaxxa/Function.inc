@@ -5,21 +5,21 @@
 #include "detail/ArgumentsSignatureBuilder.inc"
 
 #define DEFINE_FUNCTION_IMPL_WITH_ARGUMENTS(Signature) \
-    template<typename ResultType, typename... FunctionArguments>                          \
-    constexpr size_t Function<Signature>::argument_count()  { return Arguments::size(); } \
-                                                                                          \
-    template<typename ResultType, typename... FunctionArguments>                          \
-    constexpr bool Function<Signature>::is_method() { return false; }                     \
-                                                                                          \
-    template<typename ResultType, typename... FunctionArguments>                          \
-    std::string Function<Signature>::get_signature()                                      \
-    {                                                                                     \
-        std::string arguments;                                                            \
-        Arguments::template for_each_types<detail::ArgumentsSignatureBuilder>(arguments); \
-        return Type<Result>::name_with_modifiers() + " (" + arguments + ")";              \
-    }                                                                                     \
-                                                                                          \
-    template<typename ResultType, typename... FunctionArguments>                          \
+    template<typename ResultType, typename... FunctionArguments>                                   \
+    constexpr size_t Function<Signature>::argument_count()  { return Arguments::size(); }          \
+                                                                                                   \
+    template<typename ResultType, typename... FunctionArguments>                                   \
+    constexpr bool Function<Signature>::is_method() { return false; }                              \
+                                                                                                   \
+    template<typename ResultType, typename... FunctionArguments>                                   \
+    std::string Function<Signature>::get_signature()                                               \
+    {                                                                                              \
+        std::string arguments;                                                                     \
+        Arguments::template for_each_types<metaxxa::detail::ArgumentsSignatureBuilder>(arguments); \
+        return Type<Result>::name_with_modifiers() + " (" + arguments + ")";                       \
+    }                                                                                              \
+                                                                                                   \
+    template<typename ResultType, typename... FunctionArguments>                                   \
     std::string Function<Signature>::signature() { return get_signature(); }
 
 #define DEFINE_FUNCTION_IMPL_NO_ARGUMENTS(Signature) \
@@ -70,7 +70,7 @@
     std::string Function<Signature>::get_signature()                                                                  \
     {                                                                                                                 \
         std::string arguments;                                                                                        \
-        Arguments::template for_each_types<detail::ArgumentsSignatureBuilder>(arguments);                             \
+        Arguments::template for_each_types<metaxxa::detail::ArgumentsSignatureBuilder>(arguments);                    \
         std::string signature = Type<Result>::name_with_modifiers() + " (" + Type<SomeType>::name() + "::*)";         \
                                                                                                                       \
         signature += " (" + arguments + ")";                                                                          \
@@ -123,66 +123,63 @@
     template<typename SomeType, typename ResultType>                                                                  \
     std::string Function<Signature>::signature() { return get_signature(); }  
 
-namespace metaxxa
+DEFINE_FUNCTION_IMPL_WITH_ARGUMENTS(ResultType(FunctionArguments...))
+DEFINE_FUNCTION_IMPL_WITH_ARGUMENTS(ResultType(*)(FunctionArguments...))
+DEFINE_FUNCTION_IMPL_WITH_ARGUMENTS(std::function<ResultType(FunctionArguments...)>)
+
+DEFINE_FUNCTION_IMPL_NO_ARGUMENTS(ResultType())
+DEFINE_FUNCTION_IMPL_NO_ARGUMENTS(ResultType(*)())
+DEFINE_FUNCTION_IMPL_NO_ARGUMENTS(std::function<ResultType()>)
+
+
+#include "detail/Methods.inc"
+
+template <typename FirstCallable, typename SecondCallable>
+constexpr bool is_same_signature()
 {
-    DEFINE_FUNCTION_IMPL_WITH_ARGUMENTS(ResultType(FunctionArguments...))
-    DEFINE_FUNCTION_IMPL_WITH_ARGUMENTS(ResultType(*)(FunctionArguments...))
-    DEFINE_FUNCTION_IMPL_WITH_ARGUMENTS(std::function<ResultType(FunctionArguments...)>)
-
-    DEFINE_FUNCTION_IMPL_NO_ARGUMENTS(ResultType())
-    DEFINE_FUNCTION_IMPL_NO_ARGUMENTS(ResultType(*)())
-    DEFINE_FUNCTION_IMPL_NO_ARGUMENTS(std::function<ResultType()>)
-
-
-    #include "detail/Methods.inc"
-
-    template <typename FirstCallable, typename SecondCallable>
-	constexpr bool is_same_signature()
-	{
-		return Type<typename Function<FirstCallable>::Arguments>() == Type<typename Function<SecondCallable>::Arguments>()
-			&& Type<typename Function<FirstCallable>::Result>() == Type<typename Function<SecondCallable>::Result>();
-	}
-
-	template <typename FirstCallable, typename SecondCallable>
-	constexpr bool is_same_modifiers()
-	{
-		using F1 = Function<FirstCallable>;
-		using F2 = Function<SecondCallable>;
-
-		if constexpr(F1::is_method() && F2::is_method())
-			return 
-				(F1::is_const() == F2::is_const())
-				&& (F1::is_volatile() == F2::is_volatile())
-				&& (F1::is_lvalue() == F2::is_lvalue())
-				&& (F1::is_rvalue() == F2::is_rvalue())
-				&& (F1::is_noexcept() == F2::is_noexcept());
-		else 
-			return true;
-	}
-
-	template <typename FirstCallable, typename SecondCallable>
-	constexpr bool is_same_signature(Function<FirstCallable>, Function<SecondCallable>)
-	{
-		return is_same_signature<FirstCallable, SecondCallable>();
-	}
-
-	template <typename FirstCallable, typename SecondCallable>
-	constexpr bool is_same_modifiers(Function<FirstCallable>, Function<SecondCallable>)
-	{
-		return is_same_modifiers<FirstCallable, SecondCallable>();
-	}
+    return Type<typename Function<FirstCallable>::Arguments>() == Type<typename Function<SecondCallable>::Arguments>()
+        && Type<typename Function<FirstCallable>::Result>() == Type<typename Function<SecondCallable>::Result>();
 }
 
 template <typename FirstCallable, typename SecondCallable>
-constexpr auto operator==(metaxxa::Function<FirstCallable>, metaxxa::Function<SecondCallable>)
+constexpr bool is_same_modifiers()
 {
-    return metaxxa::is_same_signature<FirstCallable, SecondCallable>() && metaxxa::is_same_modifiers<FirstCallable, SecondCallable>();
+    using F1 = Function<FirstCallable>;
+    using F2 = Function<SecondCallable>;
+
+    if constexpr(F1::is_method() && F2::is_method())
+        return 
+            (F1::is_const() == F2::is_const())
+            && (F1::is_volatile() == F2::is_volatile())
+            && (F1::is_lvalue() == F2::is_lvalue())
+            && (F1::is_rvalue() == F2::is_rvalue())
+            && (F1::is_noexcept() == F2::is_noexcept());
+    else 
+        return true;
 }
 
 template <typename FirstCallable, typename SecondCallable>
-constexpr auto operator!=(metaxxa::Function<FirstCallable> first, metaxxa::Function<SecondCallable> second)
+constexpr bool is_same_signature(Function<FirstCallable>, Function<SecondCallable>)
 {
-    return !(first == second);
+    return is_same_signature<FirstCallable, SecondCallable>();
+}
+
+template <typename FirstCallable, typename SecondCallable>
+constexpr bool is_same_modifiers(Function<FirstCallable>, Function<SecondCallable>)
+{
+    return is_same_modifiers<FirstCallable, SecondCallable>();
+}
+
+template <typename FirstCallable, typename SecondCallable>
+constexpr auto operator==(Function<FirstCallable>, Function<SecondCallable>)
+{
+return is_same_signature<FirstCallable, SecondCallable>() && is_same_modifiers<FirstCallable, SecondCallable>();
+}
+
+template <typename FirstCallable, typename SecondCallable>
+constexpr auto operator!=(Function<FirstCallable> first, Function<SecondCallable> second)
+{
+return !(first == second);
 }
 
 #undef DEFINE_FUNCTION_IMPL_WITH_ARGUMENTS

@@ -151,8 +151,6 @@ struct TestFunction : TestMetaxxa
 
 	bool test_result()
 	{
-		using metaxxa::Function;
-
 		static_assert(std::is_same_v<Function<decltype(void_return_function)>              ::Result, void>, "class Function: result test failed");
 		static_assert(std::is_same_v<Function<decltype(p_void_return_function)>            ::Result, void>, "class Function: result test failed");
 		static_assert(std::is_same_v<Function<decltype(std_void_return_function)>          ::Result, void>, "class Function: result test failed");

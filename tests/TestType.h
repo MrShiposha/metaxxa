@@ -82,8 +82,6 @@ struct TestType : TestMetaxxa
 
 	bool test_has_method_without_arguments()
 	{
-		using metaxxa::Type;
-
 		static_assert(Type<StructUnary>::has_single_operator_unary_plus(),           "class Type: has method without arguments test failed");
 		static_assert(!Type<StructUnary>::has_single_operator_binary_plus(),         "class Type: has method without arguments test failed");
 		static_assert(Type<StructUnary>::has_single_operator_asterisk_dereference(), "class Type: has method without arguments test failed");
@@ -110,10 +108,6 @@ struct TestType : TestMetaxxa
 
 	bool test_has_method_with_arguments()
 	{
-		using metaxxa::Type;
-		using metaxxa::Function;
-		using metaxxa::CallableToMethod;
-
 		static_assert(Type<StructUnary>::has_operator_plus<void()>());
 		static_assert(!Type<StructUnary>::has_operator_plus<void(int)>());
 		static_assert(Type<StructUnary>::has_operator_dereference<int()>());

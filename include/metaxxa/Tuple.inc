@@ -28,18 +28,18 @@
 namespace metaxxa
 {
     template <typename... Arguments>
-    Tuple<Arguments...>::Tuple(const Arguments&... arguments)
+    constexpr Tuple<Arguments...>::Tuple(const Arguments&... arguments)
 			: std_tuple(arguments...)
     {}
 
     template <typename... Arguments>
     template <typename... OtherArguments>
-    Tuple<Arguments...>::Tuple(const Tuple<OtherArguments...> &other)
+    constexpr Tuple<Arguments...>::Tuple(const Tuple<OtherArguments...> &other)
         : std_tuple(other.std_tuple)
     {}
 
     template <typename... Arguments>
-    Tuple<Arguments...>::Tuple(const StdTuple &tuple)
+    constexpr Tuple<Arguments...>::Tuple(const StdTuple &tuple)
         : std_tuple(tuple)
     {}
 
@@ -430,7 +430,7 @@ namespace metaxxa
     }
 
     
-    Tuple<>::Tuple(const std::tuple<> &) {}
+    constexpr Tuple<>::Tuple(const std::tuple<> &) {}
 
     
     template<typename... Arguments>
@@ -544,9 +544,9 @@ namespace metaxxa
     }
 
     
-    constexpr auto Tuple<>::distinct_types() 
+    constexpr auto Tuple<>::distinct_types()
     {
-        return std::declval<Tuple<>>();
+        return Tuple<>();
     }
 
     

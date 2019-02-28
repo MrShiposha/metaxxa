@@ -14,16 +14,16 @@ namespace metaxxa
 		template <size_t INDEX>
 		using Parameter = typename std::tuple_element<INDEX, StdTuple>::type;
 
-		Tuple() = default;
+		constexpr Tuple() = default;
 
-		Tuple(const Arguments&... arguments);
+		constexpr Tuple(const Arguments&... arguments);
 
 		template <typename... OtherArguments>
-		Tuple(const Tuple<OtherArguments...> &other);
+		constexpr Tuple(const Tuple<OtherArguments...> &other);
 
-		Tuple(const StdTuple &tuple);
+		constexpr Tuple(const StdTuple &tuple);
 		
-		Tuple(const Tuple &) = default;
+		constexpr Tuple(const Tuple &) = default;
 		
 		Tuple &operator=(const Tuple &tuple) = default;
 
@@ -194,9 +194,9 @@ namespace metaxxa
 	public:
 		using StdTuple = std::tuple<>;
 
-		Tuple() = default;
+		constexpr Tuple() = default;
 
-		Tuple(const std::tuple<> &);
+		constexpr Tuple(const std::tuple<> &);
 
 		template<typename... Arguments>
 		constexpr auto operator==(const Tuple<Arguments...> &rhs) const;

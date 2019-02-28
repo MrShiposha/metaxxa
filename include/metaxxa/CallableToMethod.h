@@ -1,7 +1,7 @@
 #ifndef METAXXA_CALLABLETOMETHOD_H
 #define METAXXA_CALLABLETOMETHOD_H
 
-#include "detail/Function.h"
+#include "Function.h"
 
 namespace metaxxa
 {
@@ -35,7 +35,7 @@ namespace metaxxa
 		template <typename SomeType, typename Callable, typename... Arguments>
 		struct MethodResolver<SomeType, Callable, true, Arguments...>
 		{
-			using Method = typename ConstMethodResolver<SomeType, Callable, Function<Callable>::IS_CONST, Arguments...>::Method;
+			using Method = typename ConstMethodResolver<SomeType, Callable, Function<Callable>::is_const(), Arguments...>::Method;
 		};
 
 		template <typename SomeType, typename Callable, typename... Arguments>
@@ -52,7 +52,7 @@ namespace metaxxa
 			<
 				SomeType, 
 				Callable, 
-				sizeof...(Arguments) + 1 >= Function<Callable>::ARGUMENT_COUNT,
+				sizeof...(Arguments) + 1 >= Function<Callable>::argument_count(),
 				Arguments..., typename Function<Callable>::template Argument<sizeof...(Arguments)>
 			>
 			{
@@ -65,14 +65,14 @@ namespace metaxxa
 			<
 				SomeType, 
 				Callable, 
-				Function<Callable>::IS_METHOD, 
+				Function<Callable>::is_method(), 
 				Arguments...
 			>::Method;
 		};
 	}
 
 	template <typename SomeType, typename Callable>
-	using CallableToMethod = typename detail::CallableToMethod<SomeType, Callable, detail::Function<Callable>::ARGUMENT_COUNT == 0>::Method;
+	using CallableToMethod = typename detail::CallableToMethod<SomeType, Callable, Function<Callable>::argument_count() == 0>::Method;
 }
 
 #endif // METAXXA_CALLABLETOMETHOD_H

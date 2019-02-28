@@ -169,8 +169,8 @@ namespace metaxxa
 		template <template <typename> typename TemplateType>
 		static constexpr auto wrap_types();
 
-		template <typename... RHSArguments>
-		void execute_functions(RHSArguments&&... arguments) const;
+		// template <typename... RHSArguments>
+		// void execute_functions(RHSArguments&&... arguments) const;
 
 		template <typename Callable>
 		auto call_function(Callable &callable) const;
@@ -253,8 +253,8 @@ namespace metaxxa
 		template <template <typename> typename TemplateType>
 		static constexpr auto wrap_all_types();
 
-		template <typename... RHSArguments>
-		void execute_functions(RHSArguments&&... arguments) const;
+		// template <typename... RHSArguments>
+		// void execute_functions(RHSArguments&&... arguments) const;
 		
 		template <typename Callable>
 		auto call_function(Callable &callable) const;
@@ -289,6 +289,11 @@ namespace std
 	public:
 		using type = std::tuple_element_t<INDEX, typename metaxxa::Tuple<Arguments...>::StdTuple>;
 	};
+
+	template <>
+	class tuple_size<metaxxa::Tuple<>> 
+		: public std::integral_constant<size_t, 0>
+	{};
 }
 
 #endif // METAXXA_TUPLE_H

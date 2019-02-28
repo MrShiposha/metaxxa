@@ -14,6 +14,7 @@
 #endif // Compilers
 
 #include "Tuple.h"
+#include "Tuple.inc"
 #include "Type.h"
 #include "Function.h"
 #include "Function.inc"

@@ -2,27 +2,6 @@
 #define METAXXA_TUPLE_H
 
 #include <tuple>
-#include "detail/Optional.h"
-
-#include "SkipFirstOfStdTuple.h"
-#include "ForEachOfStdTuple.h"
-#include "EveryOfStdTuple.h"
-#include "IsSameOfStdTuple.h"
-#include "MaxOfStdTuple.h"
-#include "FirstOfStdTuple.h"
-#include "LastOfStdTuple.h"
-#include "MapOfStdTuple.h"
-#include "SumOfStdTuple.h"
-#include "ContainsOfStdTuple.h"
-#include "IsConvertsToTypesOfStdTuple.h"
-#include "FindOfStdTuple.h"
-#include "ToStringOfStdTuple.h"
-#include "ExecuteFunctionsOfStdTuple.h"
-#include "CallFunctionOfStdTuple.h"
-#include "FilterOfStdTuple.h"
-#include "WrapOfStdTuple.h"
-#include "DistinctOfStdTuple.h"
-#include "detail/MoveTemplateTypes.h"
 
 namespace metaxxa
 {
@@ -37,349 +16,168 @@ namespace metaxxa
 
 		Tuple() = default;
 
-		Tuple(const Arguments&... arguments)
-			: std_tuple(arguments...)
-		{}
+		Tuple(const Arguments&... arguments);
 
 		template <typename... OtherArguments>
-		Tuple(const Tuple<OtherArguments...> &other)
-			: std_tuple(other.std_tuple)
-		{}
+		Tuple(const Tuple<OtherArguments...> &other);
 
-		Tuple(const StdTuple &tuple)
-			: std_tuple(tuple)
-		{}
+		Tuple(const StdTuple &tuple);
 		
 		Tuple(const Tuple &) = default;
 		
 		Tuple &operator=(const Tuple &tuple) = default;
 
 		template <size_t INDEX>
-		auto &get() const
-		{
-			return std::get<INDEX>(std_tuple);
-		}
+		auto &get() const;
 
 		template <size_t INDEX>
-		auto &get()
-		{
-			return std::get<INDEX>(std_tuple);
-		}
+		auto &get();
 
-		static constexpr size_t get_size()
-		{
-			return std::tuple_size<StdTuple>::value;
-		}
+		static constexpr size_t get_size();
 
-		static constexpr size_t size()
-		{
-			return get_size();
-		}
+		static constexpr size_t size();
 		
-		static constexpr bool is_empty()
-		{
-			return size() == 0;
-		}
+		static constexpr bool is_empty();
 
 		template<typename Tuple>
-		constexpr auto operator<=(Tuple &tuple) const
-		{
-			return std_tuple <= tuple.std_tuple;
-		}
+		constexpr auto operator<=(Tuple &tuple) const;
 
 		template<typename Tuple>
-		constexpr auto operator>=(Tuple &tuple) const
-		{
-			return std_tuple >= tuple.std_tuple;
-		}
+		constexpr auto operator>=(Tuple &tuple) const;
 
 		template<typename Tuple>
-		constexpr auto operator<(Tuple &tuple) const
-		{
-			return std_tuple < tuple.std_tuple;
-		}
+		constexpr auto operator<(Tuple &tuple) const;
 
 		template<typename Tuple>
-		constexpr auto operator>(Tuple &tuple) const
-		{
-			return std_tuple > tuple.std_tuple;
-		}
+		constexpr auto operator>(Tuple &tuple) const;
 
 		template<typename... RHSArguments>
-		constexpr auto operator==(const Tuple<RHSArguments...> &rhs) const
-		{
-			return std_tuple == rhs.std_tuple;
-		}
+		constexpr auto operator==(const Tuple<RHSArguments...> &rhs) const;
 
 		template<typename... RHSArguments>
-		constexpr auto operator!=(const Tuple<RHSArguments...> &rhs) const
-		{
-			return std_tuple != rhs.std_tuple;
-		}
+		constexpr auto operator!=(const Tuple<RHSArguments...> &rhs) const;
 
 		template <typename... RHSArguments>
-		constexpr auto operator=(const Tuple<RHSArguments...> &rhs)
-		{
-			std_tuple = rhs.std_tuple;
-			return *this;
-		}
+		constexpr auto operator=(const Tuple<RHSArguments...> &rhs);
 
 		template <typename Tuple>
-		constexpr auto concat(Tuple &tuple) const
-		{
-			auto result = std::tuple_cat
-			(
-				std_tuple,
-				tuple.std_tuple
-			);
-
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(result)>(result);
-		}
+		constexpr auto concat(Tuple &tuple) const;
 
 		template <typename Tuple>
-		constexpr auto operator+(Tuple &tuple) const
-		{
-			return concat(tuple);
-		}
+		constexpr auto operator+(Tuple &tuple) const;
 		
 		template <typename Tuple>
-		constexpr auto concat(Tuple &&tuple)
-		{
-			auto result = std::tuple_cat
-			(
-				std_tuple,
-				tuple.std_tuple
-			);
-			
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(result)>(result);
-		}
+		constexpr auto concat(Tuple &&tuple);
 		
 		template <typename Tuple>
-		constexpr auto operator+(Tuple &&tuple)
-		{
-			return concat(tuple);
-		}
+		constexpr auto operator+(Tuple &&tuple);
 
 		template <size_t COUNT>
-		constexpr auto skip_first() const
-		{
-			auto tuple = ::metaxxa::skip_first<COUNT>(std_tuple);
-
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
-		}
+		constexpr auto skip_first() const;
 
 		template <size_t COUNT>
-		static constexpr auto skip_first_types() ->
-			detail::MoveTemplateTypes
-			<
-				::metaxxa::Tuple,
-				decltype(::metaxxa::skip_first_types<COUNT, StdTuple>())
-			>;
+		static constexpr auto skip_first_types();
 
 		template <typename Callable>
-		constexpr void for_each(Callable callable) const
-		{
-			::metaxxa::for_each(std_tuple, callable);
-		}
+		constexpr void for_each(Callable callable) const;
 
 		template 
 		<
 			template <typename ValueType> typename Functor,
 			typename... FunctorArguments
 		>
-		static constexpr void for_each_types(FunctorArguments&&... arguments)
-		{
-			::metaxxa::for_each_types<StdTuple, Functor>(std::forward<FunctorArguments>(arguments)...);
-		}
+		static constexpr void for_each_types(FunctorArguments&&... arguments);
 
 		template <typename Callable>
-		constexpr bool every(Callable callable) const
-		{
-			return ::metaxxa::every(std_tuple, callable);
-		}
+		constexpr bool every(Callable callable) const;
 
 		template
 		<
 			template <typename ValueType> typename Functor,
 			typename... FunctorArguments
 		>
-		static constexpr bool every_types(FunctorArguments&&... arguments)
-		{
-			return ::metaxxa::every_types<StdTuple, Functor>(std::forward<FunctorArguments>(arguments)...);
-		}
+		static constexpr bool every_types(FunctorArguments&&... arguments);
 
-		constexpr bool is_same() const
-		{
-			return ::metaxxa::is_same(std_tuple);
-		}
+		constexpr bool is_same() const;
 
-		static constexpr bool is_same_types() 
-		{
-			return ::metaxxa::is_same_types<StdTuple>();
-		}
+		static constexpr bool is_same_types();
 
-		constexpr auto max() const
-		{
-			return ::metaxxa::max(std_tuple);
-		}
+		constexpr auto max() const;
 
-		constexpr auto &first() const
-		{
-			return ::metaxxa::first(std_tuple);
-		}
+		constexpr auto &first() const;
 
-		constexpr auto &first()
-		{
-			return ::metaxxa::first(std_tuple);
-		}
+		constexpr auto &first();
 
-		constexpr auto first_types() const -> decltype(::metaxxa::first_types<StdTuple>());
+		constexpr auto first_types() const;
 
-		constexpr auto &last() const
-		{
-			return ::metaxxa::last(std_tuple);
-		}
+		constexpr auto &last() const;
 
-		constexpr auto &last()
-		{
-			return ::metaxxa::last(std_tuple);
-		}
+		constexpr auto &last();
 
-		constexpr auto last_types() const -> decltype(::metaxxa::last_types<StdTuple>());
+		constexpr auto last_types() const;
 
 
 		template <typename Callable>
-		constexpr auto map(Callable callable) const
-		{
-			auto tuple = ::metaxxa::map(std_tuple, callable);
-
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
-		}
+		constexpr auto map(Callable callable) const;
 
 		template 
 		<
 			template <typename ValueType> typename Functor,
 			typename... FunctorArguments
 		>
-		static constexpr auto map_types(FunctorArguments&&... arguments)
-		{
-			auto tuple = ::metaxxa::map_types<StdTuple, Functor, FunctorArguments...>(std::forward<FunctorArguments>(arguments)...);
+		static constexpr auto map_types(FunctorArguments&&... arguments);
 
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
-		}
-
-		constexpr auto sum() const
-		{
-			return ::metaxxa::sum(std_tuple);
-		}
+		constexpr auto sum() const;
 
 		template <typename Callable>
-		auto find(Callable callable) const
-		{
-			return ::metaxxa::find(std_tuple, callable);
-		}
+		auto find(Callable callable) const;
 
 		template
 		<
 			template <typename ValueType> typename Functor,
 			typename... FunctorArguments
 		>
-		static constexpr auto find_types(FunctorArguments&&... arguments)
-		{
-			return ::metaxxa::find_types<StdTuple, Functor, FunctorArguments...>
-			(
-				std::forward<FunctorArguments>(arguments)...
-			);
-		}
+		static constexpr auto find_types(FunctorArguments&&... arguments);
 
 		template <typename Callable>
-		auto constexpr filter(Callable callable)
-		{
-			auto tuple = ::metaxxa::filter(std_tuple, callable);
-
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
-		}
+		auto constexpr filter(Callable callable);
 
 		template
 		<
 			template <typename ValueType> typename Functor,
 			typename... FunctorArguments
 		>
-		static constexpr auto filter_types(FunctorArguments&&... arguments)
-		{
-			auto tuple = ::metaxxa::filter_types<StdTuple, Functor, FunctorArguments...>
-			(
-				std::forward<FunctorArguments>(arguments)...
-			);
-
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
-
-		} 
+		static constexpr auto filter_types(FunctorArguments&&... arguments);
 
 		template <typename Type>
-		constexpr auto contains(Type &value)
-		{
-			return ::metaxxa::contains(std_tuple, value);
-		}
+		constexpr auto contains(Type &value);
 
 		template <typename Type>
-		constexpr auto contains(Type &&value)
-		{
-			return ::metaxxa::contains(std_tuple, std::forward<Type>(value));
-		}
+		constexpr auto contains(Type &&value);
 
 		template <typename... Types>
-		static constexpr bool contains_types()
-		{
-			return ::metaxxa::contains_types<StdTuple, Types...>();
-		}
+		static constexpr bool contains_types();
 
-		static constexpr auto distinct_types()
-		{
-			return std::declval<detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(::metaxxa::distinct_types<StdTuple>())>>();
-		}
+		static constexpr auto distinct_types();
 
 		template <typename Type>
-		static constexpr bool is_converts_to_types()
-		{
-			return ::metaxxa::is_converts_to_types<StdTuple, Type>();
-		}
+		static constexpr bool is_converts_to_types();
 
 		template <template <typename> typename TemplateType>
-		constexpr auto wrap()
-		{
-			auto tuple = wrap_of_std_tuple<StdTuple, TemplateType>(std_tuple);
-
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(tuple)>(tuple);
-		}
+		constexpr auto wrap();
 
 		template <template <typename> typename TemplateType>
-		static constexpr auto wrap_types()
-		{
-			return std::declval<detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(wrap_of_std_tuple_types<StdTuple, TemplateType>())>>();
-		}
+		static constexpr auto wrap_types();
 
 		template <typename... RHSArguments>
-		void execute_functions(RHSArguments&&... arguments) const
-		{
-			::metaxxa::execute_functions(std_tuple, std::forward<RHSArguments>(arguments)...);
-		}
+		void execute_functions(RHSArguments&&... arguments) const;
 
 		template <typename Callable>
-		auto call_function(Callable &callable) const
-		{
-			return ::metaxxa::call_function(std_tuple, callable);
-		}
+		auto call_function(Callable &callable) const;
 
-		std::string to_string() const
-		{
-			return ::metaxxa::to_string(std_tuple);
-		}
+		std::string to_string() const;
 
-		static std::string to_string_types() 
-		{
-			return ::metaxxa::to_string_types<StdTuple>();
-		}
+		static std::string to_string_types();
 
 		template<typename...> friend class Tuple;
 		friend class Tuple<>;
@@ -398,133 +196,72 @@ namespace metaxxa
 
 		Tuple() = default;
 
-		Tuple(const std::tuple<> &) {}
+		Tuple(const std::tuple<> &);
 
 		template<typename... Arguments>
-		constexpr auto operator==(const Tuple<Arguments...> &rhs) const
-		{
-			return std_tuple == rhs.std_tuple;
-		}
+		constexpr auto operator==(const Tuple<Arguments...> &rhs) const;
 
 		template<typename... Arguments>
-		constexpr auto operator!=(const Tuple<Arguments...> &rhs) const
-		{
-			return std_tuple != rhs.std_tuple;
-		}
+		constexpr auto operator!=(const Tuple<Arguments...> &rhs) const;
 
 		template <typename Tuple>
-		constexpr auto concat(Tuple &tuple) const
-		{
-			auto result = std::tuple_cat
-			(
-				std_tuple,
-				tuple.std_tuple
-			);
-
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(result)>(result);
-		}
+		constexpr auto concat(Tuple &tuple) const;
 
 		template <typename Tuple>
-		constexpr auto operator+(Tuple &tuple) const
-		{
-			return concat(tuple);
-		}
+		constexpr auto operator+(Tuple &tuple) const;
 
 		template <typename Tuple>
-		constexpr auto concat(Tuple &&tuple)
-		{
-			auto result = std::tuple_cat
-			(
-				std_tuple,
-				tuple.std_tuple
-			);
-
-			return detail::MoveTemplateTypes<::metaxxa::Tuple, decltype(result)>(result);
-		}
+		constexpr auto concat(Tuple &&tuple);
 
 		template <typename Tuple>
-		constexpr auto operator+(Tuple &&tuple)
-		{
-			return concat(tuple);
-		}
+		constexpr auto operator+(Tuple &&tuple);
 
-		static constexpr size_t get_size()
-		{
-			return 0;
-		}
+		static constexpr size_t get_size();
 
-		static constexpr size_t size()
-		{
-			return get_size();
-		}
+		static constexpr size_t size();
 		
-		static constexpr bool is_empty()
-		{
-			return true;
-		}
+		static constexpr bool is_empty();
 
 		template <typename Callable>
-		constexpr void for_each(Callable callable) const
-		{}
+		constexpr void for_each(Callable callable) const;
 
 		template
 		<
 			template <typename ValueType> typename Functor,
 			typename... FunctorArguments
 		>
-		static constexpr void for_each_types(FunctorArguments&&... arguments)
-		{}
+		static constexpr void for_each_types(FunctorArguments&&... arguments);
 
 		template <typename Callable>
-		constexpr bool every(Callable callable) const
-		{
-			return false;
-		}
+		constexpr bool every(Callable callable) const;
 
 		template
 		<
 			template <typename ValueType> typename Functor,
 			typename... FunctorArguments
 		>
-		static constexpr bool every_types()
-		{
-			return false;
-		}
+		static constexpr bool every_types();
 		
 		template <typename... Types>
-		static constexpr bool contains_types()
-		{
-			return ::metaxxa::contains_types<StdTuple, Types...>();
-		}
+		static constexpr bool contains_types();
 
-		static constexpr auto distinct_types() -> Tuple;
+		static constexpr auto distinct_types();
 
 		template <typename Type>
-		static constexpr bool is_converts_to_types()
-		{
-			return false;
-		}
+		static constexpr bool is_converts_to_types();
 
 		template <template <typename> typename TemplateType>
-		static constexpr auto wrap_all_types()
-		{
-			return std::tuple<>();
-		}
+		static constexpr auto wrap_all_types();
 
 		template <typename... RHSArguments>
-		void execute_functions(RHSArguments&&... arguments) const
-		{}
+		void execute_functions(RHSArguments&&... arguments) const;
 		
 		template <typename Callable>
-		auto call_function(Callable &callable) const
-		{
-			return callable();
-		}
+		auto call_function(Callable &callable) const;
 
-		std::string to_string() const
-		{
-			return ::metaxxa::to_string(std::tuple<>());
-		}
+		std::string to_string() const;
+
+		static std::string to_string_types();
 
 	private:
 		StdTuple std_tuple;
@@ -533,18 +270,25 @@ namespace metaxxa
 	};		
 
 	template <typename... Arguments>
-	auto tuple_ref(Arguments&&... arguments)
-	{
-		return Tuple<Arguments...>(std::forward<Arguments>(arguments)...);
-	}
+	auto tuple_ref(Arguments&&... arguments);
 
 	template <typename... Arguments>
-	auto tuple(Arguments... arguments)
-	{
-		Tuple<Arguments...> result(std::forward<Arguments>(arguments)...);
+	auto tuple(Arguments... arguments);
+}
 
-		return result;
-	}
+namespace std
+{
+	template <typename... Arguments>
+	class tuple_size<metaxxa::Tuple<Arguments...>> 
+		: public std::integral_constant<size_t, metaxxa::Tuple<Arguments...>::size()>
+	{};
+
+	template <size_t INDEX, typename... Arguments>
+	class tuple_element<INDEX, metaxxa::Tuple<Arguments...>>
+	{
+	public:
+		using type = std::tuple_element_t<INDEX, typename metaxxa::Tuple<Arguments...>::StdTuple>;
+	};
 }
 
 #endif // METAXXA_TUPLE_H

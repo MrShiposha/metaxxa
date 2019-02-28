@@ -546,7 +546,7 @@ namespace metaxxa
     
     constexpr auto Tuple<>::distinct_types() 
     {
-        return Tuple<>();
+        return std::declval<Tuple<>>();
     }
 
     

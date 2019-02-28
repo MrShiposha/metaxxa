@@ -13,13 +13,9 @@
     #endif // METAXXA_TEMPLATE
 #endif // Compilers
 
-#include "Tuple.h"
 #include "Tuple.inc"
-#include "Type.h"
 #include "Type.inc"
-#include "Function.h"
 #include "Function.inc"
-#include "CallableToMethod.h"
 #include "MoveFunctionArgumentTypes.h"
 
 #endif // METAXXA_H

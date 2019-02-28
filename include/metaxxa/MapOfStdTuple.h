@@ -1,8 +1,10 @@
 #ifndef METAXXA_MAPOFSTDTUPLE_H
 #define METAXXA_MAPOFSTDTUPLE_H
 
-#include "Type.h"
 #include <tuple>
+
+#include "Type.h"
+#include "Function.h"
 
 namespace metaxxa
 {

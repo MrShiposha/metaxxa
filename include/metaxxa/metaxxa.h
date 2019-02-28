@@ -16,6 +16,7 @@
 #include "Tuple.h"
 #include "Tuple.inc"
 #include "Type.h"
+#include "Type.inc"
 #include "Function.h"
 #include "Function.inc"
 #include "CallableToMethod.h"

@@ -173,23 +173,24 @@ namespace metaxxa::detail
 	{
 		return is_same_signature<FirstCallable, SecondCallable>();
 	}
+}
 
-	template <typename FirstCallable, typename SecondCallable>
-	constexpr auto operator==(Function<FirstCallable>, Function<SecondCallable>)
-	{
-		constexpr bool IS_SAME_SIGNSATURE = is_same_signature<FirstCallable, SecondCallable>();
+template <typename FirstCallable, typename SecondCallable>
+constexpr auto operator==(metaxxa::detail::Function<FirstCallable>, metaxxa::detail::Function<SecondCallable>)
+{
+	using namespace metaxxa;
+	constexpr bool IS_SAME_SIGNSATURE = is_same_signature<FirstCallable, SecondCallable>();
 
-		if constexpr(Function<FirstCallable>::IS_METHOD && Function<SecondCallable>::IS_METHOD)
-			return IS_SAME_SIGNSATURE && (Function<FirstCallable>::IS_CONST == Function<SecondCallable>::IS_CONST);
-		else
-			return IS_SAME_SIGNSATURE;
-	}
+	if constexpr(detail::Function<FirstCallable>::IS_METHOD && detail::Function<SecondCallable>::IS_METHOD)
+		return IS_SAME_SIGNSATURE && (detail::Function<FirstCallable>::IS_CONST == detail::Function<SecondCallable>::IS_CONST);
+	else
+		return IS_SAME_SIGNSATURE;
+}
 
-	template <typename FirstCallable, typename SecondCallable>
-	constexpr auto operator!=(Function<FirstCallable> first, Function<SecondCallable> second)
-	{
-		return !(first == second);
-	}
+template <typename FirstCallable, typename SecondCallable>
+constexpr auto operator!=(metaxxa::detail::Function<FirstCallable> first, metaxxa::detail::Function<SecondCallable> second)
+{
+	return !(first == second);
 }
 
 #endif // METAXXA_detail_FUNCTION_H

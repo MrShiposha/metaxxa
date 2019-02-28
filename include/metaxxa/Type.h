@@ -4,19 +4,11 @@
 #include <typeinfo>
 #include <typeindex>
 #include <type_traits>
+
 #include "detail/MoveTemplateTypes.h"
 #include "detail/MoveTemplateTypesUnique.h"
 #include "detail/WrapToTemplateIfNotWrapped.h"
-#include "detail/OperatorTesters.h"
 #include "detail/TypeHasOperatorMethodMacros.h"
-#include "detail/HasMethodToString.h"
-#include "detail/IsExplicitlyConstructible.h"
-#include "detail/IsImplicitlyConstructible.h"
-#include "detail/IsInstantiationOf.h"
-#include "detail/Demangle.h"
-#include "detail/IsTemplate.h"
-
-#include "FunctionTag.h"
 
 namespace metaxxa
 {
@@ -33,279 +25,148 @@ namespace metaxxa
 		template <template <typename...> typename TemplateType>
 		using WrapToTemplateIfNotWrapped = typename detail::template WrapToTemplateIfNotWrapped<TemplateType, SomeType>::Result;
 
-		static std::string get_name()
-		{
-			return detail::demangle_no_cvr<SomeType>();
-		}
+		static std::string get_name();
 
-		static std::string name()
-		{
-			return get_name();
-		}
+		static std::string name();
 
-		static std::string get_short_name()
-		{
-			auto type_name = name();
-			
-			auto template_params_begin = type_name.find_first_of("<");
+		static std::string get_short_name();
 
-			std::string::size_type namespace_end_index;
-			if (template_params_begin != std::string::npos)
-				namespace_end_index = type_name.substr(0, template_params_begin).find_last_of("::");
-			else 
-				namespace_end_index = type_name.find_last_of("::");
+		static std::string short_name();
 
-			if (namespace_end_index != std::string::npos)
-				type_name = type_name.substr(namespace_end_index + 1);
+		static std::string get_name_without_templates();
 
-			if constexpr (std::is_class_v<SomeType>)
-				return "class " + type_name;
-			else
-				return type_name;
-		}
+		static std::string name_without_templates();
 
-		static std::string short_name()
-		{
-			return get_short_name();
-		}
+		static std::string get_short_name_without_templates();
 
-		static std::string get_name_without_templates()
-		{
-			auto type_name = name();
+		static std::string short_name_without_templates();
 
-			auto template_params_begin = type_name.find_first_of("<");
-			if (template_params_begin != std::string::npos)
-				type_name = type_name.substr(0, template_params_begin);
+		static std::string get_name_with_modifiers();
 
-			return type_name;
-		}
+		static std::string name_with_modifiers();
 
-		static std::string name_without_templates()
-		{
-			return get_name_without_templates();
-		}
+		static std::type_index get_index();
 
-		static std::string get_short_name_without_templates()
-		{
-			auto type_name = name();
+		static std::type_index index();
 
-			auto template_params_begin = type_name.find_first_of("<");
-			if (template_params_begin != std::string::npos)
-				type_name = type_name.substr(0, template_params_begin);
-
-			auto namespace_end_index = type_name.find_last_of("::");
-			if (namespace_end_index != std::string::npos)
-				type_name = type_name.substr(namespace_end_index + 1);
-
-			if constexpr (std::is_class_v<SomeType>)
-				return "class " + type_name;
-			else
-				return type_name;
-		}
-
-		static std::string short_name_without_templates()
-		{
-			return get_short_name_without_templates();
-		}
-
-		static std::string get_name_with_modifiers()
-		{
-			return detail::demangle<SomeType>();
-		}
-
-		static std::string name_with_modifiers()
-		{
-			return get_name_with_modifiers();
-		}
-
-		static std::type_index get_index() 
-		{
-			return std::type_index(typeid(SomeType));
-		}
-
-		static std::type_index index() 
-		{
-			return get_index();
-		}
-
-		static constexpr bool has_method_to_string()
-		{
-			return detail::has_method_to_string<SomeType>();
-		}
+		static constexpr bool has_method_to_string();
 
 		template <typename ToType>
-		static constexpr bool is_convertible_to()
-		{
-			return std::is_convertible_v<SomeType, ToType>;
-		}
+		static constexpr bool is_convertible_to();
 
 		template <typename DerivedType>
-		static constexpr bool is_base_of()
-		{
-			return std::is_base_of_v<SomeType, DerivedType>;
-		}
+		static constexpr bool is_base_of();
 
 		template <typename BaseType>
-		static constexpr bool is_derived_from()
-		{
-			return std::is_base_of_v<BaseType, SomeType>;
-		}
+		static constexpr bool is_derived_from();
 
 		template <typename FromType>
-		static constexpr bool is_convertible_from()
-		{
-			return std::is_convertible_v<FromType, SomeType>;
-		}
+		static constexpr bool is_convertible_from();
 
-		static constexpr bool is_fundamental()
-		{
-			return std::is_fundamental_v<SomeType>;
-		}
+		static constexpr bool is_fundamental();
 
-		static constexpr bool is_class()
-		{
-			return std::is_class_v<SomeType>;
-		}
+		static constexpr bool is_class();
 
-		static constexpr bool is_pod()
-		{
-			return std::is_pod_v<SomeType>;
-		}
+		static constexpr bool is_pod();
 
-		static constexpr bool is_pointer()
-		{
-			return std::is_pointer_v<SomeType>;
-		}
+		static constexpr bool is_pointer();
 
-		static constexpr bool is_reference()
-		{
-			return std::is_reference_v<SomeType>;
-		}
+		static constexpr bool is_reference();
 
-		static constexpr bool is_lvalue_reference()
-		{
-			return std::is_lvalue_reference_v<SomeType>;
-		}
+		static constexpr bool is_lvalue_reference();
 
-		static constexpr bool is_rvalue_reference()
-		{
-			return std::is_rvalue_reference_v<SomeType>;
-		}
+		static constexpr bool is_rvalue_reference();
 
 		template <typename Argument>
-		static constexpr bool is_implicitly_constructible_from()
-		{
-			return detail::IS_IMPLICITLY_CONSTRUCTIBLE<SomeType, Argument>;
-		}
+		static constexpr bool is_implicitly_constructible_from();
 
 		template <typename Argument>
-		static constexpr bool is_explicitly_constructible_from()
-		{
-			return detail::IS_EXPLICITLY_CONSTRUCTIBLE<SomeType, Argument>;
-		}
+		static constexpr bool is_explicitly_constructible_from();
 
 		template <template <typename...> typename TemplateType>
-		static constexpr bool is_instantiation_of()
-		{
-			return detail::IS_INSTANTIATION_OF<TemplateType, SomeType>;
-		}
+		static constexpr bool is_instantiation_of();
 
-		static constexpr bool is_template()
-		{
-			return detail::IS_TEMPLATE<SomeType>;
-		}
+		static constexpr bool is_template();
 
-		static constexpr bool is_usual_callable()
-		{
-			return is_derived_from<FunctionTag>();
-		}
+		static constexpr bool is_usual_callable();
 
 		// ASSIGNMENT 
 		// {
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, plus_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, subtract_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, multiply_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, divide_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, mod_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, bit_and_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, bit_or_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, bit_xor_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, left_shift_assign);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, right_shift_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(plus_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(subtract_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(multiply_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(divide_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(mod_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(bit_and_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(bit_or_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(bit_xor_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(left_shift_assign);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(right_shift_assign);
 		// }
 
 		// (IN|DE)CREMENT
 		// {
-		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR(SomeType, increment);
-		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR(SomeType, decrement);
+		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR(increment);
+		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR(decrement);
 		// }
 
 		// ARITHMETIC
 		// {
-		___METAXXA___TYPE___DECLARE_UNARY_AND_BINARY_OPERATOR(SomeType, plus);
-		___METAXXA___TYPE___DECLARE_UNARY_AND_BINARY_OPERATOR(SomeType, minus);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, divide);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, mod);
-		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (SomeType, tilde);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, bit_or);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, bit_xor);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, left_shift);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, right_shift);
+		___METAXXA___TYPE___DECLARE_UNARY_AND_BINARY_OPERATOR(plus);
+		___METAXXA___TYPE___DECLARE_UNARY_AND_BINARY_OPERATOR(minus);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(divide);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(mod);
+		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (tilde);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(bit_or);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(bit_xor);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(left_shift);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(right_shift);
 		// }
 
 
 		// LOGICAL
 		// {
-		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (SomeType, not);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, logical_and);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, logical_or);
+		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (not);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(logical_and);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(logical_or);
 		// }
 
 		// COMPARISON
 		// {
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, equal);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, not_equal);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, less);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, greater);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, less_equal);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, greater_equal);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(equal);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(not_equal);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(less);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(greater);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(less_equal);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(greater_equal);
 		// }
 
 		// MEMBER ACCESS
 		// {
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, subscript);
-		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (SomeType, pointer_access);
-		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (SomeType, pointer_to_member_access);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(subscript);
+		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (pointer_access);
+		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (pointer_to_member_access);
 		// }
 
 		// OTHER
 		// {
 
-		___METAXXA___TYPE___DECLARE_NAMED_UNARY_AND_BINARY_OPERATOR(SomeType, asterisk, dereference, multiply);
-		___METAXXA___TYPE___DECLARE_NAMED_UNARY_AND_BINARY_OPERATOR(SomeType, ampersand, address, bit_and);
-		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(SomeType, comma);
-		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (SomeType, call);
+		___METAXXA___TYPE___DECLARE_NAMED_UNARY_AND_BINARY_OPERATOR(asterisk, dereference, multiply);
+		___METAXXA___TYPE___DECLARE_NAMED_UNARY_AND_BINARY_OPERATOR(ampersand, address, bit_and);
+		___METAXXA___TYPE___DECLARE_BINARY_OPERATOR(comma);
+		___METAXXA___TYPE___DECLARE_UNARY_OPERATOR (call);
 
 		template <typename ToType>
-		static constexpr bool has_operator()
-		{
-			return detail::___METAXXA___OPERATOR_TESTER(cast_operator)<SomeType, ToType, void>::has();
-		}
+		static constexpr bool has_operator();
 		// }
 	};
-
-	template <typename FirstType, typename SecondType>
-	constexpr bool operator==(const Type<FirstType> &, const Type<SecondType> &)
-	{
-		return std::is_same_v<FirstType, SecondType>;
-	}
-
-	template <typename FirstType, typename SecondType>
-	constexpr bool operator!=(const Type<FirstType> &a, const Type<SecondType> &b)
-	{
-		return !(a == b);
-	}
 }
+
+template <typename FirstType, typename SecondType>
+constexpr bool operator==(metaxxa::Type<FirstType>, metaxxa::Type<SecondType>);
+
+template <typename FirstType, typename SecondType>
+constexpr bool operator!=(metaxxa::Type<FirstType>, metaxxa::Type<SecondType>);
 
 #endif // METAXXA_TYPE_H

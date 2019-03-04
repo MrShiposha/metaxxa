@@ -18,7 +18,7 @@
 #include "IsConvertsToTypesOfStdTuple.h"
 #include "FindOfStdTuple.h"
 #include "ToStringOfStdTuple.h"
-// #include "ExecuteFunctionsOfStdTuple.h"
+#include "ExecuteFunctionsOfStdTuple.h"
 #include "CallFunctionOfStdTuple.h"
 #include "FilterOfStdTuple.h"
 #include "WrapOfStdTuple.h"
@@ -401,12 +401,12 @@ constexpr auto Tuple<Arguments...>::wrap_types()
     return std::declval<metaxxa::detail::MoveTemplateTypes<::Tuple, decltype(metaxxa::wrap_of_std_tuple_types<StdTuple, TemplateType>())>>();
 }
 
-// template <typename... Arguments>
-// template <typename... RHSArguments>
-// void Tuple<Arguments...>::execute_functions(RHSArguments&&... arguments) const
-// {
-//     ::metaxxa::execute_functions(std_tuple, std::forward<RHSArguments>(arguments)...);
-// }
+template <typename... Arguments>
+template <typename... RHSArguments>
+void Tuple<Arguments...>::execute_functions(RHSArguments&&... arguments) const
+{
+    ::metaxxa::execute_functions(std_tuple, std::forward<RHSArguments>(arguments)...);
+}
 
 template <typename... Arguments>
 template <typename Callable>
@@ -562,9 +562,9 @@ constexpr auto Tuple<>::wrap_all_types()
 }
 
 
-// template <typename... RHSArguments>
-// void Tuple<>::execute_functions(RHSArguments&&... arguments) const
-// {}
+template <typename... RHSArguments>
+void Tuple<>::execute_functions(RHSArguments&&... arguments) const
+{}
 
 
 template <typename Callable>

@@ -167,8 +167,8 @@ public:
 	template <template <typename> typename TemplateType>
 	static constexpr auto wrap_types();
 
-	// template <typename... RHSArguments>
-	// void execute_functions(RHSArguments&&... arguments) const;
+	template <typename... RHSArguments>
+	void execute_functions(RHSArguments&&... arguments) const;
 
 	template <typename Callable>
 	auto call_function(Callable &callable) const;
@@ -249,8 +249,8 @@ public:
 	template <template <typename> typename TemplateType>
 	static constexpr auto wrap_all_types();
 
-	// template <typename... RHSArguments>
-	// void execute_functions(RHSArguments&&... arguments) const;
+	template <typename... RHSArguments>
+	void execute_functions(RHSArguments&&... arguments) const;
 	
 	template <typename Callable>
 	auto call_function(Callable &callable) const;

@@ -5,7 +5,7 @@ import re
 def main():
     file_prefix = 'include/metaxxa'
     exluded_files = []
-    header_guard_regex = r'#[A-Za-z]+( )*((//( )*)|(/\*( )*))?METAXXA_[A-Za-z]+(_[A-Za-z]+)*_H(( )*\*/)?'
+    header_guard_regex = r'#[A-Za-z]+( )*((//( )*)|(/\*( )*))?METAXXA_[A-Za-z]+(_[A-Za-z]+)*(_H|_INC)(( )*\*/)?'
 
     if not os.path.exists('release') or os.path.isfile('release'):
         os.makedirs('release')
@@ -74,13 +74,13 @@ def move_includes_to_top(lines: list):
     last_include_index = 0
 
     for i, line in enumerate(lines):
-        if is_include(line):
+        if is_system_include(line):
             last_include_index = i
         elif last_include_index != 0:
             break
 
     for i in range(last_include_index + 1, len(lines)):
-        if is_include(lines[i]) and (not 'cxxabi' in lines[i]):
+        if is_system_include(lines[i]) and (not 'cxxabi' in lines[i]):
             lines = move_text_row(lines, i, last_include_index + 1)
             last_include_index += 1
 

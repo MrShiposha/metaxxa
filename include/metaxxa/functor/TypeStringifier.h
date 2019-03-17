@@ -19,7 +19,7 @@ namespace metaxxa
 			{
 				if (!result.empty())
 					result += ", ";
-				result += Type<SomeType>::name();
+				result += Type<SomeType>::name_with_modifiers();
 			}
 
 		private:

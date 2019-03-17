@@ -31,14 +31,12 @@ namespace metaxxa
 		constexpr auto map_types(FunctorArguments&&... arguments)
 		{
 			using FunctorInstance = Functor<typename std::tuple_element<INDEX, Tuple>::type>;
+			using FunctorResult   = typename Function<decltype(&FunctorInstance::operator())>::Result;
 
-			static_assert
-			(
-				Type<typename Function<decltype(&FunctorInstance::operator())>::Result>() != Type<void>(), 
-				"metaxxa static error: functor for map must return value"
-			);
+			using MappedType = std::tuple<FunctorResult>;
+			auto mapped_element = FunctorInstance(std::forward<FunctorArguments>(arguments)...)();
 
-			auto mapped_tuple = std::make_tuple(FunctorInstance(std::forward<FunctorArguments>(arguments)...)());
+			MappedType mapped_tuple(mapped_element);
 
 			if constexpr (INDEX + 1 == std::tuple_size<Tuple>::value)
 				return mapped_tuple;

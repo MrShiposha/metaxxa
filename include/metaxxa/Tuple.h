@@ -3,6 +3,9 @@
 
 #include <tuple>
 
+#include "WrapOfStdTuple.h"
+#include "detail/MoveTemplateTypes.h"
+
 template <typename... Arguments>
 class Tuple
 {
@@ -165,7 +168,12 @@ public:
 	constexpr auto wrap();
 
 	template <template <typename> typename TemplateType>
-	static constexpr auto wrap_types();
+	static constexpr auto wrap_types() ->
+		metaxxa::detail::MoveTemplateTypes
+		<
+			::Tuple, 
+			decltype(metaxxa::wrap_of_std_tuple_types<StdTuple, TemplateType>())
+		>;
 
 	template <typename... RHSArguments>
 	void execute_functions(RHSArguments&&... arguments) const;

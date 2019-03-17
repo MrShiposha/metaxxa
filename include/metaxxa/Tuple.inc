@@ -395,13 +395,6 @@ constexpr auto Tuple<Arguments...>::wrap()
 }
 
 template <typename... Arguments>
-template <template <typename> typename TemplateType>
-constexpr auto Tuple<Arguments...>::wrap_types()
-{
-    return std::declval<metaxxa::detail::MoveTemplateTypes<::Tuple, decltype(metaxxa::wrap_of_std_tuple_types<StdTuple, TemplateType>())>>();
-}
-
-template <typename... Arguments>
 template <typename... RHSArguments>
 void Tuple<Arguments...>::execute_functions(RHSArguments&&... arguments) const
 {

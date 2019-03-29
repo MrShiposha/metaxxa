@@ -4,3 +4,4 @@
 
 #include "list.cpp"
 #include "isvalid.cpp"
+#include "statictuple.cpp"

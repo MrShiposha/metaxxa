@@ -5,6 +5,10 @@ TEST_CASE("Correct size", "[metaxxa::StaticTuple]")
     static_assert(StaticTuple<>::size() == 0, "Invalid size of empty StaticTuple");
     static_assert(StaticTuple<int>::size() == 1, "Invalid size of StaticTuple with size == 1");
     static_assert(StaticTuple<double, char>::size() == 2, "Invalid size of StaticTuple with size == 2");
+
+    static_assert(tuple_size_v<StaticTuple<>> == 0, "Invalid tuple_size_v of empty StaticTuple");
+    static_assert(tuple_size_v<StaticTuple<int>> == 1, "Invalid tuple_size_v of StaticTuple with size == 1");
+    static_assert(tuple_size_v<StaticTuple<double, char>> == 2, "Invalid tuple_size_v of StaticTuple with size == 2");
 }
 
 TEST_CASE("Is empty", "[metaxxa::StaticTuple]")
@@ -20,9 +24,13 @@ TEST_CASE("Get i-th type", "[metaxxa::StaticTuple]")
     using T2 = StaticTuple<double, float>;
 
     static_assert(is_same_v<T1::template Get<0>, std::size_t>, "Invalid T1::Get<0> type (must be std::size_t)");
+    static_assert(is_same_v<tuple_element_t<0, T1>, std::size_t>, "Invalid tuple_element_t<0, T1> type (must be std::size_t)");
 
     static_assert(is_same_v<T2::template Get<0>, double>, "Invalid T2::Get<0> type (must be double)");
     static_assert(is_same_v<T2::template Get<1>, float>, "Invalid T2::Get<1> type (must be float)");
+
+    static_assert(is_same_v<tuple_element_t<0, T2>, double>, "Invalid tuple_element_t<0, T2> type (must be double)");
+    static_assert(is_same_v<tuple_element_t<1, T2>, float>, "Invalid tuple_element_t<1, T2> type (must be float)");
 }
 
 TEST_CASE("Concat StaticTuple", "[metaxxa::StaticTuple]")

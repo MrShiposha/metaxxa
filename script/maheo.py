@@ -27,11 +27,11 @@ def trim_list(l: list):
 filepath_re = r'([A-Za-z]:(\\|/))?((\w|\.)+((\\|/)(\w|\.)+)*)' if platform.system() == 'Windows' \
          else r'/?((\w|\.)+((\\|/)(\w|\.)+)*)'
 
-def get_full_path(filepath: str):
+def get_full_path(prefix: str, filepath: str):
     if os.path.isabs(filepath):
         return filepath
     else:
-        return os.path.abspath(os.path.join(global_prefix, filepath))
+        return os.path.abspath(os.path.join(prefix, filepath))
 
 def is_system_include(string: str):
     return bool(re.match(r'( )*#( )*include( )+<{}>'.format(filepath_re), string))
@@ -39,8 +39,9 @@ def is_system_include(string: str):
 def is_local_include(string: str):
     return bool(re.match(r'( )*#( )*include( )+"{}"'.format(filepath_re), string))
 
-def extract_filepath(include: str):
+def extract_filepath(src_include: str, include: str):
     return get_full_path(
+        os.path.dirname(src_include),
         trim(re.sub(r'( )*#( )*include( )+', '', include).replace('"', ''))
     )
 
@@ -71,7 +72,6 @@ def is_header_guard_ifndef(string: str):
 def is_header_guard_define(ifndef_text: str, string: str):
     return bool(re.match(define_re + ifndef_text, string))
 
-global_prefix = ''
 cycled_headers = []
 header_stack = []
 
@@ -211,7 +211,7 @@ def fill_includes(filepath: str):
                         add_system_header(trim(line) + '\n')
                         header.exclude_line(index)
                     elif is_local_include(line):
-                        local_path = extract_filepath(line)
+                        local_path = extract_filepath(filepath, line)
                         if not os.path.exists(local_path):
                             print('{}:{} file not found "{}"'.format(header.filepath, index+1, local_path))
                             global is_errors
@@ -262,7 +262,6 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     main_header = os.path.abspath(sys.argv[1])
-    global_prefix = os.path.dirname(main_header)
     output_header = sys.argv[3]
 
     fill_includes(main_header)

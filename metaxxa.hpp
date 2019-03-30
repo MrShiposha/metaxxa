@@ -146,10 +146,7 @@ namespace std
     template <size_t INDEX, typename... Args>
 	class tuple_element<INDEX, metaxxa::List<Args...>>
         : public tuple_element<INDEX - 1, typename metaxxa::List<Args...>::Tail>
-	{
-	public:
-		// using type = tuple_element_t<INDEX - 1, typename metaxxa::List<Args...>::Tail>;
-	};
+	{};
 
     template <size_t INDEX>
 	class tuple_element<INDEX, metaxxa::Nil>

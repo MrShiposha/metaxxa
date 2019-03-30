@@ -25,6 +25,7 @@
 #define METAXXA_HPP
 
 #include <type_traits>
+#include <utility>
 
 #ifndef METAXXA_ISVALID_H
 #define METAXXA_ISVALID_H
@@ -250,6 +251,104 @@ namespace metaxxa
         return get_size();
     }
 }
+
+
+#ifndef METAXXA_INDEXRANGE_H
+#define METAXXA_INDEXRANGE_H
+
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template <std::size_t TO_ADD, std::size_t... SEQ>
+        constexpr auto shift_seq(std::index_sequence<SEQ...> &&)
+            -> std::index_sequence<TO_ADD + SEQ ...>;
+    }
+
+    template <std::size_t MIN, std::size_t MAX>
+    using MakeIndexRange = decltype(detail::shift_seq<MIN>(std::declval<std::make_index_sequence<MAX-MIN>>())); 
+}
+
+#endif // METAXXA_INDEXRANGE_H
+
+
+#ifndef METAXXA_ALGORITHM_H
+#define METAXXA_ALGORITHM_H
+
+
+#ifndef METAXXA_ALGORITHM_INDEXFILTER_H
+#define METAXXA_ALGORITHM_INDEXFILTER_H
+
+
+namespace metaxxa
+{
+    template 
+    <
+        template <typename...> typename Template, 
+        typename TupleT, 
+        std::size_t... INDICES
+    >
+    using IndexFilter = Template<std::tuple_element_t<INDICES, TupleT>...>;
+
+}
+
+#endif // METAXXA_ALGORITHM_INDEXFILTER_H
+
+#ifndef METAXXA_ALGORITHM_SEQFILTER_H
+#define METAXXA_ALGORITHM_SEQFILTER_H
+
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template
+        <
+            template <typename...> typename Template,
+            typename TupleT,
+            std::size_t... INDICES
+        >
+        constexpr auto seq_filter(std::index_sequence<INDICES...> &&)
+            -> IndexFilter<Template, TupleT, INDICES...>;
+    }
+
+    template
+    <
+        template <typename...> typename Template,
+        typename TupleT,
+        typename Seq
+    >
+    using SeqFilter = decltype(detail::seq_filter<Template, TupleT>(std::declval<Seq>()));
+}
+
+#endif // METAXXA_ALGORITHM_SEQFILTER_H
+
+
+#ifndef METAXXA_ALGORITHM_SKIPFIRST_H
+#define METAXXA_ALGORITHM_SKIPFIRST_H
+
+
+
+namespace metaxxa
+{
+    template 
+    <
+        template <typename...> typename Template,
+        typename TupleT, 
+        std::size_t N
+    >
+    using SkipFirst = SeqFilter
+    <
+        Template,
+        TupleT,
+        MakeIndexRange<N, std::tuple_size_v<TupleT>>
+    >;
+}
+
+#endif // METAXXA_ALGORITHM_SKIPFIRST_H
+
+#endif // METAXXA_ALGORITHM_H
 
 
 #endif // METAXXA_HPP

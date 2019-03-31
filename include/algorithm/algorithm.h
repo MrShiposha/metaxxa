@@ -3,6 +3,7 @@
 
 #include "indexfilter.h"
 #include "seqfilter.h"
+#include "skiprange.h"
 #include "skipfirst.h"
 #include "skiplast.h"
 

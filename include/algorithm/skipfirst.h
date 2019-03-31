@@ -1,10 +1,7 @@
 #ifndef METAXXA_ALGORITHM_SKIPFIRST_H
 #define METAXXA_ALGORITHM_SKIPFIRST_H
 
-#include <type_traits>
-
-#include "seqfilter.h"
-#include "../indexrange.h"
+#include "skiprange.h"
 
 namespace metaxxa
 {
@@ -14,11 +11,11 @@ namespace metaxxa
         typename TupleT, 
         std::size_t N
     >
-    using SkipFirst = SeqFilter
+    using SkipFirst = SkipRange
     <
         Template,
         TupleT,
-        MakeIndexRange<N, std::tuple_size_v<TupleT>>
+        N, std::tuple_size_v<TupleT>
     >;
 }
 

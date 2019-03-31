@@ -322,9 +322,32 @@ namespace metaxxa
 #endif // METAXXA_ALGORITHM_SEQFILTER_H
 
 
+#ifndef METAXXA_ALGORITHM_SKIPRANGE_H
+#define METAXXA_ALGORITHM_SKIPRANGE_H
+
+
+
+namespace metaxxa
+{
+    template
+    <
+        template <typename...> typename Template,
+        typename TupleT,
+        std::size_t FROM_I,
+        std::size_t TO_I
+    >
+    using SkipRange = SeqFilter
+    <
+        Template,
+        TupleT,
+        MakeIndexRange<FROM_I, TO_I>
+    >;
+}
+
+#endif // METAXXA_ALGORITHM_SKIPRANGE_H
+
 #ifndef METAXXA_ALGORITHM_SKIPFIRST_H
 #define METAXXA_ALGORITHM_SKIPFIRST_H
-
 
 
 namespace metaxxa
@@ -335,11 +358,11 @@ namespace metaxxa
         typename TupleT, 
         std::size_t N
     >
-    using SkipFirst = SeqFilter
+    using SkipFirst = SkipRange
     <
         Template,
         TupleT,
-        MakeIndexRange<N, std::tuple_size_v<TupleT>>
+        N, std::tuple_size_v<TupleT>
     >;
 }
 
@@ -347,7 +370,6 @@ namespace metaxxa
 
 #ifndef METAXXA_ALGORITHM_SKIPLAST_H
 #define METAXXA_ALGORITHM_SKIPLAST_H
-
 
 
 namespace metaxxa
@@ -358,11 +380,11 @@ namespace metaxxa
         typename TupleT,
         std::size_t N
     >
-    using SkipLast = SeqFilter
+    using SkipLast = SkipRange
     <
         Template,
         TupleT,
-        MakeIndexRange<0, std::tuple_size_v<TupleT> - N>
+        0, std::tuple_size_v<TupleT> - N
     >;
 }
 

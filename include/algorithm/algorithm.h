@@ -4,5 +4,6 @@
 #include "indexfilter.h"
 #include "seqfilter.h"
 #include "skipfirst.h"
+#include "skiplast.h"
 
 #endif // METAXXA_ALGORITHM_H

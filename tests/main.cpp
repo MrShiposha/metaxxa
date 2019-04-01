@@ -9,6 +9,8 @@
 #include "typeif.cpp"
 #include "minimaltype.cpp"
 
+#include "parameterscount.cpp"
+
 #include "indexrange.cpp"
 
 #include "algorithm/algorithm.cpp"

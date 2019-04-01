@@ -305,7 +305,7 @@ namespace metaxxa
 namespace metaxxa
 {
     template <typename T>
-    using MinimalType = typename 
+    using MinimalArgument = typename 
         TypeIf<sizeof(T) <= sizeof(T *)>
                 ::template Then<T>
                 ::template Else<const T &>

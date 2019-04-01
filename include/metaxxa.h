@@ -5,6 +5,7 @@
 #include "minimaltype.h"
 
 #include "times.h"
+#include "moveparameters.h"
 #include "parameterscount.h"
 
 #include "indexrange.h"

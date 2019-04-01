@@ -10,6 +10,7 @@
 #include "minimaltype.cpp"
 
 #include "times.cpp"
+#include "moveparameters.cpp"
 #include "parameterscount.cpp"
 
 #include "indexrange.cpp"

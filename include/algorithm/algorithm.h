@@ -6,5 +6,6 @@
 #include "skiprange.h"
 #include "skipfirst.h"
 #include "skiplast.h"
+#include "find.h"
 
 #endif // METAXXA_ALGORITHM_H

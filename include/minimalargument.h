@@ -1,5 +1,5 @@
-#ifndef METAXXA_MINIMALTYPE_H
-#define METAXXA_MINIMALTYPE_H
+#ifndef METAXXA_MINIMALARGUMENT_H
+#define METAXXA_MINIMALARGUMENT_H
 
 #include "typeif.h"
 
@@ -13,4 +13,4 @@ namespace metaxxa
                 ::Type;
 }
 
-#endif // METAXXA_MINIMALTYPE_H
+#endif // METAXXA_MINIMALARGUMENT_H

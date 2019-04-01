@@ -7,7 +7,7 @@
 #include "statictuple.cpp"
 
 #include "typeif.cpp"
-#include "minimaltype.cpp"
+#include "minimalargument.cpp"
 
 #include "times.cpp"
 #include "moveparameters.cpp"

@@ -2,7 +2,7 @@
 #include "statictuple.inc"
 
 #include "typeif.h"
-#include "minimaltype.h"
+#include "minimalargument.h"
 
 #include "times.h"
 #include "moveparameters.h"

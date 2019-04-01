@@ -25,6 +25,6 @@ TEST_CASE("[metaxxa::type_if]")
                     ::Then<char>
                     ::Type;
 
-        static_assert(is_same_v<R, char>, "Invalid type result of (sizeof(int16_t) != 2)? char : <no type>");
+        static_assert(is_same_v<R, char>, "Invalid type result of (sizeof(int16_t) == 2)? char : <no type>");
     }
 }

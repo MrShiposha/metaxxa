@@ -7,6 +7,7 @@
 #include "statictuple.cpp"
 
 #include "typeif.cpp"
+#include "minimaltype.cpp"
 
 #include "indexrange.cpp"
 

@@ -2,6 +2,7 @@
 #include "statictuple.inc"
 
 #include "typeif.h"
+#include "minimaltype.h"
 
 #include "indexrange.h"
 

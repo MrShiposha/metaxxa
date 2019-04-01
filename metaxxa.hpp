@@ -298,6 +298,22 @@ namespace metaxxa
 
 #endif // METAXXA_TYPEIF_H
 
+#ifndef METAXXA_MINIMALTYPE_H
+#define METAXXA_MINIMALTYPE_H
+
+
+namespace metaxxa
+{
+    template <typename T>
+    using MinimalType = typename 
+        TypeIf<sizeof(T) <= sizeof(T *)>
+                ::template Then<T>
+                ::template Else<const T &>
+                ::Type;
+}
+
+#endif // METAXXA_MINIMALTYPE_H
+
 
 #ifndef METAXXA_INDEXRANGE_H
 #define METAXXA_INDEXRANGE_H

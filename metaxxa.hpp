@@ -188,7 +188,7 @@ namespace metaxxa
     class StaticTuple : public List<Args...>
     {
     public:
-        using List = List<Args...>;
+        using List = metaxxa::List<Args...>;
 
         template <std::size_t INDEX>
         using Get = typename std::tuple_element_t<INDEX, List>;
@@ -227,6 +227,7 @@ namespace std
 }
 
 #endif // METAXXA_STATIC_TUPLE_H
+
 
 namespace metaxxa
 {

@@ -251,8 +251,8 @@ namespace metaxxa
 }
 
 
-#ifndef METAXXA_TYPEIF_H
-#define METAXXA_TYPEIF_H
+#ifndef METAXXA_IF_H
+#define METAXXA_IF_H
 
 
 namespace metaxxa
@@ -289,14 +289,14 @@ namespace metaxxa
     }
 
     template <bool CONDITION>
-    struct TypeIf
+    struct If
     {
         template <typename T>
         using Then = detail::ThenResolver<CONDITION, T>;
     };
 }
 
-#endif // METAXXA_TYPEIF_H
+#endif // METAXXA_IF_H
 
 #ifndef METAXXA_MINIMALARGUMENT_H
 #define METAXXA_MINIMALARGUMENT_H
@@ -306,7 +306,7 @@ namespace metaxxa
 {
     template <typename T>
     using MinimalArgument = typename 
-        TypeIf<sizeof(T) <= sizeof(T *)>
+        If<sizeof(T) <= sizeof(T *)>
                 ::template Then<T>
                 ::template Else<const T &>
                 ::Type;
@@ -385,6 +385,36 @@ namespace metaxxa
 #define METAXXA_PARAMETERSCOUNT_H
 
 
+
+#ifndef METAXXA_SIZECONSTANT_H
+#define METAXXA_SIZECONSTANT_H
+
+
+
+#ifndef METAXXA_UPPERVALUE_H
+#define METAXXA_UPPERVALUE_H
+
+namespace metaxxa
+{
+    template <typename T>
+    struct UpperValue
+    {
+        using Type = typename T::value_type;
+
+        static constexpr Type VALUE = T::value;
+    };
+}
+
+#endif // METAXXA_UPPERVALUE_H
+
+namespace metaxxa
+{
+    template <std::size_t INDEX>
+    using SizeConstant = UpperValue<std::integral_constant<std::size_t, INDEX>>;
+}
+
+#endif // METAXXA_SIZECONSTANT_H
+
 namespace metaxxa
 {
     namespace detail
@@ -395,7 +425,7 @@ namespace metaxxa
             typename... Args
         >
         constexpr auto parameters_count(Template<Args...> &&)
-            -> std::integral_constant<std::size_t, sizeof...(Args)>;
+            -> SizeConstant<sizeof...(Args)>;
     }
 
     // Holds number of template parameters of a class template
@@ -405,7 +435,7 @@ namespace metaxxa
     template <typename T>
     constexpr std::size_t parameters_count() 
     {
-        return ParametersCount<T>::value;
+        return ParametersCount<T>::VALUE;
     }
 }
 

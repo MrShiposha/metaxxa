@@ -3,7 +3,7 @@
 TEST_CASE("[metaxxa::type_if]")
 {
     {
-        using R = TypeIf<sizeof(uint16_t) != 2>
+        using R = If<sizeof(uint16_t) != 2>
                     ::Then<char>
                     ::Else<void>
                     ::Type;
@@ -12,7 +12,7 @@ TEST_CASE("[metaxxa::type_if]")
     }
 
     {
-        using R = TypeIf<sizeof(uint16_t) == 2>
+        using R = If<sizeof(uint16_t) == 2>
                     ::Then<char>
                     ::Else<void>
                     ::Type;
@@ -21,7 +21,7 @@ TEST_CASE("[metaxxa::type_if]")
     }
 
     {
-        using R = TypeIf<sizeof(uint16_t) == 2>
+        using R = If<sizeof(uint16_t) == 2>
                     ::Then<char>
                     ::Type;
 

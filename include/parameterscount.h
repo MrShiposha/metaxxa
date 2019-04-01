@@ -3,6 +3,8 @@
 
 #include <type_traits>
 
+#include "sizeconstant.h"
+
 namespace metaxxa
 {
     namespace detail
@@ -13,7 +15,7 @@ namespace metaxxa
             typename... Args
         >
         constexpr auto parameters_count(Template<Args...> &&)
-            -> std::integral_constant<std::size_t, sizeof...(Args)>;
+            -> SizeConstant<sizeof...(Args)>;
     }
 
     // Holds number of template parameters of a class template
@@ -23,7 +25,7 @@ namespace metaxxa
     template <typename T>
     constexpr std::size_t parameters_count() 
     {
-        return ParametersCount<T>::value;
+        return ParametersCount<T>::VALUE;
     }
 }
 

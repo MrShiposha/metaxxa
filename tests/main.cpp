@@ -6,7 +6,7 @@
 #include "isvalid.cpp"
 #include "statictuple.cpp"
 
-#include "typeif.cpp"
+#include "if.cpp"
 #include "minimalargument.cpp"
 
 #include "times.cpp"

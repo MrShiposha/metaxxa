@@ -1,7 +1,7 @@
 #include "isvalid.h"
 #include "statictuple.inc"
 
-#include "typeif.h"
+#include "if.h"
 #include "minimalargument.h"
 
 #include "times.h"

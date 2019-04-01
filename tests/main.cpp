@@ -9,6 +9,7 @@
 #include "typeif.cpp"
 #include "minimaltype.cpp"
 
+#include "times.cpp"
 #include "parameterscount.cpp"
 
 #include "indexrange.cpp"

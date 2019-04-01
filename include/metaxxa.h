@@ -4,6 +4,7 @@
 #include "typeif.h"
 #include "minimaltype.h"
 
+#include "times.h"
 #include "parameterscount.h"
 
 #include "indexrange.h"

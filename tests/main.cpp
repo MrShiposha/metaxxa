@@ -6,6 +6,8 @@
 #include "isvalid.cpp"
 #include "statictuple.cpp"
 
+#include "typeif.cpp"
+
 #include "indexrange.cpp"
 
 #include "algorithm/algorithm.cpp"

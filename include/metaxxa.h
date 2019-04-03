@@ -1,5 +1,8 @@
 #include "isvalid.h"
-#include "statictuple.inc"
+#include "typelist.h"
+#include "literallist.h"
+
+#include "typetuple.inc"
 
 #include "if.h"
 #include "typeif.h"

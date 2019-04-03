@@ -3,8 +3,9 @@
 #include "tests.h"
 
 #include "list.cpp"
+#include "literallist.cpp"
 #include "isvalid.cpp"
-#include "statictuple.cpp"
+#include "typetuple.cpp"
 
 #include "if.cpp"
 #include "typeif.cpp"

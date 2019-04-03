@@ -2,9 +2,9 @@
 
 TEST_CASE("[metaxxa::ParametersCount]")
 {
-    using L0 = List<>;
-    using L1 = List<int>;
-    using L2 = List<double, char>;
+    using L0 = TypeList<>;
+    using L1 = TypeList<int>;
+    using L2 = TypeList<double, char>;
 
     using T0 = ParametersCount<L0>;
     using T1 = ParametersCount<L1>;

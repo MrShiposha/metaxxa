@@ -1,7 +1,7 @@
 #ifndef METAXXA_STATIC_TUPLE_H
 #define METAXXA_STATIC_TUPLE_H
 
-#include "list.h"
+#include "typelist.h"
 
 namespace metaxxa
 {
@@ -20,10 +20,10 @@ namespace metaxxa
     }
 
     template <typename... Args>
-    class StaticTuple : public List<Args...>
+    class StaticTuple : public TypeList<Args...>
     {
     public:
-        using List = metaxxa::List<Args...>;
+        using List = metaxxa::TypeList<Args...>;
 
         template <std::size_t INDEX>
         using Get = typename std::tuple_element_t<INDEX, List>;

@@ -80,8 +80,8 @@ namespace metaxxa
 #define METAXXA_STATIC_TUPLE_H
 
 
-#ifndef METAXXA_STATICLIST_H
-#define METAXXA_STATICLIST_H
+#ifndef METAXXA_TYPELIST_H
+#define METAXXA_TYPELIST_H
 
 
 namespace metaxxa
@@ -92,9 +92,9 @@ namespace metaxxa
     }
 
     template <typename... Args>
-    class List;
+    class TypeList;
 
-    using Nil = List<>;
+    using Nil = TypeList<>;
 
     template <typename H = Nil, typename... Tail>
     struct CarT
@@ -105,7 +105,7 @@ namespace metaxxa
     template <typename H = Nil, typename... Args>
     struct CdrT
     {
-        using Tail = List<Args...>;
+        using Tail = TypeList<Args...>;
     };
 
     template <typename T>
@@ -121,10 +121,10 @@ namespace metaxxa
     using Cdr = typename CdrT<Args...>::Tail;
 
     template <typename... Args>
-    class List : public detail::ListTag
+    class TypeList : public detail::ListTag
     {
     public:
-        constexpr List() = default;
+        constexpr TypeList() = default;
 
         using Head = Car<Args...>;
         using Tail = Cdr<Args...>;
@@ -134,18 +134,18 @@ namespace metaxxa
 namespace std
 {
     template <typename... Args>
-    class tuple_size<metaxxa::List<Args...>>
+    class tuple_size<metaxxa::TypeList<Args...>>
         : public std::integral_constant<std::size_t, sizeof...(Args)>
     {};
 
     template <>
-    class tuple_size<metaxxa::List<>>
+    class tuple_size<metaxxa::TypeList<>>
         : public std::integral_constant<std::size_t, 0>
     {};
 
     template <size_t INDEX, typename... Args>
-	class tuple_element<INDEX, metaxxa::List<Args...>>
-        : public tuple_element<INDEX - 1, typename metaxxa::List<Args...>::Tail>
+	class tuple_element<INDEX, metaxxa::TypeList<Args...>>
+        : public tuple_element<INDEX - 1, typename metaxxa::TypeList<Args...>::Tail>
 	{};
 
     template <size_t INDEX>
@@ -159,14 +159,14 @@ namespace std
     {};
 
     template <typename... Args>
-	class tuple_element<0, metaxxa::List<Args...>>
+	class tuple_element<0, metaxxa::TypeList<Args...>>
 	{
 	public:
-		using type = typename metaxxa::List<Args...>::Head;
+		using type = typename metaxxa::TypeList<Args...>::Head;
 	};
 }
 
-#endif // METAXXA_STATICLIST_H
+#endif // METAXXA_TYPELIST_H
 
 namespace metaxxa
 {
@@ -185,10 +185,10 @@ namespace metaxxa
     }
 
     template <typename... Args>
-    class StaticTuple : public List<Args...>
+    class StaticTuple : public TypeList<Args...>
     {
     public:
-        using List = metaxxa::List<Args...>;
+        using List = metaxxa::TypeList<Args...>;
 
         template <std::size_t INDEX>
         using Get = typename std::tuple_element_t<INDEX, List>;

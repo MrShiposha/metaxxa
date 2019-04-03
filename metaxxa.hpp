@@ -298,6 +298,19 @@ namespace metaxxa
 
 #endif // METAXXA_IF_H
 
+#ifndef METAXXA_TYPEIF_H
+#define METAXXA_TYPEIF_H
+
+
+
+namespace metaxxa
+{
+    template <typename T>
+    using TypeIf = If<!std::is_same_v<T, std::false_type>>;
+}
+
+#endif // METAXXA_TYPEIF_H
+
 #ifndef METAXXA_MINIMALARGUMENT_H
 #define METAXXA_MINIMALARGUMENT_H
 

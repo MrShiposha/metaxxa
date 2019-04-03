@@ -207,13 +207,13 @@ namespace metaxxa
     template <typename LiteralH = LiteralNil, typename... LiteralTail>
     struct LiteralCarT
     {
-        using Head = typename LiteralH;
+        using Head = LiteralH;
     };
 
     template <typename LiteralH = LiteralNil, typename... LiteralTail>
     struct LiteralCdrT
     {
-        using Tail = typename LiteralList<typename LiteralH::Type, LiteralTail::VALUE...>;
+        using Tail = LiteralList<typename LiteralH::Type, LiteralTail::VALUE...>;
     };
 
     template <typename LiteralT>

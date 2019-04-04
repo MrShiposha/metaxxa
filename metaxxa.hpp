@@ -794,4 +794,13 @@ namespace metaxxa
 #endif // METAXXA_ALGORITHM_H
 
 
+#ifndef METAXXA_ENABLEFNIF_H
+#define METAXXA_ENABLEFNIF_H
+
+
+#define ENABLE_FN_IF(CONDITION) std::enable_if_t<CONDITION> * = nullptr
+
+#endif // METAXXA_ENABLEFNIF_H
+
+
 #endif // METAXXA_HPP

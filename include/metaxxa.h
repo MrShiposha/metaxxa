@@ -15,3 +15,5 @@
 #include "indexrange.h"
 
 #include "algorithm/algorithm.h"
+
+#include "enablefnif.h"

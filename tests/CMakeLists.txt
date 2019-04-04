@@ -3,4 +3,12 @@ project(metaxxa-tests)
 
 include_directories(../include)
 
-add_executable(metaxxa-tests "main.cpp")
+file(GLOB TEST_SRC
+    "*.h"
+    "*.cpp"
+
+    "algorithm/*.h"
+    "algorithm/*.cpp"
+)
+
+add_executable(metaxxa-tests ${TEST_SRC})

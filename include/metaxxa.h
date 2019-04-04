@@ -6,7 +6,7 @@
 
 #include "if.h"
 #include "typeif.h"
-#include "minimalargument.h"
+#include "typeorref.h"
 
 #include "times.h"
 #include "moveparameters.h"

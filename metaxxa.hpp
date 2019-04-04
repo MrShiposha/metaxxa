@@ -424,21 +424,21 @@ namespace metaxxa
 
 #endif // METAXXA_TYPEIF_H
 
-#ifndef METAXXA_MINIMALARGUMENT_H
-#define METAXXA_MINIMALARGUMENT_H
+#ifndef METAXXA_TYPEORREF_H
+#define METAXXA_TYPEORREF_H
 
 
 namespace metaxxa
 {
     template <typename T>
-    using MinimalArgument = typename 
+    using TypeOrRef = typename 
         If<sizeof(T) <= sizeof(T *)>
                 ::template Then<T>
                 ::template Else<const T &>
                 ::Type;
 }
 
-#endif // METAXXA_MINIMALARGUMENT_H
+#endif // METAXXA_TYPEORREF_H
 
 
 #ifndef METAXXA_TIMES_H

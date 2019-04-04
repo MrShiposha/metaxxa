@@ -9,7 +9,7 @@ namespace metaxxa
     using TypeOrRef = typename 
         If<sizeof(T) <= sizeof(T *)>
                 ::template Then<T>
-                ::template Else<const T &>
+                ::template Else<T &>
                 ::Type;
 }
 

@@ -3,6 +3,8 @@
 
 #include <type_traits>
 
+#define ENABLE_T_IF(CONDITION) typename = std::enable_if_t<CONDITION>
+
 #define ENABLE_FN_IF_T(CONDITION) std::enable_if_t<CONDITION> *
 
 #define ENABLE_FN_IF(CONDITION) ENABLE_FN_IF_T(CONDITION) = nullptr

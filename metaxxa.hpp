@@ -798,7 +798,9 @@ namespace metaxxa
 #define METAXXA_ENABLEFNIF_H
 
 
-#define ENABLE_FN_IF(CONDITION) std::enable_if_t<CONDITION> * = nullptr
+#define ENABLE_FN_IF_T(CONDITION) std::enable_if_t<CONDITION> *
+
+#define ENABLE_FN_IF(CONDITION) ENABLE_FN_IF_T(CONDITION) = nullptr
 
 #endif // METAXXA_ENABLEFNIF_H
 

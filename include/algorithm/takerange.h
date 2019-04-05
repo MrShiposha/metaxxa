@@ -1,5 +1,5 @@
-#ifndef METAXXA_ALGORITHM_SKIPRANGE_H
-#define METAXXA_ALGORITHM_SKIPRANGE_H
+#ifndef METAXXA_ALGORITHM_TAKERANGE_H
+#define METAXXA_ALGORITHM_TAKERANGE_H
 
 #include <type_traits>
 
@@ -15,7 +15,7 @@ namespace metaxxa
         std::size_t FROM_I,
         std::size_t TO_I
     >
-    using SkipRange = SeqFilter
+    using TakeRange = SeqFilter
     <
         Template,
         TupleT,
@@ -23,4 +23,4 @@ namespace metaxxa
     >;
 }
 
-#endif // METAXXA_ALGORITHM_SKIPRANGE_H
+#endif // METAXXA_ALGORITHM_TAKERANGE_H

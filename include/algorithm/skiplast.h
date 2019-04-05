@@ -1,7 +1,7 @@
 #ifndef METAXXA_ALGORITHM_SKIPLAST_H
 #define METAXXA_ALGORITHM_SKIPLAST_H
 
-#include "skiprange.h"
+#include "takerange.h"
 
 namespace metaxxa
 {
@@ -11,7 +11,7 @@ namespace metaxxa
         typename TupleT,
         std::size_t N
     >
-    using SkipLast = SkipRange
+    using SkipLast = TakeRange
     <
         Template,
         TupleT,

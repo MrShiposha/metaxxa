@@ -633,7 +633,6 @@ namespace metaxxa
         std::size_t... INDICES
     >
     using IndexFilter = Template<std::tuple_element_t<INDICES, TupleT>...>;
-
 }
 
 #endif // METAXXA_ALGORITHM_INDEXFILTER_H
@@ -668,8 +667,8 @@ namespace metaxxa
 #endif // METAXXA_ALGORITHM_SEQFILTER_H
 
 
-#ifndef METAXXA_ALGORITHM_SKIPRANGE_H
-#define METAXXA_ALGORITHM_SKIPRANGE_H
+#ifndef METAXXA_ALGORITHM_TAKERANGE_H
+#define METAXXA_ALGORITHM_TAKERANGE_H
 
 
 
@@ -682,7 +681,7 @@ namespace metaxxa
         std::size_t FROM_I,
         std::size_t TO_I
     >
-    using SkipRange = SeqFilter
+    using TakeRange = SeqFilter
     <
         Template,
         TupleT,
@@ -690,7 +689,7 @@ namespace metaxxa
     >;
 }
 
-#endif // METAXXA_ALGORITHM_SKIPRANGE_H
+#endif // METAXXA_ALGORITHM_TAKERANGE_H
 
 #ifndef METAXXA_ALGORITHM_SKIPFIRST_H
 #define METAXXA_ALGORITHM_SKIPFIRST_H
@@ -704,7 +703,7 @@ namespace metaxxa
         typename TupleT, 
         std::size_t N
     >
-    using SkipFirst = SkipRange
+    using SkipFirst = TakeRange
     <
         Template,
         TupleT,
@@ -726,7 +725,7 @@ namespace metaxxa
         typename TupleT,
         std::size_t N
     >
-    using SkipLast = SkipRange
+    using SkipLast = TakeRange
     <
         Template,
         TupleT,

@@ -3,7 +3,7 @@
 
 #include "indexfilter.h"
 #include "seqfilter.h"
-#include "skiprange.h"
+#include "takerange.h"
 #include "skipfirst.h"
 #include "skiplast.h"
 #include "find.h"

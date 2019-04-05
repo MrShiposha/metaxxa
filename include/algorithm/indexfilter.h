@@ -12,7 +12,6 @@ namespace metaxxa
         std::size_t... INDICES
     >
     using IndexFilter = Template<std::tuple_element_t<INDICES, TupleT>...>;
-
 }
 
 #endif // METAXXA_ALGORITHM_INDEXFILTER_H

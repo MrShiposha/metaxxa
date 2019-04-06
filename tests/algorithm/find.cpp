@@ -3,7 +3,7 @@
 template <typename T>
 struct IsSizeOfEq2
 {
-    static constexpr bool VALUE = (sizeof(T) == 2);
+    static constexpr bool value() { return sizeof(T) == 2; }
 };
 
 TEST_CASE("[metaxxa::Find]")

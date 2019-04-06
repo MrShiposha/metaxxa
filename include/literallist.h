@@ -32,7 +32,7 @@ namespace metaxxa
     template <typename LiteralH = LiteralNil, typename... LiteralTail>
     struct LiteralCdrT
     {
-        using Tail = LiteralList<typename LiteralH::Type, LiteralTail::VALUE...>;
+        using Tail = LiteralList<typename LiteralH::Type, LiteralTail::value()...>;
     };
 
     template <typename LiteralT>
@@ -57,7 +57,7 @@ namespace metaxxa
 
         static constexpr HeadType head()
         {
-            return Head::VALUE;
+            return Head::value();
         }
     };
 

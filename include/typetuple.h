@@ -2,23 +2,10 @@
 #define METAXXA_TYPETUPLE_H
 
 #include "typelist.h"
+#include "concat.h"
 
 namespace metaxxa
 {
-    template <typename... Args>
-    class TypeTuple;
-
-    namespace detail
-    {
-        template <typename... Args>
-        struct TupleConcatenator
-        {
-            template <typename... RHSArgs>
-            static constexpr auto result_tuple(TypeTuple<RHSArgs...> &&) 
-                -> TypeTuple<Args..., RHSArgs...>;
-        };
-    }
-
     template <typename... Args>
     class TypeTuple : public TypeList<Args...>
     {
@@ -29,7 +16,7 @@ namespace metaxxa
         using Get = typename std::tuple_element_t<INDEX, List>;
 
         template <typename RHSTuple>
-        using Concat = decltype(detail::TupleConcatenator<Args...>::template result_tuple(std::declval<RHSTuple>()));
+        using Concat = Concat<metaxxa::TypeTuple, TypeTuple, RHSTuple>;
 
         constexpr TypeTuple() = default;
 

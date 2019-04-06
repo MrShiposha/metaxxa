@@ -180,7 +180,7 @@ namespace metaxxa
     {
         using Type = T;
 
-        static constexpr Type VALUE = LITERAL;
+        static constexpr Type value() { return LITERAL; }
     };
 
 }
@@ -214,7 +214,7 @@ namespace metaxxa
     template <typename LiteralH = LiteralNil, typename... LiteralTail>
     struct LiteralCdrT
     {
-        using Tail = LiteralList<typename LiteralH::Type, LiteralTail::VALUE...>;
+        using Tail = LiteralList<typename LiteralH::Type, LiteralTail::value()...>;
     };
 
     template <typename LiteralT>
@@ -239,7 +239,7 @@ namespace metaxxa
 
         static constexpr HeadType head()
         {
-            return Head::VALUE;
+            return Head::value();
         }
     };
 
@@ -282,22 +282,86 @@ constexpr bool operator==(const metaxxa::LiteralNilT, const metaxxa::LiteralNilT
 #define METAXXA_TYPETUPLE_H
 
 
+#ifndef METAXXA_CONCAT_H
+#define METAXXA_CONCAT_H
+
+
+#ifndef METAXXA_MOVEPARAMETERS_H
+#define METAXXA_MOVEPARAMETERS_H
+
 namespace metaxxa
 {
-    template <typename... Args>
-    class TypeTuple;
-
     namespace detail
     {
-        template <typename... Args>
-        struct TupleConcatenator
+        template
+        <
+            template <typename...> typename DestTemplate,
+            template <typename...> typename SrcTemplate,
+            typename... Args
+        >
+        constexpr auto move_parameters(SrcTemplate<Args...> &&) -> DestTemplate<Args...>;
+    }
+
+    template 
+    <
+        template <typename...> typename DestTemplate,
+        typename SrcTemplate
+    >
+    using MoveParameters = decltype(detail::move_parameters<DestTemplate>(std::declval<SrcTemplate>()));
+}
+
+#endif // METAXXA_MOVEPARAMETERS_H
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template
+        <
+            template <typename...> typename Template,
+            typename RHS,
+            typename... LHSArgs
+        >
+        struct Concatenator
         {
             template <typename... RHSArgs>
-            static constexpr auto result_tuple(TypeTuple<RHSArgs...> &&) 
-                -> TypeTuple<Args..., RHSArgs...>;
+            static constexpr auto evaltype(TypeList<RHSArgs...> &&)
+                -> Template<LHSArgs..., RHSArgs...>;
+
+            using RHSTypeList = MoveParameters<TypeList, RHS>;
+            using Type = decltype(evaltype(std::declval<RHSTypeList>()));
+        };
+
+        template
+        <
+            template <typename...> typename Template,
+            typename LHS,
+            typename RHS
+        >
+        struct ConcatenatorFacade 
+        {
+            template <typename... LHSArgs>
+            static constexpr auto evaltype(TypeList<LHSArgs...> &&)
+                -> Concatenator<Template, RHS, LHSArgs...>;
+
+            using LHSTypeList = MoveParameters<TypeList, LHS>;
+            using Type = typename decltype(evaltype(std::declval<LHSTypeList>()))::Type;
         };
     }
 
+    template
+    <
+        template <typename...> typename Template,
+        typename LHS,
+        typename RHS
+    >
+    using Concat = typename detail::ConcatenatorFacade<Template, LHS, RHS>::Type;
+}
+
+#endif // METAXXA_CONCAT_H
+
+namespace metaxxa
+{
     template <typename... Args>
     class TypeTuple : public TypeList<Args...>
     {
@@ -308,7 +372,7 @@ namespace metaxxa
         using Get = typename std::tuple_element_t<INDEX, List>;
 
         template <typename RHSTuple>
-        using Concat = decltype(detail::TupleConcatenator<Args...>::template result_tuple(std::declval<RHSTuple>()));
+        using Concat = Concat<metaxxa::TypeTuple, TypeTuple, RHSTuple>;
 
         constexpr TypeTuple() = default;
 
@@ -509,32 +573,6 @@ namespace metaxxa
 
 #endif // METAXXA_TIMES_H
 
-#ifndef METAXXA_MOVEPARAMETERS_H
-#define METAXXA_MOVEPARAMETERS_H
-
-namespace metaxxa
-{
-    namespace detail
-    {
-        template
-        <
-            template <typename...> typename DestTemplate,
-            template <typename...> typename SrcTemplate,
-            typename... Args
-        >
-        constexpr auto move_parameters(SrcTemplate<Args...> &&) -> DestTemplate<Args...>;
-    }
-
-    template 
-    <
-        template <typename...> typename DestTemplate,
-        typename SrcTemplate
-    >
-    using MoveParameters = decltype(detail::move_parameters<DestTemplate>(std::declval<SrcTemplate>()));
-}
-
-#endif // METAXXA_MOVEPARAMETERS_H
-
 #ifndef METAXXA_PARAMETERSCOUNT_H
 #define METAXXA_PARAMETERSCOUNT_H
 
@@ -545,26 +583,26 @@ namespace metaxxa
 
 
 
-#ifndef METAXXA_UPPERVALUE_H
-#define METAXXA_UPPERVALUE_H
+#ifndef METAXXA_VALUEMETHOD_H
+#define METAXXA_VALUEMETHOD_H
 
 namespace metaxxa
 {
     template <typename T>
-    struct UpperValue
+    struct ValueMethod
     {
         using Type = typename T::value_type;
 
-        static constexpr Type VALUE = T::value;
+        static constexpr Type value() { return T::value; }
     };
 }
 
-#endif // METAXXA_UPPERVALUE_H
+#endif // METAXXA_VALUEMETHOD_H
 
 namespace metaxxa
 {
     template <std::size_t INDEX>
-    using SizeConstant = UpperValue<std::integral_constant<std::size_t, INDEX>>;
+    using SizeConstant = ValueMethod<std::integral_constant<std::size_t, INDEX>>;
 }
 
 #endif // METAXXA_SIZECONSTANT_H
@@ -589,7 +627,7 @@ namespace metaxxa
     template <typename T>
     constexpr std::size_t parameters_count() 
     {
-        return ParametersCount<T>::VALUE;
+        return ParametersCount<T>::value();
     }
 }
 
@@ -800,7 +838,7 @@ namespace metaxxa
             TupleT, 
             Functor,
             N + 1,
-            Functor<std::tuple_element_t<N, TupleT>>::VALUE,
+            Functor<std::tuple_element_t<N, TupleT>>::value(),
             N + 1 >= std::tuple_size_v<TupleT>
         >
         {};

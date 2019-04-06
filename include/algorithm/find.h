@@ -20,7 +20,7 @@ namespace metaxxa
             TupleT, 
             Functor,
             N + 1,
-            Functor<std::tuple_element_t<N, TupleT>>::VALUE,
+            Functor<std::tuple_element_t<N, TupleT>>::value(),
             N + 1 >= std::tuple_size_v<TupleT>
         >
         {};

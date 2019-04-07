@@ -16,4 +16,7 @@
 
 #include "algorithm/algorithm.h"
 
+#include "switch.h"
+#include "typeswitch.h"
+
 #include "enableif.h"

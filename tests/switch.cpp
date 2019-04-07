@@ -1,7 +1,5 @@
 #include "tests.h"
 
-#include <iostream>
-
 template <std::size_t X>
     using TestSwitchType = 
         typename Switch<std::size_t, X>

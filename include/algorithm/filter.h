@@ -16,7 +16,7 @@ namespace metaxxa
             std::size_t INDEX,
             bool FunctorResult
         >
-        struct ResolveType
+        struct ResolveFilterType
         {
             using Type = TemplateContainer<std::tuple_element_t<INDEX, TupleT>>;
         };
@@ -26,7 +26,7 @@ namespace metaxxa
             typename TupleT,
             std::size_t INDEX
         >
-        struct ResolveType<TupleT, INDEX, false>
+        struct ResolveFilterType<TupleT, INDEX, false>
         {
             using Type = TemplateContainer<>;
         };
@@ -42,7 +42,7 @@ namespace metaxxa
             -> Concat
                 <
                     Template, 
-                    typename ResolveType
+                    typename ResolveFilterType
                     <
                         TupleT, 
                         INDICES, 
@@ -61,7 +61,7 @@ namespace metaxxa
             -> Concat
                 <
                     Template, 
-                    typename ResolveType
+                    typename ResolveFilterType
                     <
                         TupleT, 
                         INDICES, 
@@ -80,7 +80,7 @@ namespace metaxxa
             -> Concat
                 <
                     Template, 
-                    typename ResolveType
+                    typename ResolveFilterType
                     <
                         TupleT, 
                         INDICES, 

@@ -1,6 +1,8 @@
 #ifndef METAXXA_MOVEPARAMETERS_H
 #define METAXXA_MOVEPARAMETERS_H
 
+#include "typesaver.h"
+
 namespace metaxxa
 {
     namespace detail
@@ -11,7 +13,7 @@ namespace metaxxa
             template <typename...> typename SrcTemplate,
             typename... Args
         >
-        constexpr auto move_parameters(SrcTemplate<Args...> &&) -> DestTemplate<Args...>;
+        constexpr auto move_parameters(SrcTemplate<Args...> &&) -> TypeSaver<DestTemplate<Args...>>;
     }
 
     template 
@@ -19,7 +21,10 @@ namespace metaxxa
         template <typename...> typename DestTemplate,
         typename SrcTemplate
     >
-    using MoveParameters = decltype(detail::move_parameters<DestTemplate>(std::declval<SrcTemplate>()));
+    using MoveParameters = typename decltype
+    (
+        detail::move_parameters<DestTemplate>(std::declval<SrcTemplate>())
+    )::Type;
 }
 
 #endif // METAXXA_MOVEPARAMETERS_H

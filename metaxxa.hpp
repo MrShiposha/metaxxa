@@ -289,6 +289,7 @@ constexpr bool operator==(const metaxxa::LiteralNilT, const metaxxa::LiteralNilT
 #ifndef METAXXA_MOVEPARAMETERS_H
 #define METAXXA_MOVEPARAMETERS_H
 
+
 namespace metaxxa
 {
     namespace detail
@@ -299,7 +300,7 @@ namespace metaxxa
             template <typename...> typename SrcTemplate,
             typename... Args
         >
-        constexpr auto move_parameters(SrcTemplate<Args...> &&) -> DestTemplate<Args...>;
+        constexpr auto move_parameters(SrcTemplate<Args...> &&) -> TypeSaver<DestTemplate<Args...>>;
     }
 
     template 
@@ -307,7 +308,10 @@ namespace metaxxa
         template <typename...> typename DestTemplate,
         typename SrcTemplate
     >
-    using MoveParameters = decltype(detail::move_parameters<DestTemplate>(std::declval<SrcTemplate>()));
+    using MoveParameters = typename decltype
+    (
+        detail::move_parameters<DestTemplate>(std::declval<SrcTemplate>())
+    )::Type;
 }
 
 #endif // METAXXA_MOVEPARAMETERS_H
@@ -986,7 +990,7 @@ namespace metaxxa
     <
         Template,
         TakeFirst<TypeList, TupleT, FROM_I>,
-        TakeLast<TypeList, TupleT, std::tuple_size_v<TupleT> - TO_I - 1>
+        TakeLast<TypeList, TupleT, std::tuple_size_v<TupleT> - TO_I>
     >;
 }
 
@@ -1323,6 +1327,43 @@ namespace metaxxa
 }
 
 #endif // METAXXA_TYPESWITCH_H
+
+
+#ifndef METAXXA_MAKEFUNCTIONTYPE_H
+#define METAXXA_MAKEFUNCTIONTYPE_H
+
+
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template <typename ResultType>
+        struct MakeFunctionType
+        {
+            template <typename... Args>
+            using Type = ResultType(Args...);
+        };
+
+        template <typename Tuple, std::size_t RETURN_INDEX>
+        struct MakeFunctionTypeImpl
+        {
+            using ResultType = std::tuple_element_t<RETURN_INDEX, Tuple>;
+            using ArgsList  = SkipRange<TypeList, Tuple, RETURN_INDEX, RETURN_INDEX + 1>;
+
+            using Type = MoveParameters
+            <
+                MakeFunctionType<ResultType>::template Type,
+                ArgsList
+            >;
+        };
+    }
+
+    template <typename Tuple, std::size_t RETURN_INDEX>
+    using MakeFunctionType = typename detail::MakeFunctionTypeImpl<Tuple, RETURN_INDEX>::Type;
+}
+
+#endif // METAXXA_MAKEFUNCTIONTYPE_H
 
 
 #ifndef METAXXA_ENABLEFNIF_H

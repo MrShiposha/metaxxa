@@ -5,6 +5,7 @@
 
 #include "algorithm/skiprange.h"
 #include "typelist.h"
+#include "moveparameters.h"
 
 namespace metaxxa
 {
@@ -21,9 +22,18 @@ namespace metaxxa
         struct MakeFunctionTypeImpl
         {
             using ResultType = std::tuple_element_t<RETURN_INDEX, Tuple>;
-            // using ArgsTuple  = TakeRange<TypeList, Tuple, >;
+            using ArgsList  = SkipRange<TypeList, Tuple, RETURN_INDEX, RETURN_INDEX + 1>;
+
+            using Type = MoveParameters
+            <
+                MakeFunctionType<ResultType>::template Type,
+                ArgsList
+            >;
         };
     }
+
+    template <typename Tuple, std::size_t RETURN_INDEX>
+    using MakeFunctionType = typename detail::MakeFunctionTypeImpl<Tuple, RETURN_INDEX>::Type;
 }
 
 #endif // METAXXA_MAKEFUNCTIONTYPE_H

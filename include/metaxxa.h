@@ -19,4 +19,6 @@
 #include "switch.h"
 #include "typeswitch.h"
 
+#include "makefunctiontype.h"
+
 #include "enableif.h"

@@ -18,7 +18,7 @@ namespace metaxxa
     <
         Template,
         TakeFirst<TypeList, TupleT, FROM_I>,
-        TakeLast<TypeList, TupleT, std::tuple_size_v<TupleT> - TO_I - 1>
+        TakeLast<TypeList, TupleT, std::tuple_size_v<TupleT> - TO_I>
     >;
 }
 

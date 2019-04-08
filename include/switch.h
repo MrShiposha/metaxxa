@@ -6,7 +6,6 @@
 #include "concat.h"
 #include "algorithm/find.h" 
 #include "if.h"
-// TODO: replace with regularfind.h
 
 namespace metaxxa
 {

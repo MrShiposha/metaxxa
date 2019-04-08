@@ -8,7 +8,7 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
  * **Visual Studio 2017 (MSVC 19.15.26732.1) on Windows** -- works ✔️
  * **Apple LLVM version 10.0.0 (clang-1000.11.54.4) on macOS** -- works ✔️
  * **clang 6.0 with libc++ on Linux** -- works ✔️
- * **GCC** -- unsupported ❌
+ * **GCC** -- works ✔️
 
 ## How to build tests
 **CMake minimum version 3.12 is required**
@@ -30,11 +30,11 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
 `cmake .. -DCMAKE_BUILD_TYPE=Debug -GXcode`
 
 ### Linux
-* Install **clang** and make it visible for CMake
+* (OPTIONAL) Install **clang** and make it visible for CMake
 
-  `export CC=/usr/bin/clang`
+  (OPTIONAL) `export CC=/usr/bin/clang`
 
-  `export CXX=/usr/bin/clang++`
+  (OPTIONAL) `export CXX=/usr/bin/clang++`
 
   `cmake .. -DCMAKE_BUILD_TYPE=Debug`
 

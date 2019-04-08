@@ -3,14 +3,12 @@
 
 #include "../typelist.h"
 #include "../moveparameters.h"
+#include "../templatecontainer.h"
 
 namespace metaxxa
 {
     namespace detail
     {
-        template <typename... Args>
-        struct TemplateContainer {};
-
         template
         <
             typename RHS,

@@ -1,7 +1,7 @@
 #ifndef METAXXA_ALGORITHM_SEQFILTER_H
 #define METAXXA_ALGORITHM_SEQFILTER_H
 
-#include "indexfilter.h"
+#include "onlyindices.h"
 
 namespace metaxxa
 {
@@ -14,7 +14,7 @@ namespace metaxxa
             std::size_t... INDICES
         >
         constexpr auto seq_filter(std::index_sequence<INDICES...> &&)
-            -> IndexFilter<Template, TupleT, INDICES...>;
+            -> OnlyIndices<Template, TupleT, INDICES...>;
     }
 
     template

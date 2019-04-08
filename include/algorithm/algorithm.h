@@ -9,5 +9,6 @@
 #include "skipfirst.h"
 #include "skiplast.h"
 #include "find.h"
+#include "concat.h"
 
 #endif // METAXXA_ALGORITHM_H

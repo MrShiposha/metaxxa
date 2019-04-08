@@ -2,7 +2,7 @@
 #define METAXXA_TYPETUPLE_H
 
 #include "typelist.h"
-#include "concat.h"
+#include "algorithm/concat.h"
 
 namespace metaxxa
 {

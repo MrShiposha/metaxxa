@@ -1,8 +1,8 @@
 #ifndef METAXXA_CONCAT_H
 #define METAXXA_CONCAT_H
 
-#include "typelist.h"
-#include "moveparameters.h"
+#include "../typelist.h"
+#include "../moveparameters.h"
 
 namespace metaxxa
 {

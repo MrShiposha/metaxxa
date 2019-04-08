@@ -3,7 +3,7 @@
 
 #include "typelist.h"
 #include "literal.h"
-#include "concat.h"
+#include "algorithm/concat.h"
 #include "algorithm/find.h" 
 #include "if.h"
 

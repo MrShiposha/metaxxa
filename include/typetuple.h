@@ -7,7 +7,7 @@
 namespace metaxxa
 {
     template <typename... Args>
-    class TypeTuple : public TypeList<Args...>
+    class TypeTuple
     {
     public:
         using List = metaxxa::TypeList<Args...>;
@@ -15,8 +15,8 @@ namespace metaxxa
         template <std::size_t INDEX>
         using Get = typename std::tuple_element_t<INDEX, List>;
 
-        template <typename RHSTuple>
-        using Concat = Concat<metaxxa::TypeTuple, TypeTuple, RHSTuple>;
+        template <typename... RHS>
+        using Concat = Concat<metaxxa::TypeTuple, TypeTuple, RHS...>;
 
         constexpr TypeTuple() = default;
 

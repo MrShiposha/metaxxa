@@ -316,46 +316,106 @@ namespace metaxxa
 {
     namespace detail
     {
+        template <typename... Args>
+        struct TemplateContainer {};
+
         template
         <
-            template <typename...> typename Template,
             typename RHS,
             typename... LHSArgs
         >
         struct Concatenator
         {
             template <typename... RHSArgs>
-            static constexpr auto evaltype(TypeList<RHSArgs...> &&)
-                -> Template<LHSArgs..., RHSArgs...>;
+            static constexpr auto evaltype(TemplateContainer<RHSArgs...> &&)
+                -> TemplateContainer<LHSArgs..., RHSArgs...>;
 
-            using RHSTypeList = MoveParameters<TypeList, RHS>;
+            using RHSTypeList = MoveParameters<TemplateContainer, RHS>;
             using Type = decltype(evaltype(std::declval<RHSTypeList>()));
         };
 
         template
         <
-            template <typename...> typename Template,
+            typename LHS,
+            typename RHS,
+            bool IS_RHS_LIST = std::is_base_of_v<ListTag, RHS>
+        >
+        struct ConcatenatorImpl
+        {
+            template <typename... LHSArgs>
+            static constexpr auto evaltype(TemplateContainer<LHSArgs...> &&)
+                -> Concatenator<RHS, LHSArgs...>;
+
+            using LHSTypeList = MoveParameters<TemplateContainer, LHS>;
+            using Type = typename decltype(evaltype(std::declval<LHSTypeList>()))::Type;
+        };
+
+        template <typename LHS, bool IS_LIST = std::is_base_of_v<ListTag, LHS>>
+        struct ResolveEndType
+        {
+            using Type = MoveParameters<TemplateContainer, LHS>;
+        };
+
+        template <typename LHS>
+        struct ResolveEndType<LHS, false>
+        {
+            using Type = LHS;
+        };
+
+        template
+        <
+            typename LHS
+        >
+        struct ConcatenatorImpl<LHS, TypeList<>, true>
+        {
+            using Type = typename ResolveEndType<LHS>::Type;
+        };
+
+        template
+        <
             typename LHS,
             typename RHS
         >
-        struct ConcatenatorFacade 
+        struct ConcatenatorImpl<LHS, RHS, true>
         {
-            template <typename... LHSArgs>
-            static constexpr auto evaltype(TypeList<LHSArgs...> &&)
-                -> Concatenator<Template, RHS, LHSArgs...>;
+            using Type = typename ConcatenatorImpl
+            <
+                LHS,
+                typename ConcatenatorImpl
+                <
+                    typename RHS::Head,
+                    typename RHS::Tail
+                >::Type
+            >::Type;
+        };
 
-            using LHSTypeList = MoveParameters<TypeList, LHS>;
-            using Type = typename decltype(evaltype(std::declval<LHSTypeList>()))::Type;
+        template
+        <
+            template <typename...> typename Template,
+            typename... Templates
+        >
+        struct ConcatenatorFacade
+        {
+            using List = TypeList<Templates...>;
+
+            using Type = MoveParameters
+            <
+                Template,
+                typename ConcatenatorImpl
+                <
+                    typename List::Head,
+                    typename List::Tail
+                >::Type
+            >;
         };
     }
 
     template
     <
         template <typename...> typename Template,
-        typename LHS,
-        typename RHS
+        typename... Templates
     >
-    using Concat = typename detail::ConcatenatorFacade<Template, LHS, RHS>::Type;
+    using Concat = typename detail::ConcatenatorFacade<Template, Templates...>::Type;
 }
 
 #endif // METAXXA_CONCAT_H
@@ -363,7 +423,7 @@ namespace metaxxa
 namespace metaxxa
 {
     template <typename... Args>
-    class TypeTuple : public TypeList<Args...>
+    class TypeTuple
     {
     public:
         using List = metaxxa::TypeList<Args...>;
@@ -371,8 +431,8 @@ namespace metaxxa
         template <std::size_t INDEX>
         using Get = typename std::tuple_element_t<INDEX, List>;
 
-        template <typename RHSTuple>
-        using Concat = Concat<metaxxa::TypeTuple, TypeTuple, RHSTuple>;
+        template <typename... RHS>
+        using Concat = Concat<metaxxa::TypeTuple, TypeTuple, RHS...>;
 
         constexpr TypeTuple() = default;
 
@@ -901,6 +961,181 @@ namespace metaxxa
 #endif // METAXXA_ALGORITHM_FIND_H
 
 #endif // METAXXA_ALGORITHM_H
+
+
+#ifndef METAXXA_SWITCH_H
+#define METAXXA_SWITCH_H
+
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template <typename T>
+        struct IsTrue
+        {
+            static constexpr bool value() { return T::value(); }
+        };
+
+        template <bool RESULT, typename CaseType>
+        struct CasePair
+        {
+            static constexpr bool value() { return RESULT; }
+
+            using Type = CaseType;            
+        };
+
+        template 
+        <
+            typename SwitchListT, 
+            typename FindFirstTrue = Find<SwitchListT, IsTrue>, 
+            bool IS_FOUND = FindFirstTrue::FOUND
+        >
+        class CaseImplBase
+        {
+        protected:
+            using SwitchList = SwitchListT;
+
+        public:
+            using Type = typename std::tuple_element_t
+            <
+                FindFirstTrue::INDEX, 
+                SwitchList
+            >::Type;
+
+            template <typename DefaultT>
+            using DefaultType = Type;
+        };
+
+        template 
+        <
+            typename SwitchListT, 
+            typename FindFirstTrue
+        >
+        class CaseImplBase<SwitchListT, FindFirstTrue, false>
+        {
+        protected:
+            using SwitchList = SwitchListT;
+
+        public:
+            template <typename DefaultT>
+            using DefaultType = DefaultT;
+        };
+
+        template 
+        <
+            typename T, 
+            T SRC_CONSTANT, 
+            typename OldSwitchList, 
+            T CASE_CONSTANT, 
+            typename CaseType
+        >
+        class CaseImpl : public CaseImplBase
+        <
+            Concat
+            <
+                TypeList, 
+                OldSwitchList, 
+                TypeList<CasePair<SRC_CONSTANT == CASE_CONSTANT, CaseType>>
+            >
+        >
+        {
+            using Base = CaseImplBase
+            <
+                Concat
+                <
+                    TypeList, 
+                    OldSwitchList, 
+                    TypeList<CasePair<SRC_CONSTANT == CASE_CONSTANT, CaseType>>
+                >
+            >;
+
+        public:
+            template <T NEXT_CONSTANT, typename NextCaseType>
+            using Case = CaseImpl
+            <
+                T, 
+                SRC_CONSTANT, 
+                typename Base::SwitchList,
+                NEXT_CONSTANT, 
+                NextCaseType
+            >;
+        };
+    }
+
+    template <typename T, T CONSTANT>
+    struct Switch
+    {
+        template <T CASE_CONSTANT, typename CaseType>
+        using Case = detail::CaseImpl
+        <
+            T,
+            CONSTANT,
+            TypeList<>,
+            CASE_CONSTANT,
+            CaseType
+        >;
+    };
+}
+
+#endif // METAXXA_SWITCH_H
+
+#ifndef METAXXA_TYPESWITCH_H
+#define METAXXA_TYPESWITCH_H
+
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template 
+        <
+            typename T,
+            typename OldSwitchList, 
+            typename CaseCondition, 
+            typename CaseType
+        >
+        class TypeCaseImpl : public CaseImplBase
+        <
+            Concat
+            <
+                TypeList, 
+                OldSwitchList, 
+                TypeList<CasePair<std::is_same_v<T, CaseCondition>, CaseType>>
+            >
+        >
+        {
+            using Base = CaseImplBase
+            <
+                Concat
+                <
+                    TypeList, 
+                    OldSwitchList, 
+                    TypeList<CasePair<std::is_same_v<T, CaseCondition>, CaseType>>
+                >
+            >;
+
+        public:
+            template <typename NextTypeCondition, typename NextCaseType>
+            using Case = TypeCaseImpl
+            <
+                T, 
+                typename Base::SwitchList,
+                NextTypeCondition, 
+                NextCaseType
+            >;
+        };
+    }
+
+    template <typename T>
+    struct TypeSwitch
+    {
+        template <typename CaseCondition, typename CaseType>
+        using Case = detail::TypeCaseImpl<T, TypeList<>, CaseCondition, CaseType>;
+    };
+}
+
+#endif // METAXXA_TYPESWITCH_H
 
 
 #ifndef METAXXA_ENABLEFNIF_H

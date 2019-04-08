@@ -95,14 +95,20 @@ TEST_CASE("Concat TypeTuple", "[metaxxa::TypeTuple]")
         );
     }
 
-    using T1 = TypeTuple<int, char>;
-    using T2 = TypeTuple<double, float>;
-    using T3 = TypeTuple<size_t>;
-    using E = TypeTuple<>;
+    SECTION("Concat multiple tuples")
+    {
+        using T1 = TypeTuple<int, char>;
+        using T2 = TypeTuple<double, float>;
+        using T3 = TypeTuple<size_t>;
+        using E = TypeTuple<>;
 
-    using R = T1::template Concat<T2>
-                ::template Concat<T3>
-                ::template Concat<E>;
+        using R1 = T1::template Concat<T2>
+                    ::template Concat<T3>
+                    ::template Concat<E>;
 
-    static_assert(is_same_v<R, TypeTuple<int, char, double, float, size_t>>, "Invalid result of concat T1, T2, T3 and E");
+        using R2 = T1::template Concat<T2, T3, E>;
+
+        static_assert(is_same_v<R1, TypeTuple<int, char, double, float, size_t>>, "Invalid result of concat T1, T2, T3 and E");
+        static_assert(is_same_v<R1, R2>, "Invalid result of concat T1, T2, T3 and E");
+    }
 }

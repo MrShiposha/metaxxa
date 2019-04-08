@@ -10,6 +10,7 @@
 #include "skiplast.h"
 #include "find.h"
 #include "concat.h"
+#include "skiprange.h"
 #include "filter.h"
 
 #endif // METAXXA_ALGORITHM_H

@@ -3,7 +3,8 @@
 
 #include <type_traits>
 
-#include "algorithm/indexfilter.h"
+#include "algorithm/skiprange.h"
+#include "typelist.h"
 
 namespace metaxxa
 {
@@ -20,7 +21,7 @@ namespace metaxxa
         struct MakeFunctionTypeImpl
         {
             using ResultType = std::tuple_element_t<RETURN_INDEX, Tuple>;
-            using ArgsTuple  = ;
+            // using ArgsTuple  = TakeRange<TypeList, Tuple, >;
         };
     }
 }

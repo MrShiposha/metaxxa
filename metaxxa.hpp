@@ -894,73 +894,90 @@ namespace metaxxa
 #define METAXXA_ALGORITHM_FIND_H
 
 
+#define EXPAND(...) __VA_ARGS__
+
+#define DEFINE_FIND_ALGORITHM(Variant, ...) \
+    template                                                    \
+    <                                                           \
+        typename TupleT,                                        \
+        EXPAND(FUNCTOR_TYPE),                                   \
+        std::size_t N   = 0,                                    \
+        bool PREV_FOUND = false,                                \
+        bool ENOUGH     = (N >= std::tuple_size_v<TupleT>)      \
+    >                                                           \
+    struct Variant##Find : Variant##Find                        \
+    <                                                           \
+        TupleT,                                                 \
+        Functor,                                                \
+        N + 1,                                                  \
+        Functor<__VA_ARGS__>::value(),                          \
+        N + 1 >= std::tuple_size_v<TupleT>                      \
+    >                                                           \
+    {};                                                         \
+                                                                \
+    template                                                    \
+    <                                                           \
+        typename TupleT,                                        \
+        EXPAND(FUNCTOR_TYPE),                                   \
+        std::size_t N,                                          \
+        bool ENOUGH                                             \
+    >                                                           \
+    struct Variant##Find                                        \
+    <                                                           \
+        TupleT,                                                 \
+        Functor,                                                \
+        N,                                                      \
+        true,                                                   \
+        ENOUGH                                                  \
+    >                                                           \
+    {                                                           \
+        static constexpr bool FOUND = true;                     \
+        static constexpr std::size_t INDEX = N - 1;             \
+                                                                \
+        using Type = std::tuple_element_t<INDEX, TupleT>;       \
+                                                                \
+        template <typename T>                                   \
+        using TypeOr = Type;                                    \
+    };                                                          \
+                                                                \
+    template                                                    \
+    <                                                           \
+        typename TupleT,                                        \
+        EXPAND(FUNCTOR_TYPE),                                   \
+        std::size_t N                                           \
+    >                                                           \
+    struct Variant##Find                                        \
+    <                                                           \
+        TupleT,                                                 \
+        Functor,                                                \
+        N,                                                      \
+        false,                                                  \
+        true                                                    \
+    >                                                           \
+    {                                                           \
+        static constexpr bool FOUND = false;                    \
+                                                                \
+        template <typename T>                                   \
+        using TypeOr = T;                                       \
+    }                                                          
+
 namespace metaxxa
 {
     namespace detail
     {
-        template
-        <
-            typename TupleT,
-            template <typename T> typename Functor,
-            std::size_t N   = 0,
-            bool PREV_FOUND = false,
-            bool ENOUGH     = (N >= std::tuple_size_v<TupleT>)
-        >
-        struct Find : Find
-        <
-            TupleT, 
-            Functor,
-            N + 1,
-            Functor<std::tuple_element_t<N, TupleT>>::value(),
-            N + 1 >= std::tuple_size_v<TupleT>
-        >
-        {};
+        #define FUNCTOR_TYPE template <typename T> typename Functor
 
-        template
-        <
-            typename TupleT,
-            template <typename T> typename Functor,
-            std::size_t N,
-            bool ENOUGH
-        >
-        struct Find
-        <
-            TupleT,
-            Functor,
-            N,
-            true,
-            ENOUGH
-        >
-        {
-            static constexpr bool FOUND = true;
-            static constexpr std::size_t INDEX = N - 1;
+        DEFINE_FIND_ALGORITHM(, std::tuple_element_t<N, TupleT>);
 
-            using Type = std::tuple_element_t<INDEX, TupleT>;
+        #undef FUNCTOR_TYPE
+        #define FUNCTOR_TYPE template <typename T, std::size_t INDEX> typename Functor
 
-            template <typename T>
-            using TypeOr = Type;
-        };
-        
-        template
-        <
-            typename TupleT,
-            template <typename T> typename Functor,
-            std::size_t N
-        >
-        struct Find
-        <
-            TupleT,
-            Functor,
-            N,
-            false,
-            true
-        >
-        {
-            static constexpr bool FOUND = false;
+        DEFINE_FIND_ALGORITHM(Index, std::tuple_element_t<N, TupleT>, N);
 
-            template <typename T>
-            using TypeOr = T;
-        };
+        #undef FUNCTOR_TYPE
+        #define FUNCTOR_TYPE template <typename T, std::size_t INDEX, typename SrcTuple> typename Functor
+
+        DEFINE_FIND_ALGORITHM(Overall, std::tuple_element_t<N, TupleT>, N, TupleT);
     }
 
     template 
@@ -969,7 +986,25 @@ namespace metaxxa
         template <typename T> typename Functor
     >
     using Find = detail::Find<TupleT, Functor>;
+
+    template 
+    <
+        typename TupleT,
+        template <typename T, std::size_t INDEX> typename Functor
+    >
+    using IndexFind = detail::IndexFind<TupleT, Functor>;
+
+    template 
+    <
+        typename TupleT,
+        template <typename T, std::size_t INDEX, typename SrcTuple> typename Functor
+    >
+    using OverallFind = detail::OverallFind<TupleT, Functor>;
 }
+
+#undef FUNCTOR_TYPE
+#undef DEFINE_FIND_ALGORITHM
+#undef EXPAND
 
 #endif // METAXXA_ALGORITHM_FIND_H
 
@@ -1011,7 +1046,7 @@ namespace metaxxa
             std::size_t INDEX,
             bool FunctorResult
         >
-        struct ResolveType
+        struct ResolveFilterType
         {
             using Type = TemplateContainer<std::tuple_element_t<INDEX, TupleT>>;
         };
@@ -1021,7 +1056,7 @@ namespace metaxxa
             typename TupleT,
             std::size_t INDEX
         >
-        struct ResolveType<TupleT, INDEX, false>
+        struct ResolveFilterType<TupleT, INDEX, false>
         {
             using Type = TemplateContainer<>;
         };
@@ -1037,7 +1072,7 @@ namespace metaxxa
             -> Concat
                 <
                     Template, 
-                    typename ResolveType
+                    typename ResolveFilterType
                     <
                         TupleT, 
                         INDICES, 
@@ -1056,7 +1091,7 @@ namespace metaxxa
             -> Concat
                 <
                     Template, 
-                    typename ResolveType
+                    typename ResolveFilterType
                     <
                         TupleT, 
                         INDICES, 
@@ -1075,7 +1110,7 @@ namespace metaxxa
             -> Concat
                 <
                     Template, 
-                    typename ResolveType
+                    typename ResolveFilterType
                     <
                         TupleT, 
                         INDICES, 

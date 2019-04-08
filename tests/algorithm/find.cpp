@@ -6,6 +6,18 @@ struct IsSizeOfEq2
     static constexpr bool value() { return sizeof(T) == 2; }
 };
 
+template <typename T, std::size_t INDEX>
+struct IntegralWithEvenIndex
+{
+    static constexpr bool value() { return std::is_integral_v<T> && INDEX % 2 == 0; }
+};
+
+template <typename T, std::size_t INDEX, typename SrcTuple>
+struct IntegralAndSize4
+{
+    static constexpr bool value() { return std::is_integral_v<T> && std::tuple_size_v<SrcTuple> == 4; }
+};
+
 TEST_CASE("[metaxxa::Find]")
 {
     SECTION("Find in empty list")
@@ -79,5 +91,45 @@ TEST_CASE("[metaxxa::Find]")
         static_assert(R::INDEX == 2, "TypeList<char, int, short, char>::INDEX == 2 expected");
         static_assert(is_same_v<R::Type, short>, "Type == short expected");
         static_assert(is_same_v<R::TypeOr<double>, short>, "OrType<double> == short expected");   
+    }
+
+    SECTION("IndexFilter, true condition")
+    {
+        using T = TypeList<float, int, double, long, short, float>;
+        using R = IndexFind<T, IntegralWithEvenIndex>;
+
+        static_assert(R::FOUND, "T ==> at<4> == short && 4%2 == 0 is true");
+        static_assert(R::INDEX == 4, "T::INDEX == 4 expected");
+        static_assert(is_same_v<R::Type, short>, "Type == short expected");
+        static_assert(is_same_v<R::TypeOr<double>, short>, "OrType<double> == short expected");   
+    }
+
+    SECTION("IndexFilter, false condition")
+    {
+        using T = TypeList<float, int, double, long, float>;
+        using R = IndexFind<T, IntegralWithEvenIndex>;
+
+        static_assert(!R::FOUND, "No integral with even index");
+        static_assert(is_same_v<R::TypeOr<double>, double>, "OrType<double> == double expected");   
+    }
+
+    SECTION("OverallFilter, true condition")
+    {
+        using T = TypeList<float, int, double, long>;
+        using R = OverallFind<T, IntegralAndSize4>;
+
+        static_assert(R::FOUND, "T ==> at<1> == short T::size == 4 is true");
+        static_assert(R::INDEX == 1, "T::INDEX == 1 expected");
+        static_assert(is_same_v<R::Type, int>, "Type == int expected");
+        static_assert(is_same_v<R::TypeOr<double>, int>, "OrType<double> == int expected");
+    }
+
+    SECTION("OverallFilter, false condition")
+    {
+        using T = TypeList<float, int, double>;
+        using R = OverallFind<T, IntegralAndSize4>;
+
+        static_assert(!R::FOUND, "T::size != 4 ==> false");
+        static_assert(is_same_v<R::TypeOr<double>, double>, "OrType<double> == double expected");
     }
 }

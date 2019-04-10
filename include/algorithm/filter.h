@@ -109,22 +109,6 @@ namespace metaxxa
     <
         template <typename...> typename Template,
         typename TupleT,
-        template <typename T> typename Functor
-    >
-    using Filter = decltype
-    (
-        detail::filter_types
-        <
-            Template, 
-            TupleT, 
-            Functor
-        >(std::make_index_sequence<std::tuple_size_v<TupleT>>())
-    );
-
-    template 
-    <
-        template <typename...> typename Template,
-        typename TupleT,
         template <typename T, std::size_t INDEX> typename Functor
     >
     using IndexFilter = decltype

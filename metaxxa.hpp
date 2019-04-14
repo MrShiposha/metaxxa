@@ -716,12 +716,19 @@ namespace metaxxa
     namespace detail
     {
         template <std::size_t TO_ADD, std::size_t... SEQ>
-        constexpr auto shift_seq(std::index_sequence<SEQ...> &&)
+        constexpr auto shift_seq_plus(std::index_sequence<SEQ...> &&)
             -> std::index_sequence<TO_ADD + SEQ ...>;
+
+        template <std::size_t TO_ADD, std::size_t... SEQ>
+        constexpr auto shift_seq_minus(std::index_sequence<SEQ...> &&)
+            -> std::index_sequence<TO_ADD - SEQ ...>;
     }
 
     template <std::size_t MIN, std::size_t MAX>
-    using MakeIndexRange = decltype(detail::shift_seq<MIN>(std::declval<std::make_index_sequence<MAX-MIN>>())); 
+    using MakeIndexRange = decltype(detail::shift_seq_plus<MIN>(std::declval<std::make_index_sequence<MAX-MIN>>()));
+
+    template <std::size_t MAX, std::size_t MIN>
+    using MakeReverseIndexRange = decltype(detail::shift_seq_minus<MAX - 1U>(std::declval<std::make_index_sequence<MAX-MIN>>()));
 }
 
 #endif // METAXXA_INDEXRANGE_H
@@ -1396,6 +1403,203 @@ namespace metaxxa
 #define ENABLE_FN_IF(CONDITION) ENABLE_FN_IF_T(CONDITION) = nullptr
 
 #endif // METAXXA_ENABLEFNIF_H
+
+
+#ifndef METAXXA_TUPLE_INC
+#define METAXXA_TUPLE_INC
+
+
+#ifndef METAXXA_TUPLE_H
+#define METAXXA_TUPLE_H
+
+
+
+#ifndef METAXXA_DEF_H
+#define METAXXA_DEF_H
+
+#ifdef _MSC_VER
+    #define metaxxa_inline __forceinline
+#elif defined(__GNUC__)
+    #define metaxxa_inline inline __attribute__((__always_inline__))
+#elif defined(__CLANG__)
+    #if __has_attribute(__always_inline__)
+        #define metaxxa_inline inline __attribute__((__always_inline__))
+    #else
+        #define metaxxa_inline inline
+    #endif
+#else
+    #define metaxxa_inline inline
+#endif
+
+#endif // METAXXA_DEF_H
+
+namespace metaxxa
+{
+    template <typename... Types>
+    class Tuple : TypeTuple<Types...>
+    {
+    public:
+        using TypeTuple = metaxxa::TypeTuple<Types...>;
+
+        Tuple();
+
+        Tuple(Types&&... args);
+
+        ~Tuple();
+
+        template <std::size_t INDEX>
+        metaxxa_inline auto &get();
+
+        template <std::size_t INDEX>
+        metaxxa_inline const auto &get() const;
+
+        template <typename T>
+        metaxxa_inline auto &get(std::size_t index);
+
+        template <typename T>
+        metaxxa_inline const auto &get(std::size_t index) const;
+
+        metaxxa_inline void *get(std::size_t index);
+
+        metaxxa_inline const void *get(std::size_t index) const;
+
+    private:
+        template <std::size_t... INDICES>
+        metaxxa_inline void construct(std::index_sequence<INDICES...>);
+
+        template <std::size_t... INDICES>
+        metaxxa_inline void construct(Types&&... args, std::index_sequence<INDICES...>);
+
+        template <std::size_t... INDICES>
+        metaxxa_inline void deallocate(std::index_sequence<INDICES...>);
+
+        template <std::size_t INDEX, typename T>
+        metaxxa_inline void deallocate();
+
+        unsigned char *data;
+        std::size_t    offsets[size()];
+    };
+}
+
+#endif // METAXXA_TUPLE_H
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template <typename... Args>
+        constexpr std::size_t memory_size()
+        {
+            return (0 + ... + sizeof(Args));
+        }
+
+        template <template <typename...> typename Tuple, typename... Args>
+        constexpr std::size_t memory_size(Tuple<Args...> &&)
+        {
+            return memory_size<Args...>();
+        }
+    }
+
+    template <typename... Args>
+    Tuple<Args...>::Tuple()
+    : data(static_cast<unsigned char *>(malloc(detail::memory_size<Args...>())))
+    {
+        construct(std::make_index_sequence<size()>());
+    }
+
+    template <typename... Args>
+    Tuple<Args...>::Tuple(Args&&... args)
+    : data(static_cast<unsigned char *>(malloc(detail::memory_size<Args...>())))
+    {
+        construct(std::forward<Args>(args)..., std::make_index_sequence<size()>());
+    }
+
+    template <typename... Args>
+    Tuple<Args...>::~Tuple()
+    {
+        deallocate(MakeReverseIndexRange<size(), 0>());
+    }
+
+    template <typename... Args>
+    template <std::size_t INDEX>
+    metaxxa_inline auto &Tuple<Args...>::get()
+    {
+        return get<TypeTuple::template Get<INDEX>>(INDEX);
+    }
+
+    template <typename... Args>
+    template <std::size_t INDEX>
+    metaxxa_inline const auto &Tuple<Args...>::get() const
+    {
+        return const_cast<Tuple<Args...>*>(this)->template get<INDEX>();
+    }
+
+    template <typename... Args>
+    template <typename T>
+    metaxxa_inline auto &Tuple<Args...>::get(std::size_t index)
+    {
+        return *static_cast<T*>(get(index));
+    }
+
+    template <typename... Args>
+    template <typename T>
+    metaxxa_inline const auto &Tuple<Args...>::get(std::size_t index) const
+    {
+        return const_cast<Tuple<Args...>*>(this)->template get<T>(index);
+    }
+
+    template <typename... Args>
+    metaxxa_inline void *Tuple<Args...>::get(std::size_t index)
+    {
+        return static_cast<void *>(data + offsets[index]);
+    }
+
+    template <typename... Args>
+    metaxxa_inline const void *Tuple<Args...>::get(std::size_t index) const
+    {
+        return const_cast<Tuple<Args...>*>(this)->get(index);
+    }
+
+    template <typename... Args>
+    template <std::size_t... INDICES>
+    metaxxa_inline void Tuple<Args...>::construct(std::index_sequence<INDICES...>)
+    {
+        ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
+
+        if(data)
+            ((void)(new (get(INDICES)) TypeTuple::template Get<INDICES>()), ...);
+    }
+
+    template <typename... Args>
+    template <std::size_t... INDICES>
+    metaxxa_inline void Tuple<Args...>::construct(Args&&... args, std::index_sequence<INDICES...>)
+    {
+        ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
+
+        if(data)
+            ((void)(new (get(INDICES)) TypeTuple::template Get<INDICES>(args)), ...);
+    }
+
+    template <typename... Args>
+    template <std::size_t... INDICES>
+    metaxxa_inline void Tuple<Args...>::deallocate(std::index_sequence<INDICES...>)
+    {
+        if(data)
+        {
+            (deallocate<INDICES, TypeTuple::template Get<INDICES>>(), ...);
+            ::free(data);
+        }
+    }
+
+    template <typename... Args>
+    template <std::size_t INDEX, typename T>
+    metaxxa_inline void Tuple<Args...>::deallocate()
+    {
+        get<INDEX>().~T();
+    }
+}
+
+#endif // METAXXA_TUPLE_INC
 
 
 #endif // METAXXA_HPP

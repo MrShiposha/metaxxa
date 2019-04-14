@@ -50,7 +50,7 @@ namespace metaxxa
         metaxxa_inline void deallocate();
 
         unsigned char *data;
-        std::size_t    offsets[size()];
+        std::size_t    offsets[TypeTuple::size()];
     };
 }
 

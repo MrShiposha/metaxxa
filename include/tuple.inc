@@ -26,20 +26,20 @@ namespace metaxxa
     Tuple<Args...>::Tuple()
     : data(static_cast<unsigned char *>(malloc(detail::memory_size<Args...>())))
     {
-        construct(std::make_index_sequence<size()>());
+        construct(std::make_index_sequence<TypeTuple::size()>());
     }
 
     template <typename... Args>
     Tuple<Args...>::Tuple(Args&&... args)
     : data(static_cast<unsigned char *>(malloc(detail::memory_size<Args...>())))
     {
-        construct(std::forward<Args>(args)..., std::make_index_sequence<size()>());
+        construct(std::forward<Args>(args)..., std::make_index_sequence<TypeTuple::size()>());
     }
 
     template <typename... Args>
     Tuple<Args...>::~Tuple()
     {
-        deallocate(MakeReverseIndexRange<size(), 0>());
+        deallocate(MakeReverseIndexRange<TypeTuple::size(), 0>());
     }
 
     template <typename... Args>

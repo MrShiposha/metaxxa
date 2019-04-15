@@ -1477,7 +1477,7 @@ namespace metaxxa
         metaxxa_inline void deallocate();
 
         unsigned char *data;
-        std::size_t    offsets[size()];
+        std::size_t    offsets[TypeTuple::size()];
     };
 }
 
@@ -1524,7 +1524,7 @@ namespace metaxxa
     template <std::size_t INDEX>
     metaxxa_inline auto &Tuple<Args...>::get()
     {
-        return get<TypeTuple::template Get<INDEX>>(INDEX);
+        return get<typename TypeTuple::template Get<INDEX>>(INDEX);
     }
 
     template <typename... Args>
@@ -1567,7 +1567,7 @@ namespace metaxxa
         ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
 
         if(data)
-            ((void)(new (get(INDICES)) TypeTuple::template Get<INDICES>()), ...);
+            ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>()), ...);
     }
 
     template <typename... Args>
@@ -1577,7 +1577,7 @@ namespace metaxxa
         ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
 
         if(data)
-            ((void)(new (get(INDICES)) TypeTuple::template Get<INDICES>(args)), ...);
+            ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>(args)), ...);
     }
 
     template <typename... Args>
@@ -1586,7 +1586,7 @@ namespace metaxxa
     {
         if(data)
         {
-            (deallocate<INDICES, TypeTuple::template Get<INDICES>>(), ...);
+            (deallocate<INDICES, typename TypeTuple::template Get<INDICES>>(), ...);
             ::free(data);
         }
     }

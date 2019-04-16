@@ -121,4 +121,19 @@ namespace metaxxa
     }
 }
 
+namespace std
+{
+    template <std::size_t INDEX, typename... Args>
+    auto &get(metaxxa::Tuple<Args...> &tuple)
+    {
+        return tuple.template get<INDEX>();
+    }
+
+    template <std::size_t INDEX, typename... Args>
+    auto &get(const metaxxa::Tuple<Args...> &tuple)
+    {
+        return tuple.template get<INDEX>();
+    }
+}
+
 #endif // METAXXA_TUPLE_INC

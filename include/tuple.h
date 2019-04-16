@@ -54,4 +54,27 @@ namespace metaxxa
     };
 }
 
+namespace std
+{
+    template <std::size_t INDEX, typename... Args>
+    class tuple_element<INDEX, metaxxa::Tuple<Args...>>
+    {
+    public:
+        using type = std::tuple_element_t<INDEX, typename metaxxa::Tuple<Args...>::TypeTuple>;
+    };
+
+    template <typename... Args>
+    class tuple_size<metaxxa::Tuple<Args...>>
+    {
+    public:
+        static constexpr std::size_t value = std::tuple_size_v<typename metaxxa::Tuple<Args...>::TypeTuple>;
+    };
+
+    template <std::size_t INDEX, typename... Args>
+    auto &get(metaxxa::Tuple<Args...> &);
+
+    template <std::size_t INDEX, typename... Args>
+    auto &get(const metaxxa::Tuple<Args...> &);
+}
+
 #endif // METAXXA_TUPLE_H

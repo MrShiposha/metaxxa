@@ -1177,6 +1177,172 @@ namespace metaxxa
 
 #endif // METAXXA_ALGORITHM_FILTER_H
 
+
+#ifndef METAXXA_ALGORITHM_INVOKEFUNCTIONS_INC
+#define METAXXA_ALGORITHM_INVOKEFUNCTIONS_INC
+
+
+#ifndef METAXXA_ALGORITHM_INVOKEFUNCTIONS_H
+#define METAXXA_ALGORITHM_INVOKEFUNCTIONS_H
+
+
+
+#ifndef METAXXA_DEF_H
+#define METAXXA_DEF_H
+
+#ifdef _MSC_VER
+    #define metaxxa_inline __forceinline
+#elif defined(__GNUC__)
+    #define metaxxa_inline inline __attribute__((__always_inline__))
+#elif defined(__CLANG__)
+    #if __has_attribute(__always_inline__)
+        #define metaxxa_inline inline __attribute__((__always_inline__))
+    #else
+        #define metaxxa_inline inline
+    #endif
+#else
+    #define metaxxa_inline inline
+#endif
+
+#endif // METAXXA_DEF_H
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template
+        <
+            typename Function,
+            bool IS_INVOCABLE,
+            typename... Args
+        >
+        struct Invoker
+        {
+            metaxxa_inline static void invoke(Function &function, Args&&... args);
+
+            metaxxa_inline static void invoke(const Function &function, Args&&... args);
+        };
+
+        template
+        <
+            typename Function,
+            typename... Args
+        >
+        struct Invoker<Function, false, Args...>
+        {
+            metaxxa_inline static void invoke(const Function &, Args&&...);
+        };
+
+        template 
+        <
+            typename Tuple, 
+            typename... Args
+        >
+        struct FunctionsInvoker
+        {
+            template <std::size_t... INDICES>
+            metaxxa_inline static void invoke(std::index_sequence<INDICES...>, Tuple &, Args&&...);
+
+            template <std::size_t... INDICES>
+            metaxxa_inline static void invoke(std::index_sequence<INDICES...>, const Tuple &, Args&&...);
+        };
+    }
+
+    template <typename Tuple, typename... Args>
+    void invoke_functions(Tuple &, Args&&...);
+
+    template <typename Tuple, typename... Args>
+    void invoke_functions(const Tuple &, Args&&...);
+}
+
+#endif // METAXXA_ALGORITHM_INVOKEFUNCTIONS_H
+
+namespace metaxxa
+{
+    namespace detail
+    {
+        template
+        <
+            typename Function,
+            bool IS_INVOCABLE,
+            typename... Args
+        >
+        metaxxa_inline void Invoker<Function, IS_INVOCABLE, Args...>::invoke(Function &function, Args&&... args)
+        {
+            std::invoke(function, std::forward<Args>(args)...);
+        }
+
+        template
+        <
+            typename Function,
+            bool IS_INVOCABLE,
+            typename... Args
+        >
+        metaxxa_inline void Invoker<Function, IS_INVOCABLE, Args...>::invoke(const Function &function, Args&&... args)
+        {
+            std::invoke(function, std::forward<Args>(args)...);
+        }
+
+        template
+        <
+            typename Function,
+            typename... Args
+        >
+        metaxxa_inline void Invoker<Function, false, Args...>::invoke(const Function &, Args&&...)
+        {}
+        
+
+        template 
+        <
+            typename Tuple, 
+            typename... Args
+        >
+        template <std::size_t... INDICES>
+        metaxxa_inline void FunctionsInvoker<Tuple, Args...>::invoke(std::index_sequence<INDICES...>, Tuple &tuple, Args&&... args)
+        {
+            (
+                Invoker
+                <
+                    std::tuple_element_t<INDICES, Tuple>, 
+                    std::is_invocable_v<std::tuple_element_t<INDICES, Tuple>, Args...>, 
+                    Args...
+                >::invoke
+                (
+                    std::get<INDICES>(tuple), 
+                    std::forward<Args>(args)...
+                ),
+                ...
+            );
+        }
+
+        template 
+        <
+            typename Tuple, 
+            typename... Args
+        >
+        template <std::size_t... INDICES>
+        metaxxa_inline void FunctionsInvoker<Tuple, Args...>::invoke(std::index_sequence<INDICES...>, const Tuple &tuple, Args&&... args)
+        {
+            using T = std::tuple_element_t<INDICES, Tuple>;
+            Invoker<T, std::is_invocable<T, Args...>, Args...>::invoke(std::get<INDICES>(tuple), std::forward<Args>(args)...);
+        }
+    }
+
+    template <typename Tuple, typename... Args>
+    void invoke_functions(Tuple &tuple, Args&&... args)
+    {
+        detail::FunctionsInvoker<Tuple, Args...>::invoke(std::make_index_sequence<std::tuple_size_v<Tuple>>(), tuple, std::forward<Args>(args)...);
+    }
+
+    template <typename Tuple, typename... Args>
+    void invoke_functions(const Tuple &tuple, Args&&... args)
+    {
+        detail::FunctionsInvoker<Tuple, Args...>::invoke(std::make_index_sequence<std::tuple_size_v<Tuple>>(), tuple, std::forward<Args>(args)...);
+    }
+}
+
+#endif // METAXXA_ALGORITHM_INVOKEFUNCTIONS_INC
+
 #endif // METAXXA_ALGORITHM_H
 
 
@@ -1414,25 +1580,6 @@ namespace metaxxa
 
 
 
-#ifndef METAXXA_DEF_H
-#define METAXXA_DEF_H
-
-#ifdef _MSC_VER
-    #define metaxxa_inline __forceinline
-#elif defined(__GNUC__)
-    #define metaxxa_inline inline __attribute__((__always_inline__))
-#elif defined(__CLANG__)
-    #if __has_attribute(__always_inline__)
-        #define metaxxa_inline inline __attribute__((__always_inline__))
-    #else
-        #define metaxxa_inline inline
-    #endif
-#else
-    #define metaxxa_inline inline
-#endif
-
-#endif // METAXXA_DEF_H
-
 namespace metaxxa
 {
     template <typename... Types>
@@ -1477,8 +1624,31 @@ namespace metaxxa
         metaxxa_inline void deallocate();
 
         unsigned char *data;
-        std::size_t    offsets[size()];
+        std::size_t    offsets[TypeTuple::size()];
     };
+}
+
+namespace std
+{
+    template <std::size_t INDEX, typename... Args>
+    class tuple_element<INDEX, metaxxa::Tuple<Args...>>
+    {
+    public:
+        using type = std::tuple_element_t<INDEX, typename metaxxa::Tuple<Args...>::TypeTuple>;
+    };
+
+    template <typename... Args>
+    class tuple_size<metaxxa::Tuple<Args...>>
+    {
+    public:
+        static constexpr std::size_t value = std::tuple_size_v<typename metaxxa::Tuple<Args...>::TypeTuple>;
+    };
+
+    template <std::size_t INDEX, typename... Args>
+    auto &get(metaxxa::Tuple<Args...> &);
+
+    template <std::size_t INDEX, typename... Args>
+    auto &get(const metaxxa::Tuple<Args...> &);
 }
 
 #endif // METAXXA_TUPLE_H
@@ -1524,7 +1694,7 @@ namespace metaxxa
     template <std::size_t INDEX>
     metaxxa_inline auto &Tuple<Args...>::get()
     {
-        return get<TypeTuple::template Get<INDEX>>(INDEX);
+        return get<typename TypeTuple::template Get<INDEX>>(INDEX);
     }
 
     template <typename... Args>
@@ -1567,7 +1737,7 @@ namespace metaxxa
         ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
 
         if(data)
-            ((void)(new (get(INDICES)) TypeTuple::template Get<INDICES>()), ...);
+            ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>()), ...);
     }
 
     template <typename... Args>
@@ -1577,7 +1747,7 @@ namespace metaxxa
         ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
 
         if(data)
-            ((void)(new (get(INDICES)) TypeTuple::template Get<INDICES>(args)), ...);
+            ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>(args)), ...);
     }
 
     template <typename... Args>
@@ -1586,7 +1756,7 @@ namespace metaxxa
     {
         if(data)
         {
-            (deallocate<INDICES, TypeTuple::template Get<INDICES>>(), ...);
+            (deallocate<INDICES, typename TypeTuple::template Get<INDICES>>(), ...);
             ::free(data);
         }
     }
@@ -1596,6 +1766,21 @@ namespace metaxxa
     metaxxa_inline void Tuple<Args...>::deallocate()
     {
         get<INDEX>().~T();
+    }
+}
+
+namespace std
+{
+    template <std::size_t INDEX, typename... Args>
+    auto &get(metaxxa::Tuple<Args...> &tuple)
+    {
+        return tuple.template get<INDEX>();
+    }
+
+    template <std::size_t INDEX, typename... Args>
+    auto &get(const metaxxa::Tuple<Args...> &tuple)
+    {
+        return tuple.template get<INDEX>();
     }
 }
 

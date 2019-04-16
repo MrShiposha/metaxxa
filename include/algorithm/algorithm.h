@@ -13,4 +13,6 @@
 #include "skiprange.h"
 #include "filter.h"
 
+#include "invokefunctions.inc"
+
 #endif // METAXXA_ALGORITHM_H

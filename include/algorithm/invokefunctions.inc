@@ -2,6 +2,7 @@
 #define METAXXA_ALGORITHM_INVOKEFUNCTIONS_INC
 
 #include "invokefunctions.h"
+#include "../tuple.h"
 
 namespace metaxxa
 {
@@ -69,8 +70,19 @@ namespace metaxxa
         template <std::size_t... INDICES>
         metaxxa_inline void FunctionsInvoker<Tuple, Args...>::invoke(std::index_sequence<INDICES...>, const Tuple &tuple, Args&&... args)
         {
-            using T = std::tuple_element_t<INDICES, Tuple>;
-            Invoker<T, std::is_invocable<T, Args...>, Args...>::invoke(std::get<INDICES>(tuple), std::forward<Args>(args)...);
+            (
+                Invoker
+                <
+                    std::tuple_element_t<INDICES, Tuple>, 
+                    std::is_invocable_v<std::tuple_element_t<INDICES, Tuple>, Args...>, 
+                    Args...
+                >::invoke
+                (
+                    std::get<INDICES>(tuple), 
+                    std::forward<Args>(args)...
+                ),
+                ...
+            );
         }
     }
 

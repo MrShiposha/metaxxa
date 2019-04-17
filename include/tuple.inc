@@ -43,17 +43,15 @@ namespace metaxxa
     }
 
     template <typename... Args>
-    template <std::size_t INDEX>
-    metaxxa_inline auto &Tuple<Args...>::get()
+    metaxxa_inline void *Tuple<Args...>::get(std::size_t index)
     {
-        return get<typename TypeTuple::template Get<INDEX>>(INDEX);
+        return static_cast<void *>(data + offsets[index]);
     }
 
     template <typename... Args>
-    template <std::size_t INDEX>
-    metaxxa_inline const auto &Tuple<Args...>::get() const
+    metaxxa_inline const void *Tuple<Args...>::get(std::size_t index) const
     {
-        return const_cast<Tuple<Args...>*>(this)->template get<INDEX>();
+        return const_cast<Tuple<Args...>*>(this)->get(index);
     }
 
     template <typename... Args>
@@ -71,15 +69,17 @@ namespace metaxxa
     }
 
     template <typename... Args>
-    metaxxa_inline void *Tuple<Args...>::get(std::size_t index)
+    template <std::size_t INDEX>
+    metaxxa_inline auto &Tuple<Args...>::get()
     {
-        return static_cast<void *>(data + offsets[index]);
+        return get<typename TypeTuple::template Get<INDEX>>(INDEX);
     }
 
     template <typename... Args>
-    metaxxa_inline const void *Tuple<Args...>::get(std::size_t index) const
+    template <std::size_t INDEX>
+    metaxxa_inline const auto &Tuple<Args...>::get() const
     {
-        return const_cast<Tuple<Args...>*>(this)->get(index);
+        return const_cast<Tuple<Args...>*>(this)->template get<INDEX>();
     }
 
     template <typename... Args>

@@ -11,7 +11,7 @@ See [releases](https://github.com/MrShiposha/metaxxa/releases)
  * **GCC** -- works ✔️
 
 ## How to build tests
-**CMake minimum version 3.12 is required**
+**CMake minimum version 3.9 is required**
 
 `git clone https://github.com/MrShiposha/metaxxa.git`
 

@@ -1265,7 +1265,7 @@ namespace metaxxa
 namespace metaxxa
 {
     template <typename... Types>
-    class Tuple : TypeTuple<Types...>
+    class Tuple : public TypeTuple<Types...>
     {
     public:
         using TypeTuple = metaxxa::TypeTuple<Types...>;

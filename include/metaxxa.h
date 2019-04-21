@@ -24,3 +24,4 @@
 #include "enableif.h"
 
 #include "tuple.inc"
+#include "isinstantiationof.h"

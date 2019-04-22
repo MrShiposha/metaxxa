@@ -18,6 +18,8 @@ namespace metaxxa
 
         Tuple(Types&&... args);
 
+        Tuple(const Types&... args);
+
         ~Tuple();
 
         template <std::size_t INDEX>
@@ -42,6 +44,9 @@ namespace metaxxa
 
         template <std::size_t... INDICES>
         metaxxa_inline void construct(Types&&... args, std::index_sequence<INDICES...>);
+
+        template <std::size_t... INDICES>
+        metaxxa_inline void construct(const Types&... args, std::index_sequence<INDICES...>);
 
         template <std::size_t... INDICES>
         metaxxa_inline void deallocate(std::index_sequence<INDICES...>);

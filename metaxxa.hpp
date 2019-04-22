@@ -1274,6 +1274,8 @@ namespace metaxxa
 
         Tuple(Types&&... args);
 
+        Tuple(const Types&... args);
+
         ~Tuple();
 
         template <std::size_t INDEX>
@@ -1298,6 +1300,9 @@ namespace metaxxa
 
         template <std::size_t... INDICES>
         metaxxa_inline void construct(Types&&... args, std::index_sequence<INDICES...>);
+
+        template <std::size_t... INDICES>
+        metaxxa_inline void construct(const Types&... args, std::index_sequence<INDICES...>);
 
         template <std::size_t... INDICES>
         metaxxa_inline void deallocate(std::index_sequence<INDICES...>);
@@ -1696,6 +1701,13 @@ namespace metaxxa
     }
 
     template <typename... Args>
+    Tuple<Args...>::Tuple(const Args&... args)
+    : data(static_cast<unsigned char *>(malloc(detail::memory_size<Args...>())))
+    {
+        construct(args..., std::make_index_sequence<TypeTuple::size()>());
+    }
+
+    template <typename... Args>
     Tuple<Args...>::~Tuple()
     {
         deallocate(MakeReverseIndexRange<TypeTuple::size(), 0>());
@@ -1754,6 +1766,16 @@ namespace metaxxa
     template <typename... Args>
     template <std::size_t... INDICES>
     metaxxa_inline void Tuple<Args...>::construct(Args&&... args, std::index_sequence<INDICES...>)
+    {
+        ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
+
+        if(data)
+            ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>(std::forward<Args>(args))), ...);
+    }
+
+    template <typename... Args>
+    template <std::size_t... INDICES>
+    metaxxa_inline void Tuple<Args...>::construct(const Args&... args, std::index_sequence<INDICES...>)
     {
         ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
 

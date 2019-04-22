@@ -4,6 +4,7 @@
 #include <utility>
 
 #include "typetuple.h"
+#include "moveparameters.h"
 #include "def.h"
 
 namespace metaxxa
@@ -20,7 +21,21 @@ namespace metaxxa
 
         Tuple(const Types&... args);
 
+        template <typename TupleT>
+        Tuple(const TupleT &);
+
+        Tuple(const Tuple &);
+
+        Tuple(Tuple &&);
+
         ~Tuple();
+
+        template <typename TupleT>
+        Tuple &operator=(const TupleT &);
+
+        Tuple &operator=(const Tuple &);
+
+        Tuple &operator=(Tuple &&);
 
         template <std::size_t INDEX>
         metaxxa_inline auto &get();
@@ -48,6 +63,9 @@ namespace metaxxa
         template <std::size_t... INDICES>
         metaxxa_inline void construct(const Types&... args, std::index_sequence<INDICES...>);
 
+        template <typename OtherTuple, std::size_t... INDICES>
+        metaxxa_inline void construct(const OtherTuple &other, std::index_sequence<INDICES...>);
+
         template <std::size_t... INDICES>
         metaxxa_inline void deallocate(std::index_sequence<INDICES...>);
 
@@ -57,6 +75,9 @@ namespace metaxxa
         unsigned char *data;
         std::size_t    offsets[TypeTuple::size()];
     };
+
+    template <typename TupleT>
+    using TupleFrom = MoveParameters<Tuple, TupleT>;
 }
 
 namespace std

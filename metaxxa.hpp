@@ -1276,7 +1276,21 @@ namespace metaxxa
 
         Tuple(const Types&... args);
 
+        template <typename TupleT>
+        Tuple(const TupleT &);
+
+        Tuple(const Tuple &);
+
+        Tuple(Tuple &&);
+
         ~Tuple();
+
+        template <typename TupleT>
+        Tuple &operator=(const TupleT &);
+
+        Tuple &operator=(const Tuple &);
+
+        Tuple &operator=(Tuple &&);
 
         template <std::size_t INDEX>
         metaxxa_inline auto &get();
@@ -1304,6 +1318,9 @@ namespace metaxxa
         template <std::size_t... INDICES>
         metaxxa_inline void construct(const Types&... args, std::index_sequence<INDICES...>);
 
+        template <typename OtherTuple, std::size_t... INDICES>
+        metaxxa_inline void construct(const OtherTuple &other, std::index_sequence<INDICES...>);
+
         template <std::size_t... INDICES>
         metaxxa_inline void deallocate(std::index_sequence<INDICES...>);
 
@@ -1313,6 +1330,9 @@ namespace metaxxa
         unsigned char *data;
         std::size_t    offsets[TypeTuple::size()];
     };
+
+    template <typename TupleT>
+    using TupleFrom = MoveParameters<Tuple, TupleT>;
 }
 
 namespace std
@@ -1684,6 +1704,26 @@ namespace metaxxa
         {
             return memory_size<Args...>();
         }
+
+        template <typename... Args>
+        struct Copyist
+        {
+            template <typename... ArgsRHS>
+            metaxxa_inline static void copy
+            (
+                unsigned char *dest,
+                std::size_t *dest_offsets,
+
+                const unsigned char *src,
+                std::size_t *src_offsets,
+                ENABLE_FN_IF(sizeof...(Args) == sizeof...(ArgsRHS))
+            )
+            {
+                constexpr std::size_t N = sizeof...(Args);
+
+                for(std::size_t i = 0; i < N; ++i)
+            }
+        };
     }
 
     template <typename... Args>
@@ -1708,9 +1748,57 @@ namespace metaxxa
     }
 
     template <typename... Args>
+    template <typename TupleT>
+    Tuple<Args...>::Tuple(const TupleT &other)
+    : data(static_cast<unsigned char *>(malloc(detail::memory_size<Args...>())))
+    {
+        construct(other, std::make_index_sequence<std::tuple_size_v<TupleT>>());
+    }
+
+    template <typename... Args>
+    Tuple<Args...>::Tuple(const Tuple &other)
+    : data(static_cast<unsigned char *>(malloc(detail::memory_size<Args...>())))
+    {
+        construct(other, std::make_index_sequence<TypeTuple::size()>());
+    }
+
+    template <typename... Args>
+    Tuple<Args...>::Tuple(Tuple &&other)
+    : data(other.data)
+    {
+        other.data = nullptr;
+        for(auto i = 0u; i < sizeof...(Args); ++i)
+            offsets[i] = other.offsets[i];
+    }
+
+    template <typename... Args>
     Tuple<Args...>::~Tuple()
     {
         deallocate(MakeReverseIndexRange<TypeTuple::size(), 0>());
+    }
+
+    template <typename... Args>
+    template <typename TupleT>
+    Tuple<Args...> &Tuple<Args...>::operator=(const TupleT &rhs)
+    {
+        return *this = std::move(Tuple(rhs));
+    }
+
+    template <typename... Args>
+    Tuple<Args...> &Tuple<Args...>::operator=(const Tuple &rhs)
+    {
+        if(this != &rhs)
+            *this = std::move(Tuple(rhs));
+
+        return *this;
+    }
+
+    template <typename... Args>
+    Tuple<Args...> &Tuple<Args...>::operator=(Tuple &&rhs)
+    {
+        data = rhs.data;
+        rhs.data = nullptr;
+        return *this;
     }
 
     template <typename... Args>
@@ -1781,6 +1869,16 @@ namespace metaxxa
 
         if(data)
             ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>(args)), ...);
+    }
+
+    template <typename... Args>
+    template <typename OtherTuple, std::size_t... INDICES>
+    metaxxa_inline void Tuple<Args...>::construct(const OtherTuple &other, std::index_sequence<INDICES...>)
+    {
+        ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
+
+        if(data)
+            ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>(std::get<INDICES>(other))), ...);
     }
 
     template <typename... Args>

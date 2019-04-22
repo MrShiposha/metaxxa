@@ -82,6 +82,24 @@ namespace metaxxa
         return const_cast<Tuple<Args...>*>(this)->get(index);
     }
 
+    template <typename... TupleArgs>
+    template 
+    <
+        std::size_t INDEX, 
+        ReconstructPolicy POLICY, 
+        typename... Args
+    >
+    metaxxa_inline void Tuple<TupleArgs...>::reconstruct(Args&&... args)
+    {
+        using T = typename TypeTuple::template Get<INDEX>;
+        if constexpr(POLICY == DestructBeforeConstruct)
+             get<INDEX>().~T();
+
+        assert(data);
+
+        new(get(INDEX)) T(std::forward<Args>(args)...);
+    }
+
     template <typename... Args>
     template <std::size_t... INDICES>
     metaxxa_inline void Tuple<Args...>::construct(std::index_sequence<INDICES...>)
@@ -89,7 +107,7 @@ namespace metaxxa
         ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
 
         if(data)
-            ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>()), ...);
+            (reconstruct<INDICES, ReconstructOnly>(), ...);
     }
 
     template <typename... Args>
@@ -99,7 +117,7 @@ namespace metaxxa
         ((void)(offsets[INDICES] = detail::memory_size(TakeFirst<TypeList, TypeTuple, INDICES>())), ...);
 
         if(data)
-            ((void)(new (get(INDICES)) typename TypeTuple::template Get<INDICES>(args)), ...);
+            (reconstruct<INDICES, ReconstructOnly>(std::forward<Args>(args)), ...);
     }
 
     template <typename... Args>

@@ -8,6 +8,12 @@
 
 namespace metaxxa
 {
+    enum ReconstructPolicy
+    {
+        DestructBeforeConstruct = 0,
+        ReconstructOnly
+    };
+
     template <typename... Types>
     class Tuple : public TypeTuple<Types...>
     {
@@ -35,6 +41,14 @@ namespace metaxxa
         metaxxa_inline void *get(std::size_t index);
 
         metaxxa_inline const void *get(std::size_t index) const;
+
+        template 
+        <
+            std::size_t INDEX, 
+            ReconstructPolicy POLICY = DestructBeforeConstruct, 
+            typename... Args
+        >
+        metaxxa_inline void reconstruct(Args&&... args);
 
     private:
         template <std::size_t... INDICES>

@@ -98,3 +98,12 @@ TEST_CASE("Tuple creation/assign", "[metaxxa::Tuple]")
         REQUIRE(copy.get<2>() == Approx(3.14));
     }
 }
+
+TEST_CASE("std apply", "[metaxxa::Tuple]")
+{
+    Tuple<int, short, char> t(1, short(2), char(3));
+
+    auto r = std::apply([](auto... t) { return (0 + ... + t); }, t);
+
+    REQUIRE(r == 6);
+}

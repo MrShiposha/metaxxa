@@ -101,6 +101,9 @@ namespace std
 
     template <std::size_t INDEX, typename... Args>
     auto &get(const metaxxa::Tuple<Args...> &);
+
+    template <typename Callable, typename... Args>
+    auto apply(Callable &&, metaxxa::Tuple<Args...> &&);
 }
 
 #endif // METAXXA_TUPLE_H

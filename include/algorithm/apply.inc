@@ -13,7 +13,7 @@ namespace metaxxa
             return std::invoke
             (
                 std::forward<Callable>(function), 
-                std::forward<std::tuple_element_t<INDICES, std::decay_t<Tuple>>>(std::get<INDICES>(tuple))...
+                std::get<INDICES>(std::forward<Tuple>(tuple))...
             );
         }
     }

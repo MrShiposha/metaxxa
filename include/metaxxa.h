@@ -15,6 +15,7 @@
 
 #include "indexrange.h"
 
+#include "tuple.h"
 #include "algorithm/algorithm.h"
 
 #include "switch.h"

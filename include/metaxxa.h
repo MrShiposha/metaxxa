@@ -1,7 +1,4 @@
-#if __has_include("metaxxa_specs.h")
-#   include "metaxxa_specs.h"
-#endif // specializations
-
+#include "def.h"
 #include "isvalid.h"
 #include "typelist.h"
 #include "literallist.h"

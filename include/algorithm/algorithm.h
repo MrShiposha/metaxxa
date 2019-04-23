@@ -12,6 +12,7 @@
 #include "concat.h"
 #include "skiprange.h"
 #include "filter.h"
+#include "apply.inc"
 
 #include "invokefunctions.inc"
 

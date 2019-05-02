@@ -2,6 +2,7 @@
 #define METAXXA_LIETRALLIST_H
 
 #include <type_traits>
+#include <utility>
 
 #include "literal.h"
 
@@ -52,6 +53,7 @@ namespace metaxxa
     {
         using Head = LiteralCar<Literal<T, LITERALS>...>;
         using Tail = LiteralCdr<Literal<T, LITERALS>...>;
+        using IntegerSequence = std::integer_sequence<T, LITERALS...>;
 
         using HeadType = typename Head::Type;
 
@@ -66,6 +68,7 @@ namespace metaxxa
     {
         using Head = LiteralNil;
         using Tail = LiteralNil;
+        using IntegerSequence = std::integer_sequence<T>;
 
         using HeadType = LiteralNilT;
 
@@ -74,6 +77,54 @@ namespace metaxxa
             return NIL;
         }
     };
+
+    namespace detail
+    {
+        template 
+        <
+            template <typename T, T...> typename SequenceT,
+            typename LiteralT, 
+            LiteralT... LITERALS
+        >
+        constexpr auto literal_list_from_sequence(SequenceT<LiteralT, LITERALS...>)
+            -> LiteralList<LiteralT, LITERALS...>;
+    }
+
+    template <typename Sequence>
+    using LiteralListFromSequence = decltype(detail::literal_list_from_sequence(std::declval<Sequence>()));
+}
+
+namespace std
+{
+    template <typename T, T... LITERALS>
+    class tuple_size<metaxxa::LiteralList<T, LITERALS...>>
+        : public std::integral_constant<std::size_t, sizeof...(LITERALS)>
+    {};
+
+    template <typename T>
+    class tuple_size<metaxxa::LiteralList<T>>
+        : public std::integral_constant<std::size_t, 0>
+    {};
+
+    template <size_t INDEX, typename T, T... LITERALS>
+	class tuple_element<INDEX, metaxxa::LiteralList<T, LITERALS...>>
+        : public tuple_element<INDEX - 1, typename metaxxa::LiteralList<T, LITERALS...>::Tail>
+	{};
+
+    template <size_t INDEX>
+	class tuple_element<INDEX, metaxxa::LiteralNil>
+    {};
+
+    template <>
+	class tuple_element<0, metaxxa::LiteralNil>
+    {};
+
+    template <typename T, T... LITERALS>
+	class tuple_element<0, metaxxa::LiteralList<T, LITERALS...>>
+	{
+	public:
+		using type = typename metaxxa::LiteralList<T, LITERALS...>::Head;
+	};
 }
 
 template <typename T>

@@ -2,6 +2,7 @@
 #define METAXXA_TUPLE_H
 
 #include <utility>
+#include <memory>
 
 #include "typetuple.h"
 #include "moveparameters.h"
@@ -9,11 +10,17 @@
 
 namespace metaxxa
 {
+    namespace detail
+    {
+        struct NotTupleElement {};
+    }
+
     template <typename... Types>
     class Tuple : public TypeTuple<Types...>
     {
     public:
         using TypeTuple = metaxxa::TypeTuple<Types...>;
+        using TypeTuple::size;
 
         Tuple();
 
@@ -53,7 +60,63 @@ namespace metaxxa
 
         metaxxa_inline const void *get(std::size_t index) const;
 
+        metaxxa_inline std::size_t capacity() const;
+
+        metaxxa_inline void shrink_to_fit();
+
+        // template <typename TupleRHS>
+        // metaxxa_inline auto concat(const TupleRHS &) const;
+
+        // template <typename TupleRHS>
+        // metaxxa_inline auto concat_shared(const TupleRHS &) const;
+
+        // template <typename TupleRHS>
+        // metaxxa_inline auto concat_shared_greedy(const TupleRHS &) const;
+
+        template <std::size_t... INDICES>
+        metaxxa_inline auto only_indices(std::index_sequence<INDICES...> = std::index_sequence<INDICES...>()) const;
+
+        template <std::size_t FROM, std::size_t TO>
+        metaxxa_inline auto take_range() const;
+
+        template <std::size_t FROM, std::size_t TO>
+        metaxxa_inline auto take_range_shared() const;
+
+        template <std::size_t N>
+        metaxxa_inline auto take_first() const;
+
+        template <std::size_t N>
+        metaxxa_inline auto take_first_shared() const;
+
+        template <std::size_t N>
+        metaxxa_inline auto take_last() const;
+
+        template <std::size_t N>
+        metaxxa_inline auto take_last_shared() const;
+
+        template <std::size_t N>
+        metaxxa_inline auto skip_first() const;
+
+        template <std::size_t N>
+        metaxxa_inline auto skip_first_shared() const;
+
+        template <std::size_t N>
+        metaxxa_inline auto skip_last() const;
+
+        template <std::size_t N>
+        metaxxa_inline auto skip_last_shared() const;
+
     private:
+        template <typename...>
+        friend class Tuple;
+
+        Tuple(detail::NotTupleElement, std::shared_ptr<unsigned char>, std::size_t memory_size, std::size_t offset);
+
+        metaxxa_inline void reallocate(std::size_t);
+
+        template <std::size_t... INDICES>
+        metaxxa_inline void init_offsets(std::size_t start, std::index_sequence<INDICES...>);
+
         template <std::size_t... INDICES>
         metaxxa_inline void construct(std::index_sequence<INDICES...>);
 
@@ -67,13 +130,14 @@ namespace metaxxa
         metaxxa_inline void construct(const OtherTuple &other, std::index_sequence<INDICES...>);
 
         template <std::size_t... INDICES>
-        metaxxa_inline void deallocate(std::index_sequence<INDICES...>);
+        metaxxa_inline void deallocate(unsigned char *, std::index_sequence<INDICES...>);
 
         template <std::size_t INDEX, typename T>
         metaxxa_inline void deallocate();
 
-        unsigned char *data;
-        std::size_t    offsets[TypeTuple::size()];
+        std::shared_ptr<unsigned char> data;
+        std::size_t memory_size;
+        std::size_t offsets[TypeTuple::size()];
     };
 
     template <typename TupleT>

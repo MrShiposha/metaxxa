@@ -74,10 +74,18 @@ namespace metaxxa
         // metaxxa_inline auto concat_shared_greedy(const TupleRHS &) const;
 
         template <std::size_t... INDICES>
-        metaxxa_inline auto only_indices(std::index_sequence<INDICES...> = std::index_sequence<INDICES...> {}) const;
+        metaxxa_inline auto only_indices
+        (
+            std::index_sequence<INDICES...> 
+#       ifndef _MSC_VER
+            = std::index_sequence<INDICES...> {}
+#       endif // _MSC_VER
+        ) const;
 
+#ifdef _MSC_VER
         template <std::size_t... INDICES>
         metaxxa_inline auto only_indices() const;
+#endif // _MSC_VER
 
         template <std::size_t FROM, std::size_t TO>
         metaxxa_inline auto take_range() const;

@@ -2039,7 +2039,7 @@ namespace metaxxa
     template <std::size_t... INDICES>
     metaxxa_inline auto Tuple<Args...>::only_indices(std::index_sequence<INDICES...>) const
     {
-        return only_indices<INDICES...>();
+        return Tuple<std::tuple_element_t<INDICES, Tuple>...>(get<INDICES>()...);
     }
 
 #   ifdef _MSC_VER

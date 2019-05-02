@@ -28,6 +28,7 @@
 #include <utility>
 #include <functional>
 #include <memory>
+#include <cstring>
 
 #ifndef METAXXA_DEF_H
 #define METAXXA_DEF_H
@@ -879,7 +880,10 @@ namespace metaxxa
         // metaxxa_inline auto concat_shared_greedy(const TupleRHS &) const;
 
         template <std::size_t... INDICES>
-        metaxxa_inline auto only_indices(std::index_sequence<INDICES...> = std::index_sequence<INDICES...>()) const;
+        metaxxa_inline auto only_indices(std::index_sequence<INDICES...> = std::index_sequence<INDICES...> {}) const;
+
+        template <std::size_t... INDICES>
+        metaxxa_inline auto only_indices() const;
 
         template <std::size_t FROM, std::size_t TO>
         metaxxa_inline auto take_range() const;
@@ -1843,6 +1847,7 @@ namespace metaxxa
 #define METAXXA_TUPLE_INC
 
 
+
 #define ALLOCATE_DATA() \
     data                                                                                                    \
     (                                                                                                       \
@@ -2026,8 +2031,16 @@ namespace metaxxa
     template <std::size_t... INDICES>
     metaxxa_inline auto Tuple<Args...>::only_indices(std::index_sequence<INDICES...>) const
     {
+        return only_indices<INDICES...>();
+    }
+
+    template <typename... Args>
+    template <std::size_t... INDICES>
+    metaxxa_inline auto Tuple<Args...>::only_indices() const
+    {
         return Tuple<std::tuple_element_t<INDICES, Tuple>...>(get<INDICES>()...);
     }
+
 
     template <typename... Args>
     template <std::size_t FROM, std::size_t TO>

@@ -1,6 +1,8 @@
 #ifndef METAXXA_TUPLE_INC
 #define METAXXA_TUPLE_INC
 
+#include <cstring>
+
 #include "tuple.h"
 #include "indexrange.h"
 #include "algorithm/takefirst.h"
@@ -189,8 +191,16 @@ namespace metaxxa
     template <std::size_t... INDICES>
     metaxxa_inline auto Tuple<Args...>::only_indices(std::index_sequence<INDICES...>) const
     {
+        return only_indices<INDICES...>();
+    }
+
+    template <typename... Args>
+    template <std::size_t... INDICES>
+    metaxxa_inline auto Tuple<Args...>::only_indices() const
+    {
         return Tuple<std::tuple_element_t<INDICES, Tuple>...>(get<INDICES>()...);
     }
+
 
     template <typename... Args>
     template <std::size_t FROM, std::size_t TO>

@@ -24,5 +24,6 @@
 #include "makefunctiontype.h"
 
 #include "enableif.h"
+#include "isinstantiationof.h"
 
 #include "tuple.inc"

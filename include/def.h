@@ -15,8 +15,4 @@
     #define metaxxa_inline inline
 #endif
 
-#if __has_include("metaxxa_specs.h")
-#   include "metaxxa_specs.h"
-#endif // specializations
-
 #endif // METAXXA_DEF_H

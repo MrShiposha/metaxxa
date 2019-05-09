@@ -2,7 +2,6 @@
 #define METAXXA_ALGORITHM_INVOKEFUNCTIONS_INC
 
 #include "invokefunctions.h"
-#include "../tuple.h"
 
 namespace metaxxa
 {

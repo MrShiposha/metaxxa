@@ -4,14 +4,14 @@ TEST_CASE("[metaxxa::invoke_functions]")
 {
     SECTION("No func, no args")
     {
-        Tuple tuple(112, 3.12, 'e');
+        std::tuple tuple(112, 3.12, 'e');
 
         invoke_functions(tuple);
     }
 
     SECTION("No func, some args")
     {
-        Tuple tuple(112, 3.12, 'e');
+        std::tuple tuple(112, 3.12, 'e');
 
         invoke_functions(tuple, "Hello");
     }
@@ -20,7 +20,7 @@ TEST_CASE("[metaxxa::invoke_functions]")
     {
         bool calls[3] = { false, false, false };
 
-        Tuple tuple
+        std::tuple tuple
         (
             [&]() { calls[0] = true; },
             [&](int, char) { calls[1] = true; },
@@ -38,7 +38,7 @@ TEST_CASE("[metaxxa::invoke_functions]")
     {
         bool calls[5] = { false, false, false, false, false };
 
-        Tuple tuple
+        std::tuple tuple
         (
             [&]()            { calls[0] = true; },
             [&](int, char)   { calls[1] = true; },
@@ -60,7 +60,7 @@ TEST_CASE("[metaxxa::invoke_functions]")
     {
         bool calls[5] = { false, false, false, false, false };
 
-        Tuple tuple
+        std::tuple tuple
         (
             [&]()            { calls[0] = true; },
             [&](int, char)   { calls[1] = true; },

@@ -15,7 +15,6 @@
 
 #include "indexrange.h"
 
-#include "tuple.h"
 #include "algorithm/algorithm.h"
 
 #include "switch.h"
@@ -25,5 +24,3 @@
 
 #include "enableif.h"
 #include "isinstantiationof.h"
-
-#include "tuple.inc"

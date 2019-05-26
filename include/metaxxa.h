@@ -24,3 +24,4 @@
 
 #include "enableif.h"
 #include "isinstantiationof.h"
+#include "isarrayof.h"

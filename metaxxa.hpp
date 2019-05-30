@@ -1342,6 +1342,18 @@ namespace metaxxa
 
         return (true && ... && contains<Tuple, Types>());
     }
+
+    template <typename TupleT, typename T>
+    using Contains = typename If<contains<TupleT, T>()>
+        ::template Then<std::true_type>
+        ::template Else<std::false_type>
+        ::Type;
+
+    template <typename TupleT, typename... Ts>
+    using ContainsAll = typename If<contains_all<TupleT, Ts...>()>
+        ::template Then<std::true_type>
+        ::template Else<std::false_type>
+        ::Type;
 }
 
 #endif // METAXXA_CONTAINS_H

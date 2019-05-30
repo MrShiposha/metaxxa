@@ -9,6 +9,9 @@ TEST_CASE("[metaxxa::contains]")
     static_assert(contains<TypeTuple<int, char, double>, char>());
     static_assert(contains<TypeTuple<int, char, double>, double>());
     static_assert(!contains<TypeTuple<int, char, double>, char *>());
+
+    static_assert(std::is_same_v<Contains<TypeTuple<int, char, double>, int>, std::true_type>);
+    static_assert(std::is_same_v<Contains<TypeTuple<int, char, double>, int*>, std::false_type>);
 }
 
 TEST_CASE("[metaxxa::contains_all]")
@@ -23,4 +26,7 @@ TEST_CASE("[metaxxa::contains_all]")
     static_assert(contains_all<TypeTuple<int, char, double>, char, double>());
     static_assert(contains_all<TypeTuple<int, char, double>, char, char>());
     static_assert(!contains_all<TypeTuple<int, char, double>, char *, double>());
+
+    static_assert(std::is_same_v<ContainsAll<TypeTuple<int, char, double>, int, double>, std::true_type>);
+    static_assert(std::is_same_v<ContainsAll<TypeTuple<int, char, double>, int*, double>, std::false_type>);
 }

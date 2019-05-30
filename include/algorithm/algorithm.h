@@ -14,6 +14,7 @@
 #include "filter.h"
 #include "every.h"
 #include "contains.h"
+#include "unique.h"
 #include "invokefunctions.inc"
 
 #endif // METAXXA_ALGORITHM_H

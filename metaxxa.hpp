@@ -384,7 +384,7 @@ namespace metaxxa
     >
     using MoveParameters = typename decltype
     (
-        detail::Mover<StartTypes...>::move_parameters<DestTemplate>(std::declval<SrcTemplate>())
+        detail::Mover<StartTypes...>::template move_parameters<DestTemplate>(std::declval<SrcTemplate>())
     )::Type;
 }
 

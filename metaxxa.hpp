@@ -199,7 +199,7 @@ namespace metaxxa
     {
         using Type = T;
 
-        static constexpr Type value() { return LITERAL; }
+        static constexpr Type value = LITERAL;
     };
 
 }
@@ -233,7 +233,7 @@ namespace metaxxa
     template <typename LiteralH = LiteralNil, typename... LiteralTail>
     struct LiteralCdrT
     {
-        using Tail = LiteralList<typename LiteralH::Type, LiteralTail::value()...>;
+        using Tail = LiteralList<typename LiteralH::Type, LiteralTail::value...>;
     };
 
     template <typename LiteralT>
@@ -259,7 +259,7 @@ namespace metaxxa
 
         static constexpr HeadType head()
         {
-            return Head::value();
+            return Head::value;
         }
     };
 
@@ -739,27 +739,10 @@ namespace metaxxa
 #define METAXXA_SIZECONSTANT_H
 
 
-
-#ifndef METAXXA_VALUEMETHOD_H
-#define METAXXA_VALUEMETHOD_H
-
-namespace metaxxa
-{
-    template <typename T>
-    struct ValueMethod
-    {
-        using Type = typename T::value_type;
-
-        static constexpr Type value() { return T::value; }
-    };
-}
-
-#endif // METAXXA_VALUEMETHOD_H
-
 namespace metaxxa
 {
     template <std::size_t INDEX>
-    using SizeConstant = ValueMethod<std::integral_constant<std::size_t, INDEX>>;
+    using SizeConstant = std::integral_constant<std::size_t, INDEX>;
 }
 
 #endif // METAXXA_SIZECONSTANT_H
@@ -784,7 +767,7 @@ namespace metaxxa
     template <typename T>
     constexpr std::size_t parameters_count() 
     {
-        return ParametersCount<T>::value();
+        return ParametersCount<T>::value;
     }
 }
 
@@ -1001,7 +984,7 @@ namespace metaxxa
         TupleT,                                                 \
         Functor,                                                \
         N + 1,                                                  \
-        Functor<__VA_ARGS__>::value(),                          \
+        Functor<__VA_ARGS__>::value,                            \
         N + 1 >= std::tuple_size_v<TupleT>                      \
     >                                                           \
     {};                                                         \
@@ -1167,7 +1150,7 @@ namespace metaxxa
                     <
                         TupleT, 
                         INDICES, 
-                        Functor<std::tuple_element_t<INDICES, TupleT>>::value()
+                        Functor<std::tuple_element_t<INDICES, TupleT>>::value
                     >::Type...
                 >;
 
@@ -1186,7 +1169,7 @@ namespace metaxxa
                     <
                         TupleT, 
                         INDICES, 
-                        Functor<std::tuple_element_t<INDICES, TupleT>, INDICES>::value()
+                        Functor<std::tuple_element_t<INDICES, TupleT>, INDICES>::value
                     >::Type...
                 >;
 
@@ -1205,7 +1188,7 @@ namespace metaxxa
                     <
                         TupleT, 
                         INDICES, 
-                        Functor<std::tuple_element_t<INDICES, TupleT>, INDICES, TupleT>::value()
+                        Functor<std::tuple_element_t<INDICES, TupleT>, INDICES, TupleT>::value
                     >::Type...
                 >;
     }
@@ -1699,13 +1682,13 @@ namespace metaxxa
         template <typename T>
         struct IsTrue
         {
-            static constexpr bool value() { return T::value(); }
+            static constexpr bool value = T::value;
         };
 
         template <bool RESULT, typename CaseType>
         struct CasePair
         {
-            static constexpr bool value() { return RESULT; }
+            static constexpr bool value = RESULT;
 
             using Type = CaseType;            
         };

@@ -8,7 +8,7 @@ namespace metaxxa
     {
         using Type = T;
 
-        static constexpr Type value() { return LITERAL; }
+        static constexpr Type value = LITERAL;
     };
 
 }

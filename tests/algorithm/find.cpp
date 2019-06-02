@@ -3,19 +3,19 @@
 template <typename T>
 struct IsSizeOfEq2
 {
-    static constexpr bool value() { return sizeof(T) == 2; }
+    static constexpr bool value = (sizeof(T) == 2);
 };
 
 template <typename T, std::size_t INDEX>
 struct IntegralWithEvenIndex
 {
-    static constexpr bool value() { return std::is_integral_v<T> && INDEX % 2 == 0; }
+    static constexpr bool value = (std::is_integral_v<T> && INDEX % 2 == 0);
 };
 
 template <typename T, std::size_t INDEX, typename SrcTuple>
 struct IntegralAndSize4
 {
-    static constexpr bool value() { return std::is_integral_v<T> && std::tuple_size_v<SrcTuple> == 4; }
+    static constexpr bool value = (std::is_integral_v<T> && std::tuple_size_v<SrcTuple> == 4);
 };
 
 TEST_CASE("[metaxxa::Find]")

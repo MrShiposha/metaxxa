@@ -25,7 +25,7 @@ namespace metaxxa
     template <typename T>
     constexpr std::size_t parameters_count() 
     {
-        return ParametersCount<T>::value();
+        return ParametersCount<T>::value;
     }
 }
 

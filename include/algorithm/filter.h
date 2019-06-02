@@ -46,7 +46,7 @@ namespace metaxxa
                     <
                         TupleT, 
                         INDICES, 
-                        Functor<std::tuple_element_t<INDICES, TupleT>>::value()
+                        Functor<std::tuple_element_t<INDICES, TupleT>>::value
                     >::Type...
                 >;
 
@@ -65,7 +65,7 @@ namespace metaxxa
                     <
                         TupleT, 
                         INDICES, 
-                        Functor<std::tuple_element_t<INDICES, TupleT>, INDICES>::value()
+                        Functor<std::tuple_element_t<INDICES, TupleT>, INDICES>::value
                     >::Type...
                 >;
 
@@ -84,7 +84,7 @@ namespace metaxxa
                     <
                         TupleT, 
                         INDICES, 
-                        Functor<std::tuple_element_t<INDICES, TupleT>, INDICES, TupleT>::value()
+                        Functor<std::tuple_element_t<INDICES, TupleT>, INDICES, TupleT>::value
                     >::Type...
                 >;
     }

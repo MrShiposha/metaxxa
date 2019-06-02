@@ -3,54 +3,46 @@
 template <typename T>
 struct Filter_F0
 {
-    static constexpr bool value() { return is_integral_v<T>; }
+    static constexpr bool value = is_integral_v<T>;
 };
 
 template <typename T, std::size_t INDEX>
 struct Filter_F1
 {
-    static constexpr bool value() { return is_integral_v<T> || INDEX % 2 == 0; }
+    static constexpr bool value = (is_integral_v<T> || INDEX % 2 == 0);
 };
 
 
 template <typename T, std::size_t INDEX, typename TupleT, bool AT_BORDER = (INDEX + 1 == std::tuple_size_v<TupleT>)>
 struct NextIntPair
 {
-    static constexpr bool value()
-    {
-        return 
-            is_same_v<T, int> 
-         && is_same_v<tuple_element_t<INDEX + 1, TupleT>, T>;
-    }
+    static constexpr bool value=
+    ( 
+           is_same_v<T, int> 
+        && is_same_v<tuple_element_t<INDEX + 1, TupleT>, T>
+    );
 };
 
 template <typename T, std::size_t INDEX, typename TupleT>
 struct NextIntPair<T, INDEX, TupleT, true>
 {
-    static constexpr bool value()
-    {
-        return false;
-    }
+    static constexpr bool value = false;
 };
 
 template <typename T, std::size_t INDEX, typename TupleT, bool AT_BORDER = (INDEX == 0)>
 struct PrevIntPair
 {
-    static constexpr bool value()
-    {
-        return 
+    static constexpr bool value =
+    (
             is_same_v<T, int> 
-         && is_same_v<tuple_element_t<INDEX - 1, TupleT>, T>;
-    }
+         && is_same_v<tuple_element_t<INDEX - 1, TupleT>, T>
+    );
 };
 
 template <typename T, std::size_t INDEX, typename TupleT>
 struct PrevIntPair<T, INDEX, TupleT, true>
 {
-    static constexpr bool value()
-    {
-        return false;
-    }
+    static constexpr bool value = false;
 };
 
 template 
@@ -61,10 +53,7 @@ template
 >
 struct Filter_F2
 {
-    static constexpr bool value() 
-    {
-        return NextIntPair<T, INDEX, TupleT>::value() || PrevIntPair<T, INDEX, TupleT>::value();
-    }
+    static constexpr bool value = (NextIntPair<T, INDEX, TupleT>::value || PrevIntPair<T, INDEX, TupleT>::value);
 };
 
 TEST_CASE("[metaxxa::Filter]")

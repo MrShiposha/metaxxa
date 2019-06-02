@@ -14,13 +14,13 @@ namespace metaxxa
         template <typename T>
         struct IsTrue
         {
-            static constexpr bool value() { return T::value(); }
+            static constexpr bool value = T::value;
         };
 
         template <bool RESULT, typename CaseType>
         struct CasePair
         {
-            static constexpr bool value() { return RESULT; }
+            static constexpr bool value = RESULT;
 
             using Type = CaseType;            
         };

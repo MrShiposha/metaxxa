@@ -19,7 +19,7 @@
         TupleT,                                                 \
         Functor,                                                \
         N + 1,                                                  \
-        Functor<__VA_ARGS__>::value(),                          \
+        Functor<__VA_ARGS__>::value,                            \
         N + 1 >= std::tuple_size_v<TupleT>                      \
     >                                                           \
     {};                                                         \

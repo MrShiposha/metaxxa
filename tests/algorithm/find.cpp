@@ -132,4 +132,14 @@ TEST_CASE("[metaxxa::Find]")
         static_assert(!R::FOUND, "T::size != 4 ==> false");
         static_assert(is_same_v<R::TypeOr<double>, double>, "OrType<double> == double expected");
     }
+
+    SECTION("FindEqual")
+    {
+        using T = TypeList<double, int, char>;
+        
+        static_assert(FindEqual<T, int>::FOUND);
+        static_assert(FindEqual<T, int>::INDEX == 1);
+
+        static_assert(!FindEqual<T, short>::FOUND);
+    }
 }

@@ -1039,6 +1039,16 @@ namespace metaxxa
 {
     namespace detail
     {
+        template <typename E>
+        struct IsEqualTo
+        {
+            template <typename T>
+            struct Type
+            {
+                static constexpr bool value = std::is_same_v<T, E>;
+            };
+        };
+
         #define FUNCTOR_TYPE template <typename T> typename Functor
 
         DEFINE_FIND_ALGORITHM(, std::tuple_element_t<N, TupleT>);
@@ -1060,6 +1070,13 @@ namespace metaxxa
         template <typename T> typename Functor
     >
     using Find = detail::Find<TupleT, Functor>;
+
+    template
+    <
+        typename TupleT,
+        typename T
+    >
+    using FindEqual = detail::Find<TupleT, detail::IsEqualTo<T>::template Type>;
 
     template 
     <

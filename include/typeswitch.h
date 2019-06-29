@@ -2,56 +2,76 @@
 #define METAXXA_TYPESWITCH_H
 
 #include <type_traits>
-#include "switch.h"
 
 namespace metaxxa
 {
+    template <typename CaseCondition, typename CaseType>
+    struct TypeSwitchCase
+    {
+        using Condition = CaseCondition;
+        using type      = CaseType;
+
+        template <typename T>
+        static constexpr bool is_equal_to() { return std::is_same_v<T, Condition>; }
+    };
+
+    template <typename CaseType>
+    struct TypeSwitchDefaultCase
+    {
+        using type = CaseType;
+
+        template <typename T>
+        static constexpr bool is_equal_to() { return true; }
+    };
+
     namespace detail
     {
-        template 
-        <
-            typename T,
-            typename OldSwitchList, 
-            typename CaseCondition, 
-            typename CaseType
-        >
-        class TypeCaseImpl : public CaseImplBase
-        <
-            Concat
-            <
-                TypeList, 
-                OldSwitchList, 
-                TypeList<CasePair<std::is_same_v<T, CaseCondition>, CaseType>>
-            >
-        >
+        template <typename CaseCondition, typename CasesList>
+        struct TypeSwitchType
         {
-            using Base = CaseImplBase
-            <
-                Concat
-                <
-                    TypeList, 
-                    OldSwitchList, 
-                    TypeList<CasePair<std::is_same_v<T, CaseCondition>, CaseType>>
-                >
-            >;
+            template <typename TypeSwitchCase>
+            struct Functor
+            {
+                static constexpr bool value = TypeSwitchCase::template is_equal_to<CaseCondition>();
+            };
 
-        public:
-            template <typename NextTypeCondition, typename NextCaseType>
-            using Case = TypeCaseImpl
-            <
-                T, 
-                typename Base::SwitchList,
-                NextTypeCondition, 
-                NextCaseType
-            >;
+            using Type = typename Find<CasesList, Functor>::Type::type;
+        };
+
+        template <typename DefaultType, typename CasesList>
+        struct TypeSwitchDefault
+        {
+            using Cases = Concat<TypeList, CasesList, TemplateContainer<TypeSwitchDefaultCase<DefaultType>>>;
+
+            template <typename T>
+            using Type = typename TypeSwitchType<T, Cases>::Type;
+        };
+
+        template <typename CaseCondition, typename CaseType, typename CasesList>
+        struct TypeCaseImpl
+        {
+            using Cases = Concat<TypeList, CasesList, TemplateContainer<TypeSwitchCase<CaseCondition, CaseType>>>;
+
+            template <typename NextCaseCondition, typename NextCaseType>
+            using Case = TypeCaseImpl<NextCaseCondition, NextCaseType, Cases>;
+
+            template <typename DefaultT>
+            using Default = TypeSwitchDefault<DefaultT, Cases>; 
+
+            template <typename T>
+            using Type = typename TypeSwitchType<T, Cases>::Type;
         };
     }
 
-    template <typename T>
     struct TypeSwitch
     {
         template <typename CaseCondition, typename CaseType>
-        using Case = detail::TypeCaseImpl<T, TypeList<>, CaseCondition, CaseType>;
+        using Case = detail::TypeCaseImpl
+        <
+            CaseCondition,
+            CaseType,
+            TypeList<>
+        >;
     };
 }
 

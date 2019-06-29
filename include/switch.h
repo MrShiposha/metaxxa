@@ -9,111 +9,76 @@
 
 namespace metaxxa
 {
+    template <typename T, T CONSTANT, typename CaseType>
+    struct SwitchCase
+    {
+        using ConstantType = T;
+        static constexpr ConstantType value = CONSTANT;
+
+        using type = CaseType;
+
+        template <T VALUE>
+        static constexpr bool is_equal_to() { return value == VALUE; }
+    };
+
+    template <typename T, typename CaseType>
+    struct SwitchDefaultCase
+    {
+        using type = CaseType;
+
+        template <T VALUE>
+        static constexpr bool is_equal_to() { return true; }
+    };
+
     namespace detail
     {
-        template <typename T>
-        struct IsTrue
+        template <typename T, T CONSTANT, typename Cases>
+        struct SwitchType
         {
-            static constexpr bool value = T::value;
+            template <typename SwitchCase>
+            struct Functor
+            {
+                static constexpr bool value = SwitchCase::template is_equal_to<CONSTANT>();
+            };
+
+            using Type = typename Find<Cases, Functor>::Type::type;
         };
 
-        template <bool RESULT, typename CaseType>
-        struct CasePair
+        template <typename T, typename DefaultType, typename CasesList>
+        struct SwitchDefault
         {
-            static constexpr bool value = RESULT;
+            using Cases = Concat<TypeList, CasesList, TemplateContainer<SwitchDefaultCase<T, DefaultType>>>;
 
-            using Type = CaseType;            
+            template <T CONSTANT>
+            using Type = typename SwitchType<T, CONSTANT, Cases>::Type;
         };
 
-        template 
-        <
-            typename SwitchListT, 
-            typename FindFirstTrue = Find<SwitchListT, IsTrue>, 
-            bool IS_FOUND = FindFirstTrue::FOUND
-        >
-        class CaseImplBase
+        template <typename T, T CASE_CONSTANT, typename CaseType, typename CasesList>
+        struct CaseImpl
         {
-        protected:
-            using SwitchList = SwitchListT;
+            using Cases = Concat<TypeList, CasesList, TemplateContainer<SwitchCase<T, CASE_CONSTANT, CaseType>>>;
 
-        public:
-            using Type = typename std::tuple_element_t
-            <
-                FindFirstTrue::INDEX, 
-                SwitchList
-            >::Type;
-
-            template <typename DefaultT>
-            using DefaultType = Type;
-        };
-
-        template 
-        <
-            typename SwitchListT, 
-            typename FindFirstTrue
-        >
-        class CaseImplBase<SwitchListT, FindFirstTrue, false>
-        {
-        protected:
-            using SwitchList = SwitchListT;
-
-        public:
-            template <typename DefaultT>
-            using DefaultType = DefaultT;
-        };
-
-        template 
-        <
-            typename T, 
-            T SRC_CONSTANT, 
-            typename OldSwitchList, 
-            T CASE_CONSTANT, 
-            typename CaseType
-        >
-        class CaseImpl : public CaseImplBase
-        <
-            Concat
-            <
-                TypeList, 
-                OldSwitchList, 
-                TypeList<CasePair<SRC_CONSTANT == CASE_CONSTANT, CaseType>>
-            >
-        >
-        {
-            using Base = CaseImplBase
-            <
-                Concat
-                <
-                    TypeList, 
-                    OldSwitchList, 
-                    TypeList<CasePair<SRC_CONSTANT == CASE_CONSTANT, CaseType>>
-                >
-            >;
-
-        public:
             template <T NEXT_CONSTANT, typename NextCaseType>
-            using Case = CaseImpl
-            <
-                T, 
-                SRC_CONSTANT, 
-                typename Base::SwitchList,
-                NEXT_CONSTANT, 
-                NextCaseType
-            >;
+            using Case = CaseImpl<T, NEXT_CONSTANT, NextCaseType, Cases>;
+
+            template <typename DefaultT>
+            using Default = SwitchDefault<T, DefaultT, Cases>; 
+
+            template <T CONSTANT>
+            using Type = typename SwitchType<T, CONSTANT, Cases>::Type;
         };
     }
 
-    template <typename T, T CONSTANT>
+    template <typename T>
     struct Switch
     {
         template <T CASE_CONSTANT, typename CaseType>
         using Case = detail::CaseImpl
         <
             T,
-            CONSTANT,
-            TypeList<>,
             CASE_CONSTANT,
-            CaseType
+            CaseType,
+            TypeList<>
         >;
     };
 }

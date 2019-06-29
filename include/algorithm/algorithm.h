@@ -12,6 +12,7 @@
 #include "concat.h"
 #include "skiprange.h"
 #include "filter.h"
+#include "map.h"
 #include "every.h"
 #include "contains.h"
 #include "unique.h"

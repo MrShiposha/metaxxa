@@ -25,3 +25,4 @@
 #include "enableif.h"
 #include "isinstantiationof.h"
 #include "isarrayof.h"
+#include "isapplicable.h"

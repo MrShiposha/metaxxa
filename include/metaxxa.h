@@ -26,3 +26,4 @@
 #include "isinstantiationof.h"
 #include "isarrayof.h"
 #include "isapplicable.h"
+#include "applyresult.h"

@@ -8,7 +8,7 @@ void f3();
 
 int f4(char);
 
-TEST_CASE("[metaxxa::is_applicable()]")
+TEST_CASE("[metaxxa::is_applicable]")
 {
     static_assert(is_applicable<decltype(f1), TypeList<int, int>>());
     static_assert(is_applicable<decltype(f2), TypeList<double, char, int>>());

@@ -88,7 +88,7 @@ namespace metaxxa
         static constexpr bool contains_packed() { return ::metaxxa::contains_packed<T, Tuple>(); }
 
         template <template <typename> typename Predicate>
-        static constexpr bool every() { return ::metaxxa::Every<Predicate, T>::value; }
+        static constexpr bool every() { return ::metaxxa::every<Predicate, T>(); }
 
         static constexpr bool is_parameters_unique() { return ::metaxxa::is_unique<T>(); }
     };

@@ -36,7 +36,7 @@ namespace metaxxa
         template <typename> typename Predicate,
         typename TupleT
     >
-    constexpr bool every = Every<Predicate, TupleT>::value;
+    constexpr bool every() { return Every<Predicate, TupleT>::value; }
 }
 
 #endif // METAXXA_ALGORITHM_EVERY_H

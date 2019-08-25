@@ -27,3 +27,4 @@
 #include "isarrayof.h"
 #include "isapplicable.h"
 #include "applyresult.h"
+#include "type.h"
